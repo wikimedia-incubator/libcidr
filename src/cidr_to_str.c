@@ -218,6 +218,10 @@ cidr_to_str(const CIDR *block, int flags)
 			/* And loop back around to the next 2-octet set */
 		} /* for(each 16-bit set) */
 
+		/* If lzer==1, we were still minimizing, so add the extra ':' */
+		if(lzer==1)
+			strcat(toret, ":");
+
 		/* Prefix/netmask */
 		if(flags & CIDR_NETMASK)
 		{
