@@ -4,6 +4,7 @@
  */
 
 #include <ctype.h>
+#include <stdio.h> /* I'm always stuffing debug printf's into here */
 #include <stdlib.h>
 #include <string.h>
 
@@ -13,10 +14,12 @@ CIDR *
 cidr_from_str(const char *addr)
 {
 	size_t alen;
-	CIDR *toret;
+	CIDR *toret, *ctmp;
+	const char *pfx;
 	int i, j;
 	int pflen;
 	int octet, nocts, eocts;
+	short foundpf, foundmask, foundnmh;
 
 	/* Just in case */
 	if(addr==NULL)
@@ -37,11 +40,54 @@ cidr_from_str(const char *addr)
 
 
 	/*
-	 * Now, let's figure out what kind of address this is.  We'll cheap
-	 * out on it by going to the end, then stepping backward until we hit
-	 * a . (v4) or a : (v6).
+	 * Find the '/' prefix marker if we can.  We support both prefix
+	 * length and netmasks after the /, so flag if we find a mask.
 	 */
+	foundpf=foundmask=0;
 	for(i=alen-1 ; i>=0 ; i--)
+	{
+		/* Handle both possible forms of netmasks */
+		if(addr[i]=='.' || addr[i]==':')
+			foundmask=1;
+
+		/* Are we at the beginning of the prefix? */
+		if(addr[i]=='/')
+		{
+			foundpf=1;
+			break;
+		}
+	}
+
+	if(foundpf==0)
+	{
+		/*
+		 * We didn't actually find a prefix, so reset the foundmask, and
+		 * point back at the end of the string for the below check.
+		 */
+		foundmask=0;
+		i = alen-1;
+
+		/*
+		 * pfx is only used if foundpf==1, but set it to NULL here to
+		 * quite gcc down.
+		 */
+		pfx=NULL;
+	}
+	else
+	{
+		/* Remember where the prefix is */
+		pfx = addr+i;
+	}
+
+
+	/*
+	 * Now, let's figure out what kind of address this is.  Start moving
+	 * backward from the / we found above (or the end of the string if it
+	 * wasn't not found) , then stepping backward until we hit a . (v4)
+	 * or a : (v6).  We go backward so that if we're given a v6-mapped v4
+	 * address (:ffff:1.2.3.4), we correctly recognize it as v4.
+	 */
+	for( /* i */ ; i>=0 ; i--)
 	{
 		if(addr[i]=='.')
 		{
@@ -74,84 +120,166 @@ cidr_from_str(const char *addr)
 		 * and parsing it from the end instead of from the front.  This
 		 * let's us ignore leading garbage (like, for instance, the
 		 * address being given in v6-mapped format).
+		 *
+		 * First, initialize this so we can skip building the bits if we
+		 * don't have to.
 		 */
-
-		/* First, get the prefix length */
-		for(i=alen-1 ; i>=0 ; i--)
-			if(addr[i]=='/')
-				break;
-		if(addr[i]!='/')
-		{
-			/* None found.  Assume /32 */
-			pflen = 32;
-			/* Stretch back to the end of the string */
-			i=alen-1;
-		}
-		else
-			pflen = (int)strtol(addr+i+1, NULL, 10);
+		pflen=0;
 
 		/*
-		 * Now, normally, it needs to be 0...32, but we're also accepting
-		 * v6-mapped forms, which can have it be 96...128.  So, cover our
-		 * rears and bomb on invalid values, and canonicalize valid ones.
+		 * Handle the prefix/netmask.  If it's not set at all, slam it to
+		 * the maximum, and put us at the end of the string to start out.
 		 */
-		if(pflen<0)
+		if(foundpf==0)
 		{
-			/* Always bad */
-			free(toret);
-			return(NULL);
+			pflen=32;
+			i=alen-1;
 		}
-		if(pflen>32)
+
+		/*
+		 * Or, if we found it, and it's a NETMASK, we need to parse it
+		 * just like an address.  So, cheat a little and call ourself
+		 * recursively, and then just count the bits in our returned
+		 * address for the pflen.
+		 */
+		if(foundpf==1 && foundmask==1)
 		{
-			/* See if it's a 96...128 v6 mapped prefix length */
-			pflen-=96;
-			if(pflen<0 || pflen>32)
+			ctmp = cidr_from_str(pfx+1);
+			if(ctmp==NULL)
 			{
+				/* This shouldn't happen */
 				free(toret);
 				return(NULL);
 			}
+
+			/*
+			 * We're v4, so only copy 4 octets.  For sanity, though, make
+			 * sure the rest are 0, like they should be.  Also, we don't
+			 * really handle non-contiguous netmasks, so fail on that
+			 * too.  It's a little intricate...
+			 */
+			foundnmh=0;
+			for(i=0 ; i<=15 ; i++)
+			{
+				if(i<12)
+				{
+					if(ctmp->addr[i]!=0)
+					{
+						free(ctmp);
+						free(toret);
+						return(NULL);
+					}
+				}
+				else
+				{
+					for(j=7 ; j>=0 ; j--)
+					{
+						if(ctmp->addr[i] & (1<<j))
+						{
+							if(foundnmh==1)
+							{
+								/* This is a 1, but we've already seen 0 */
+								free(ctmp);
+								free(toret);
+								return(NULL);
+							}
+							else
+								pflen++;
+						}
+						else
+						{
+							/* Found a host bit */
+							foundnmh=1;
+						}
+					}
+				}
+			}
+			free(ctmp);
+
+			/* And set us to before the '/' like below */
+			i = pfx-addr-1;
 		}
 
 		/*
-		 * Now pflen is in the 0...32 range and thus good.  Set it in the
-		 * structure.  Note that memset zero'd the whole thing to start.
-		 * We ignore mask[<12] with v4 addresses, so while a case could
-		 * be made that they should be '1', I'm just leaving them alone.
-		 *
-		 * This is a horribly grody set of macros.  I'm only using them
-		 * here to test them out before using them in the v6 section,
-		 * where I'll need them more due to the sheer number of clauses
-		 * I'll have to get written.  Here's the straight code I had
-		 * written that the macro should be writing for me now:
-		 *
-		 * if(pflen>24)
-		 *   for(j=24 ; j<pflen ; j++)
-		 *     toret->mask[15] |= 1<<(31-j);
-		 * if(pflen>16)
-		 *   for(j=16 ; j<pflen ; j++)
-		 *     toret->mask[14] |= 1<<(23-j);
-		 * if(pflen>8)
-		 *   for(j=8 ; j<pflen ; j++)
-		 *     toret->mask[13] |= 1<<(15-j);
-		 * if(pflen>0)
-		 *   for(j=0 ; j<pflen ; j++)
-		 *     toret->mask[12] |= 1<<(7-j);
+		 * Finally, if we did find it and it's a normal prefix length,
+		 * just pull it it, parse it out, and set ourselves to the first
+		 * character before the / for the address reading
 		 */
+		if(foundpf==1 && foundmask==0)
+		{
+			pflen = (int)strtol(pfx+1, NULL, 10);
+			i = pfx-addr-1;
+		}
+
+
+		/* If pflen is set, we need to turn it into a mask for the bits */
+		if(pflen!=0)
+		{
+			/*
+		 	 * Now, normally, it needs to be 0...32, but we're also accepting
+		 	 * v6-mapped forms, which can have it be 96...128.  So, cover our
+		 	 * rears and bomb on invalid values, and canonicalize valid ones.
+		 	 */
+			if(pflen<0)
+			{
+				/* Always bad */
+				free(toret);
+				return(NULL);
+			}
+			if(pflen>32)
+			{
+				/* See if it's a 96...128 v6 mapped prefix length */
+				pflen-=96;
+				if(pflen<0 || pflen>32)
+				{
+					free(toret);
+					return(NULL);
+				}
+			}
+
+			/*
+		 	 * Now pflen is in the 0...32 range and thus good.  Set it in
+		 	 * the structure.  Note that memset zero'd the whole thing to
+		 	 * start.  We ignore mask[<12] with v4 addresses, so while a
+		 	 * case could be made that they should be '1', I'm just
+		 	 * leaving them alone.
+		 	 *
+		 	 * This is a horribly grody set of macros.  I'm only using
+		 	 * them here to test them out before using them in the v6
+		 	 * section, where I'll need them more due to the sheer number
+		 	 * of clauses I'll have to get written.  Here's the straight
+		 	 * code I had written that the macro should be writing for me
+		 	 * now:
+		 	 *
+		 	 * if(pflen>24)
+		 	 *   for(j=24 ; j<pflen ; j++)
+		 	 *     toret->mask[15] |= 1<<(31-j);
+		 	 * if(pflen>16)
+		 	 *   for(j=16 ; j<pflen ; j++)
+		 	 *     toret->mask[14] |= 1<<(23-j);
+		 	 * if(pflen>8)
+		 	 *   for(j=8 ; j<pflen ; j++)
+		 	 *     toret->mask[13] |= 1<<(15-j);
+		 	 * if(pflen>0)
+		 	 *   for(j=0 ; j<pflen ; j++)
+		 	 *     toret->mask[12] |= 1<<(7-j);
+		 	 */
 #define UMIN(x,y) ((x)<(y)?(x):(y))
 #define MASKNUM(x) (24-((15-x)*8))
 #define WRMASKSET(x) \
-	if(pflen>MASKNUM(x)) \
-		for(j=MASKNUM(x) ; j<UMIN(pflen,MASKNUM(x)+8) ; j++) \
-			toret->mask[x] |= 1<<(MASKNUM(x)+7-j);
+		if(pflen>MASKNUM(x)) \
+			for(j=MASKNUM(x) ; j<UMIN(pflen,MASKNUM(x)+8) ; j++) \
+				toret->mask[x] |= 1<<(MASKNUM(x)+7-j);
 
-		WRMASKSET(15);
-		WRMASKSET(14);
-		WRMASKSET(13);
-		WRMASKSET(12);
+			WRMASKSET(15);
+			WRMASKSET(14);
+			WRMASKSET(13);
+			WRMASKSET(12);
 
 #undef WRMASKET
 #undef MASKNUM
 #undef UMIN
+		} /* Normal v4 prefix */
 
 
 		/*
@@ -159,8 +287,8 @@ cidr_from_str(const char *addr)
 		 * outside the 0...255 range, bomb.
 		 */
 		nocts = 0;
-		/* i-- to step before the / of the prefix */
-		for( i-- ; i>=0 ; i--)
+		/* i was set in our mask conditions above */
+		for( /* i */ ; i>=0 ; i--)
 		{
 			/* As long as it's still a number, move on */
 			if(isdigit(addr[i]) && i>0)
@@ -207,61 +335,118 @@ cidr_from_str(const char *addr)
 		 * because at the end we'll then have a hole that is what the ::
 		 * is supposed to contain, which is already automagically 0 from
 		 * the memset() we did earlier.  Neat!
+		 *
+		 * Initialize the prefix length
 		 */
+		pflen=0;
 
-		/* First, get the prefix length */
-		for(i=alen-1 ; i>=0 ; i--)
-			if(addr[i]=='/')
-				break;
-		if(addr[i]!='/')
+		/* If no prefix was found, assume the max */
+		if(foundpf==0)
 		{
-			/* None found.  Assume /128 */
 			pflen = 128;
 			/* Stretch back to the end of the string */
 			i=alen-1;
 		}
-		else
-			pflen = (int)strtol(addr+i+1, NULL, 10);
-
-		/* Better be 0...128 */
-		if(pflen<0 || pflen>128)
-		{
-			/* Always bad */
-			free(toret);
-			return(NULL);
-		}
 
 		/*
-		 * Now save the pflen.  See comments on the similar code up in
-		 * the v4 section about the macros.
+		 * If we got a netmask, rather than a prefix length, parse it and
+		 * count the bits, like we did for v4.
 		 */
+		if(foundpf==1 && foundmask==1)
+		{
+			ctmp = cidr_from_str(pfx+1);
+			if(ctmp==NULL)
+			{
+				/* This shouldn't happen */
+				free(toret);
+				return(NULL);
+			}
+
+			/*
+			 * In v6, we save all the octets.  But watch for net bits
+			 * showing up after we've already seen host bits!
+			 */
+			foundnmh=0;
+			for(i=0 ; i<=15 ; i++)
+			{
+				for(j=7 ; j>=0 ; j--)
+				{
+					if(ctmp->addr[i] & (1<<j))
+					{
+						if(foundnmh==1)
+						{
+							/* This is a 1, but we've already seen 0 */
+							free(ctmp);
+							free(toret);
+							return(NULL);
+						}
+						else
+							pflen++;
+					}
+					else
+					{
+						/* Found a host bit */
+						foundnmh=1;
+					}
+				}
+			}
+			free(ctmp);
+
+			/* And set us to before the '/' like below */
+			i = pfx-addr-1;
+		}
+
+		/* Finally, the normal prefix case */
+		if(foundpf==1 && foundmask==0)
+		{
+			pflen = (int)strtol(pfx+1, NULL, 10);
+			i = pfx-addr-1;
+		}
+
+
+		/* Now, if we have a pflen, turn it into a mask */
+		if(pflen!=0)
+		{
+			/* Better be 0...128 */
+			if(pflen<0 || pflen>128)
+			{
+				/* Always bad */
+				free(toret);
+				return(NULL);
+			}
+
+			/*
+		 	 * Now save the pflen.  See comments on the similar code up in
+		 	 * the v4 section about the macros.
+		 	 */
 #define UMIN(x,y) ((x)<(y)?(x):(y))
 #define MASKNUM(x) (120-((15-x)*8))
 #define WRMASKSET(x) \
-	if(pflen>MASKNUM(x)) \
-		for(j=MASKNUM(x) ; j<UMIN(pflen,MASKNUM(x)+8) ; j++) \
-			toret->mask[x] |= 1<<(MASKNUM(x)+7-j);
+		if(pflen>MASKNUM(x)) \
+			for(j=MASKNUM(x) ; j<UMIN(pflen,MASKNUM(x)+8) ; j++) \
+				toret->mask[x] |= 1<<(MASKNUM(x)+7-j);
 
-		WRMASKSET(15);
-		WRMASKSET(14);
-		WRMASKSET(13);
-		WRMASKSET(12);
-		WRMASKSET(11);
-		WRMASKSET(10);
-		WRMASKSET(9);
-		WRMASKSET(8);
-		WRMASKSET(7);
-		WRMASKSET(6);
-		WRMASKSET(5);
-		WRMASKSET(4);
-		WRMASKSET(3);
-		WRMASKSET(2);
-		WRMASKSET(1);
-		WRMASKSET(0);
+			WRMASKSET(15);
+			WRMASKSET(14);
+			WRMASKSET(13);
+			WRMASKSET(12);
+			WRMASKSET(11);
+			WRMASKSET(10);
+			WRMASKSET(9);
+			WRMASKSET(8);
+			WRMASKSET(7);
+			WRMASKSET(6);
+			WRMASKSET(5);
+			WRMASKSET(4);
+			WRMASKSET(3);
+			WRMASKSET(2);
+			WRMASKSET(1);
+			WRMASKSET(0);
 
 #undef WRMASKET
 #undef MASKNUM
 #undef UMIN
+		}
 
 
 		/*
