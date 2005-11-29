@@ -240,7 +240,7 @@ cidr_to_str(const CIDR *block, int flags)
 			for(i=0 ; i<=15 ; i++)
 				nmtmp->addr[i] = block->mask[i];
 
-			nmstr = cidr_to_str(nmtmp, (flags & ~CIDR_NETMASK));
+			nmstr = cidr_to_str(nmtmp, (flags & ~(CIDR_NETMASK)));
 			free(nmtmp);
 			if(nmstr==NULL)
 			{
