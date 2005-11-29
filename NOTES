@@ -1,0 +1,13 @@
+- All addresses stored like IPv6, (v4 just don't use 12 of the octets)
+
+Some functions we want:
+(very rough non-prototypes)
+char *cidr_to_str(cidr *, int flags); /* compact, semi-compact, full */
+cidr *cidr_from_str(char *addr, char *mask); /* NULL mask means in *addr */
+int cidr_contains(cidr *bigrange, cidr *littlerange);
+in_addr *cide_to_inaddr(cidr *);
+in6_addr *cidr_to_in6addr(cidr *);
+
+Maybe:
+cidr **cidr_split(cidr *);
+cidr **cidr_combine(cidr **);
