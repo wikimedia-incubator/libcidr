@@ -16,6 +16,7 @@
 #define CIDR_VERBOSE        1<<1 /* Don't minimize leading zeros */
 #define CIDR_USEV6          1<<2 /* Use v6 form for v4 addresses */
 #define CIDR_USEV4COMPAT    1<<3 /* Use v4-compat rather than v4-mapped */
+#define CIDR_NETMASK		1<<4 /* Show netmask instead of pflen */
 
 /* Protocols */
 #define CIDR_NOPROTO        0
