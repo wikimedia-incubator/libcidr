@@ -2,7 +2,6 @@
  * cidr_get_pflen() - Get the prefix length of a CIDR block
  */
 
-#include <stdio.h>
 
 #include <libcidr.h>
 
@@ -29,10 +28,8 @@ cidr_get_pflen(const CIDR *block)
 	{
 		for(j=7 ; j>=0 ; j--)
 		{
-			printf("Oct %d bit %d  ", i, j);
 			if((block->mask)[i] & (1<<j))
 			{
-				printf("1\n");
 				/*
 				 * This is a network bit (1).  If we've already seen a
 				 * host bit (0), we need to bomb.
@@ -43,10 +40,7 @@ cidr_get_pflen(const CIDR *block)
 				pflen++;
 			}
 			else
-			{
-				printf("0\n");
 				foundnmh=1; /* A host bit */
-			}
 		}
 	}
 	

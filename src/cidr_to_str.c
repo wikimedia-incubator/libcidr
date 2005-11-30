@@ -12,7 +12,7 @@
 char *
 cidr_to_str(const CIDR *block, int flags)
 {
-	int i, j;
+	int i;
 	short pflen;
 	short lzer; /* Last zero */
 	short acomp; /* Already compacted */
@@ -274,14 +274,6 @@ cidr_to_str(const CIDR *block, int flags)
 				free(toret);
 				return(NULL);
 			}
-			/*
-			pflen=0;
-			for(i=0 ; i<=15 ; i++)
-				for(j=0 ; j<=7 ; j++)
-					if( (block->mask)[i] & (1<<j) )
-						pflen++;
-			*/
-			j=6;
 
 			sprintf(tmpbuf, "/%u", pflen);
 			strcat(toret, tmpbuf);
