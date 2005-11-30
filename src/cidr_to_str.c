@@ -41,7 +41,7 @@ cidr_to_str(const CIDR *block, int flags)
 	toret = malloc(52);
 	if(toret==NULL)
 		return(NULL);
-	memset(toret, '\0', 52);
+	memset(toret, 0, 52);
 
 	/*
 	 * If it's a v4 address, we mask off everything but the last 4
