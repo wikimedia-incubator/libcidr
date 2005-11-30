@@ -95,7 +95,7 @@ cidr_to_str(const CIDR *block, int flags)
 				else
 					sprintf(tmpbuf, "%u", (block->addr)[i]);
 				strcat(toret, tmpbuf);
-				if(i<3)
+				if(i<15)
 					strcat(toret, ".");
 			}
 		} /* ! ONLYPFLEN */
@@ -124,7 +124,7 @@ cidr_to_str(const CIDR *block, int flags)
 					else
 						sprintf(tmpbuf, "%u", (block->mask)[i]);
 					strcat(toret, tmpbuf);
-					if(i<3)
+					if(i<15)
 						strcat(toret, ".");
 				}
 			}
