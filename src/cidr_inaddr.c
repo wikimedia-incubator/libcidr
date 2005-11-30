@@ -130,9 +130,15 @@ cidr_from_in6addr(const struct in6_addr *uaddr)
 		return(NULL);
 	toret->proto = CIDR_IPV6;
 	
-	/* For v6, just iterate over the arrays and return */
+	/*
+	 * For v6, just iterate over the arrays and return.  Set all 1's in
+	 * the mask while we're at it, since this is a single host.
+	 */
 	for(i=0 ; i<=15 ; i++)
+	{
 		toret->addr[i] = uaddr->s6_addr[i];
+		toret->mask[i] = 0xff;
+	}
 
 	return(toret);
 }
