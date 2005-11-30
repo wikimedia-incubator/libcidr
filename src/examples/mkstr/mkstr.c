@@ -75,7 +75,7 @@ main(int argc, char *argv[])
 			else
 				printf("From '%s', got str '%s'.\n", *argv, tstr);
 		}
-		free(tcidr);
+		cidr_free(tcidr);
 		free(tstr);
 
 		argv++;
