@@ -46,6 +46,8 @@ typedef struct cidr_addr CIDR;
 
 
 /* PROTOTYPES */
+CIDR *cidr_alloc(void);
+void cidr_free(CIDR *);
 CIDR *cidr_from_str(const char *);
 int cidr_get_pflen(const CIDR *);
 char *cidr_to_str(const CIDR *, int);

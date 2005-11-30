@@ -266,13 +266,12 @@ cidr_to_str(const CIDR *block, int flags)
 			 	 * We already wrote how to build the whole v6 form, so
 			 	 * just call ourselves recurively for this.
 			 	 */
-				nmtmp = malloc(sizeof(CIDR));
+				nmtmp = cidr_alloc();
 				if(nmtmp==NULL)
 				{
 					free(toret);
 					return(NULL);
 				}
-				memset(nmtmp, 0, sizeof(CIDR));
 				nmtmp->proto = block->proto;
 				for(i=0 ; i<=15 ; i++)
 					nmtmp->addr[i] = block->mask[i];
@@ -289,7 +288,7 @@ cidr_to_str(const CIDR *block, int flags)
 				nmflags &= ~(CIDR_NETMASK) & ~(CIDR_ONLYPFLEN);
 				nmflags |= CIDR_ONLYADDR;
 				nmstr = cidr_to_str(nmtmp, nmflags);
-				free(nmtmp);
+				cidr_free(nmtmp);
 				if(nmstr==NULL)
 				{
 					free(toret);

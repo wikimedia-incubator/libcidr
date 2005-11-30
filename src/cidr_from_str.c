@@ -33,10 +33,9 @@ cidr_from_str(const char *addr)
 	if(alen<2)
 		return(NULL);
 	
-	toret = malloc(sizeof(CIDR));
+	toret = cidr_alloc();
 	if(toret==NULL)
 		return(NULL);
-	memset(toret, 0, sizeof(CIDR));
 
 
 	/*
@@ -104,7 +103,7 @@ cidr_from_str(const char *addr)
 	/* This shouldn't happen */
 	if(toret->proto==CIDR_NOPROTO)
 	{
-		free(toret);
+		cidr_free(toret);
 		return(NULL);
 	}
 
@@ -148,7 +147,7 @@ cidr_from_str(const char *addr)
 			if(ctmp==NULL)
 			{
 				/* This shouldn't happen */
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 			/* Stick it in the mask */
@@ -159,11 +158,11 @@ cidr_from_str(const char *addr)
 
 			/* Get our prefix length */
 			pflen = cidr_get_pflen(ctmp);
-			free(ctmp);
+			cidr_free(ctmp);
 			if(pflen==-1)
 			{
 				/* Failed; probably non-contiguous */
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 
@@ -198,7 +197,7 @@ cidr_from_str(const char *addr)
 			if(pflen<0)
 			{
 				/* Always bad */
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 			if(pflen>32)
@@ -207,7 +206,7 @@ cidr_from_str(const char *addr)
 				pflen-=96;
 				if(pflen<0 || pflen>32)
 				{
-					free(toret);
+					cidr_free(toret);
 					return(NULL);
 				}
 			}
@@ -281,7 +280,7 @@ cidr_from_str(const char *addr)
 			/* Sanity */
 			if(octet<0 || octet>255)
 			{
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 
@@ -298,7 +297,7 @@ cidr_from_str(const char *addr)
 		}
 
 		/* If we get here, it failed to get all 4 */
-		free(toret);
+		cidr_free(toret);
 		return(NULL);
 	}
 	else if(toret->proto==CIDR_IPV6)
@@ -333,7 +332,7 @@ cidr_from_str(const char *addr)
 			if(ctmp==NULL)
 			{
 				/* This shouldn't happen */
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 			/* Stick it in the mask */
@@ -342,11 +341,11 @@ cidr_from_str(const char *addr)
 
 			/* Get the prefix length */
 			pflen = cidr_get_pflen(ctmp);
-			free(ctmp);
+			cidr_free(ctmp);
 			if(pflen==-1)
 			{
 				/* Failed; probably non-contiguous */
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 
@@ -373,7 +372,7 @@ cidr_from_str(const char *addr)
 			if(pflen<0 || pflen>128)
 			{
 				/* Always bad */
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 
@@ -442,7 +441,7 @@ cidr_from_str(const char *addr)
 			/* If it's not a number either...   well, bad data */
 			if(!isxdigit(addr[i]) && addr[i]!=':' && i>0)
 			{
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 
@@ -458,7 +457,7 @@ cidr_from_str(const char *addr)
 			/* Remember, this is TWO octets */
 			if(octet<0 || octet>0xffff)
 			{
-				free(toret);
+				cidr_free(toret);
 				return(NULL);
 			}
 
@@ -496,7 +495,7 @@ cidr_from_str(const char *addr)
 				 */
 				if(i==0 && !isxdigit(addr[i]))
 				{
-					free(toret);
+					cidr_free(toret);
 					return(NULL);
 				}
 
@@ -509,7 +508,7 @@ cidr_from_str(const char *addr)
 				/* Sanity (again, 2 octets) */
 				if(octet<0 || octet>0xffff)
 				{
-					free(toret);
+					cidr_free(toret);
 					return(NULL);
 				}
 
@@ -529,7 +528,7 @@ cidr_from_str(const char *addr)
 				 */
 				if(nocts==15)
 				{
-					free(toret);
+					cidr_free(toret);
 					return(NULL);
 				}
 
@@ -561,13 +560,13 @@ cidr_from_str(const char *addr)
 		}
 
 		/* If we get here, it failed somewhere odd */
-		free(toret);
+		cidr_free(toret);
 		return(NULL);
 	}
 	else
 	{
 		/* Shouldn't happen */
-		free(toret);
+		cidr_free(toret);
 		return(NULL);
 	}
 

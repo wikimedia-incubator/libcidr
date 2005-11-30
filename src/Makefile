@@ -2,6 +2,7 @@
 C_FILES = \
 		cidr_from_str.c \
 		cidr_get_pflen.c \
+		cidr_mem.c \
 		cidr_to_str.c
 CLEAN_FILES = ${SO_FILES} ${SHLIB_NAME} ${SHLIB_LINK} *core .depend
 
