@@ -17,6 +17,8 @@
 #define CIDR_USEV6          1<<2 /* Use v6 form for v4 addresses */
 #define CIDR_USEV4COMPAT    1<<3 /* Use v4-compat rather than v4-mapped */
 #define CIDR_NETMASK		1<<4 /* Show netmask instead of pflen */
+#define CIDR_NOPREFIX		1<<5 /* Don't show the prefix/mask */
+#define CIDR_NOADDR			1<<6 /* Don't show the address */
 
 /* Protocols */
 #define CIDR_NOPROTO        0
