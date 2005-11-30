@@ -212,7 +212,11 @@ cidr_from_str(const char *addr)
 		}
 
 
-		/* If pflen is set, we need to turn it into a mask for the bits */
+		/*
+		 * If pflen is set, we need to turn it into a mask for the bits.
+		 * XXX pflen actually should ALWAYS be set, so we might not need
+		 * to make this conditional at all...
+		 */
 		if(pflen!=0)
 		{
 			/*
@@ -404,7 +408,11 @@ cidr_from_str(const char *addr)
 		}
 
 
-		/* Now, if we have a pflen, turn it into a mask */
+		/*
+		 * Now, if we have a pflen, turn it into a mask.
+		 * XXX pflen actually should ALWAYS be set, so we might not need
+		 * to make this conditional at all...
+		 */
 		if(pflen!=0)
 		{
 			/* Better be 0...128 */
