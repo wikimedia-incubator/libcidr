@@ -17,6 +17,8 @@ cidr_get_pflen(const CIDR *block)
 		i=12;
 	else if(block->proto==CIDR_IPV6)
 		i=0;
+	else
+		return(-1); /* Unknown */
 	
 	/*
 	 * We're intentionally not supporting non-contiguous netmasks.  So,
