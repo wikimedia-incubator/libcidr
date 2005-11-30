@@ -35,21 +35,21 @@ cidr_to_str(const CIDR *block, int flags)
 	
 	/*
 	 * Now, in any case, there's a maximum length for any address, which
-	 * is the completely expanded form of a v4-{mapped,compat} address
-	 * with a v4-/32 (v6-/128) mask.  That's 6 blocks of 4 digits (24),
-	 * seperated by :'s (+5=31), followed by a : (+1=32), followed by 4
-	 * octets of 3 digits (+12=44), seperated by .'s (+3=47), followed by
-	 * the v6 mask (+4=51), plus the trailing null (+1=52).  Phew.
+	 * is the completely expanded form of a v6-{mapped,compat} address
+	 * with a netmask instead of a prefix.  That's 8 pieces of 4
+	 * characters each (32), separated by :'s (+7=39), plus the slash
+	 * (+1=40), plus another separated-8*4 (+39=79), plus the trailing
+	 * null (+1=80).  We'll just allocate 128 for kicks.
 	 *
 	 * I'm not, at this time anyway, going to try and allocate only and
 	 * exactly as much as we need for any given address.  Whether
 	 * consumers of the library can count on this behavior...  well, I
 	 * haven't decided yet.  Lemme alone.
 	 */
-	toret = malloc(52);
+	toret = malloc(128);
 	if(toret==NULL)
 		return(NULL);
-	memset(toret, 0, 52);
+	memset(toret, 0, 128);
 
 	/*
 	 * If it's a v4 address, we mask off everything but the last 4
