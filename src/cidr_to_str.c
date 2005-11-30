@@ -236,7 +236,7 @@ cidr_to_str(const CIDR *block, int flags)
 				free(toret);
 				return(NULL);
 			}
-			memset(nmtmp, '0', sizeof(CIDR));
+			memset(nmtmp, 0, sizeof(CIDR));
 			nmtmp->proto = block->proto;
 			for(i=0 ; i<=15 ; i++)
 				nmtmp->addr[i] = block->mask[i];
