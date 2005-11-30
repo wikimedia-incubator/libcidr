@@ -111,11 +111,12 @@ cidr_to_str(const CIDR *block, int flags)
 		 	 * For this, iterate over each octet,
 		 	 * then each bit within the octet.
 		 	 */
-			pflen=0;
-			for(i=0 ; i<=3 ; i++)
-				for(j=0 ; j<=7 ; j++)
-					if( (block->mask)[i+V4_EXTRA_BITS] & (1<<j) )
-						pflen++;
+			pflen = cidr_get_pflen(block);
+			if(pflen==-1)
+			{
+				free(toret);
+				return(NULL);
+			}
 
 			sprintf(tmpbuf, "/%u", (flags & CIDR_USEV6) ? pflen+96 : pflen);
 			strcat(toret, tmpbuf);
@@ -267,11 +268,20 @@ cidr_to_str(const CIDR *block, int flags)
 		else
 		{
 			/* Just figure the and show prefix length */
+			pflen = cidr_get_pflen(block);
+			if(pflen==-1)
+			{
+				free(toret);
+				return(NULL);
+			}
+			/*
 			pflen=0;
 			for(i=0 ; i<=15 ; i++)
 				for(j=0 ; j<=7 ; j++)
 					if( (block->mask)[i] & (1<<j) )
 						pflen++;
+			*/
+			j=6;
 
 			sprintf(tmpbuf, "/%u", pflen);
 			strcat(toret, tmpbuf);

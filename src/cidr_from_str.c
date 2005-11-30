@@ -19,7 +19,7 @@ cidr_from_str(const char *addr)
 	int i, j;
 	int pflen;
 	int octet, nocts, eocts;
-	short foundpf, foundmask, foundnmh;
+	short foundpf, foundmask;
 
 	/* Just in case */
 	if(addr==NULL)
@@ -151,50 +151,21 @@ cidr_from_str(const char *addr)
 				free(toret);
 				return(NULL);
 			}
+			/* Stick it in the mask */
+			for(i=0 ; i<=11 ; i++)
+				ctmp->mask[i] = 0;
+			for(i=12 ; i<=15 ; i++)
+				ctmp->mask[i] = ctmp->addr[i];
 
-			/*
-			 * We're v4, so only copy 4 octets.  For sanity, though, make
-			 * sure the rest are 0, like they should be.  Also, we don't
-			 * really handle non-contiguous netmasks, so fail on that
-			 * too.  It's a little intricate...
-			 */
-			foundnmh=0;
-			for(i=0 ; i<=15 ; i++)
-			{
-				if(i<12)
-				{
-					if(ctmp->addr[i]!=0)
-					{
-						free(ctmp);
-						free(toret);
-						return(NULL);
-					}
-				}
-				else
-				{
-					for(j=7 ; j>=0 ; j--)
-					{
-						if(ctmp->addr[i] & (1<<j))
-						{
-							if(foundnmh==1)
-							{
-								/* This is a 1, but we've already seen 0 */
-								free(ctmp);
-								free(toret);
-								return(NULL);
-							}
-							else
-								pflen++;
-						}
-						else
-						{
-							/* Found a host bit */
-							foundnmh=1;
-						}
-					}
-				}
-			}
+			/* Get our prefix length */
+			pflen = cidr_get_pflen(ctmp);
 			free(ctmp);
+			if(pflen==-1)
+			{
+				/* Failed; probably non-contiguous */
+				free(toret);
+				return(NULL);
+			}
 
 			/* And set us to before the '/' like below */
 			i = pfx-addr-1;
@@ -365,36 +336,19 @@ cidr_from_str(const char *addr)
 				free(toret);
 				return(NULL);
 			}
-
-			/*
-			 * In v6, we save all the octets.  But watch for net bits
-			 * showing up after we've already seen host bits!
-			 */
-			foundnmh=0;
+			/* Stick it in the mask */
 			for(i=0 ; i<=15 ; i++)
-			{
-				for(j=7 ; j>=0 ; j--)
-				{
-					if(ctmp->addr[i] & (1<<j))
-					{
-						if(foundnmh==1)
-						{
-							/* This is a 1, but we've already seen 0 */
-							free(ctmp);
-							free(toret);
-							return(NULL);
-						}
-						else
-							pflen++;
-					}
-					else
-					{
-						/* Found a host bit */
-						foundnmh=1;
-					}
-				}
-			}
+				ctmp->mask[i] = ctmp->addr[i];
+
+			/* Get the prefix length */
+			pflen = cidr_get_pflen(ctmp);
 			free(ctmp);
+			if(pflen==-1)
+			{
+				/* Failed; probably non-contiguous */
+				free(toret);
+				return(NULL);
+			}
 
 			/* And set us to before the '/' like below */
 			i = pfx-addr-1;
