@@ -21,7 +21,7 @@ main(int argc, char *argv[])
 
 	cflags=CIDR_NOFLAGS;
 	pname = *argv;
-	while((goch=getopt(argc, argv, "ev6cm"))!=-1)
+	while((goch=getopt(argc, argv, "ev6cmap"))!=-1)
 	{
 		switch((char)goch)
 		{
@@ -39,6 +39,12 @@ main(int argc, char *argv[])
 				break;
 			case 'm':
 				cflags |= CIDR_NETMASK;
+				break;
+			case 'a':
+				cflags |= CIDR_ONLYADDR;
+				break;
+			case 'p':
+				cflags |= CIDR_ONLYPFLEN;
 				break;
 			default:
 				printf("Unknown argument: '%c'\n", goch);
@@ -82,13 +88,16 @@ main(int argc, char *argv[])
 void
 usage(void)
 {
-	printf("Usage: %s -[ev6cm] address [...]\n\n"
+	printf("Usage: %s -[ev6cmap] address [...]\n\n"
 	       "       -e  Expand zeros instead of ::'ing [v6]\n"
 	       "       -v  Show leading 0's in octets [v4/v6]\n"
 	       "       -6  Use v6-mapped form for addresses [v4]\n"
 	       "       -c  Use v6-compat form for addresses [v4]\n"
 	       "           (implies -6)\n"
-	       "       -m  Show netmask instead of prefix length [v4/v6]\n\n",
+	       "       -m  Show netmask instead of prefix length [v4/v6]\n"
+	       "       -a  Show only the address, not the prefix [v4/v6]\n"
+	       "       -p  Show only the prefix length, not the address [v4/v6]\n"
+	       "           (or show netmask when combined with -m)\n\n",
 	       pname);
 	exit(1);
 }
