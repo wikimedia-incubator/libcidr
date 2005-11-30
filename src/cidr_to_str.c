@@ -77,13 +77,12 @@ cidr_to_str(const CIDR *block, int flags)
 		} /* USEV6 */
 
 		/* Now, slap on the v4 address */
-#define V4_EXTRA_BITS 12
-		for(i=0 ; i<=3 ; i++)
+		for(i=12 ; i<=15 ; i++)
 		{
 			if(flags & CIDR_VERBOSE)
-				sprintf(tmpbuf, "%03u", (block->addr)[i+V4_EXTRA_BITS]);
+				sprintf(tmpbuf, "%03u", (block->addr)[i]);
 			else
-				sprintf(tmpbuf, "%u", (block->addr)[i+V4_EXTRA_BITS]);
+				sprintf(tmpbuf, "%u", (block->addr)[i]);
 			strcat(toret, tmpbuf);
 			if(i<3)
 				strcat(toret, ".");
@@ -94,12 +93,12 @@ cidr_to_str(const CIDR *block, int flags)
 		{
 			/* In this case, we can just print out like the address above */
 			strcat(toret, "/");
-			for(i=0 ; i<=3 ; i++)
+			for(i=12 ; i<=15 ; i++)
 			{
 				if(flags & CIDR_VERBOSE)
-					sprintf(tmpbuf, "%03u", (block->mask)[i+V4_EXTRA_BITS]);
+					sprintf(tmpbuf, "%03u", (block->mask)[i]);
 				else
-					sprintf(tmpbuf, "%u", (block->mask)[i+V4_EXTRA_BITS]);
+					sprintf(tmpbuf, "%u", (block->mask)[i]);
 				strcat(toret, tmpbuf);
 				if(i<3)
 					strcat(toret, ".");
@@ -121,7 +120,6 @@ cidr_to_str(const CIDR *block, int flags)
 			sprintf(tmpbuf, "/%u", (flags & CIDR_USEV6) ? pflen+96 : pflen);
 			strcat(toret, tmpbuf);
 		}
-#undef V4_EXTRA_BITS
 		
 		/* That's it for a v4 address, in any of our forms */
 	}
