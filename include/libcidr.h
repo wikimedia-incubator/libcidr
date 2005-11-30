@@ -7,6 +7,8 @@
 
 /* We need the fixed-size int types.  See discussion below. */
 #include <inttypes.h>
+/* We need the struct in[6]_addr defs */
+#include <netinet/in.h>
 
 
 /* CONSTANTS */
@@ -49,6 +51,8 @@ typedef struct cidr_addr CIDR;
 CIDR *cidr_alloc(void);
 int cidr_contains(const CIDR *, const CIDR *);
 void cidr_free(CIDR *);
+CIDR *cidr_from_inaddr(const struct in_addr *);
+CIDR *cidr_from_in6addr(const struct in6_addr *);
 CIDR *cidr_from_str(const char *);
 int cidr_get_pflen(const CIDR *);
 struct in_addr *cidr_to_inaddr(const CIDR *, struct in_addr *);

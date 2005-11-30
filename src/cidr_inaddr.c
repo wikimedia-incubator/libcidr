@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <netinet/in.h>
+/* netinet/in.h is pulled in by libcidr.h */
 
 #include <libcidr.h>
 
@@ -49,6 +49,39 @@ cidr_to_inaddr(const CIDR *addr, struct in_addr *uptr)
 }
 
 
+/* Build up a CIDR struct from a given in_addr */
+CIDR *
+cidr_from_inaddr(const struct in_addr *uaddr)
+{
+	CIDR *toret;
+	in_addr_t taddr;
+
+	toret = cidr_alloc();
+	if(toret==NULL)
+		return(NULL);
+	toret->proto = CIDR_IPV4;
+	
+	/*
+	 * For IPv4, pretty straightforward, except that we need to jump
+	 * through a temp variable to convert into host byte order.
+	 */
+	taddr = ntohl(uaddr->s_addr);
+
+	/* Mask these just to be safe */
+	toret->addr[15] = (taddr & 0xff);
+	toret->addr[14] = ((taddr>>8) & 0xff);
+	toret->addr[13] = ((taddr>>16) & 0xff);
+	toret->addr[12] = ((taddr>>24) & 0xff);
+
+	/* Give it a single-host mask */
+	toret->mask[15] = toret->mask[14] =
+		toret->mask[13] = toret->mask[12] = 0xff;
+	
+	/* That's it */
+	return(toret);
+}
+
+
 /* Create a struct in5_addr with the given v6 address */
 struct in6_addr *
 cidr_to_in6addr(const CIDR *addr, struct in6_addr *uptr)
@@ -80,6 +113,26 @@ cidr_to_in6addr(const CIDR *addr, struct in6_addr *uptr)
 	 */
 	for(i=0 ; i<=15 ; i++)
 		toret->s6_addr[i] = addr->addr[i];
+
+	return(toret);
+}
+
+
+/* And create up a CIDR struct from a given in6_addr */
+CIDR *
+cidr_from_in6addr(const struct in6_addr *uaddr)
+{
+	int i;
+	CIDR *toret;
+
+	toret = cidr_alloc();
+	if(toret==NULL)
+		return(NULL);
+	toret->proto = CIDR_IPV6;
+	
+	/* For v6, just iterate over the arrays and return */
+	for(i=0 ; i<=15 ; i++)
+		toret->addr[i] = uaddr->s6_addr[i];
 
 	return(toret);
 }
