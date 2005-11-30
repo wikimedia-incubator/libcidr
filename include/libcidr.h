@@ -51,6 +51,8 @@ int cidr_contains(const CIDR *, const CIDR *);
 void cidr_free(CIDR *);
 CIDR *cidr_from_str(const char *);
 int cidr_get_pflen(const CIDR *);
+struct in_addr *cidr_to_inaddr(const CIDR *, struct in_addr *);
+struct in6_addr *cidr_to_in6addr(const CIDR *, struct in6_addr *);
 char *cidr_to_str(const CIDR *, int);
 
 
