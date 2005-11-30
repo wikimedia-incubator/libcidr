@@ -37,6 +37,7 @@
  */
 struct cidr_addr
 {
+	int     version;
 	uint8_t	addr[16];
 	uint8_t	mask[16];
 	int     proto;
