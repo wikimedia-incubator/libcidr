@@ -126,6 +126,20 @@ cidr_from_str(const char *addr)
 		pflen=0;
 
 		/*
+		 * To handle the v6-mapped form seamlessly, set the first 10
+		 * octets of the address to 0, and the 11th and 12th to 1, giving
+		 * us the ::ffff: prefix.  And set first 12 octets of the netmask
+		 * to 1, since they're "network" bits when we're treating it as a
+		 * v6 address.
+		 */
+		for(i=0 ; i<=9 ; i++)
+			toret->addr[i] = 0;
+		for(i=10 ; i<=11 ; i++)
+			toret->addr[i] = 0xff;
+		for(i=0 ; i<=11 ; i++)
+			toret->mask[i] = 0xff;
+
+		/*
 		 * Handle the prefix/netmask.  If it's not set at all, slam it to
 		 * the maximum, and put us at the end of the string to start out.
 		 */

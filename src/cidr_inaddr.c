@@ -53,6 +53,7 @@ cidr_to_inaddr(const CIDR *addr, struct in_addr *uptr)
 CIDR *
 cidr_from_inaddr(const struct in_addr *uaddr)
 {
+	int i;
 	CIDR *toret;
 	in_addr_t taddr;
 
@@ -76,6 +77,14 @@ cidr_from_inaddr(const struct in_addr *uaddr)
 	/* Give it a single-host mask */
 	toret->mask[15] = toret->mask[14] =
 		toret->mask[13] = toret->mask[12] = 0xff;
+	
+	/* Standard v4 overrides of addr and mask for mapped form */
+	for(i=0 ; i<=9 ; i++)
+		toret->addr[i] = 0;
+	for(i=10 ; i<=11 ; i++)
+		toret->addr[i] = 0xff;
+	for(i=0 ; i<=11 ; i++)
+		toret->mask[i] = 0xff;
 	
 	/* That's it */
 	return(toret);
