@@ -98,8 +98,16 @@ cidr_to_in6addr(const CIDR *addr, struct in6_addr *uptr)
 	struct in6_addr *toret;
 	int i;
 
-	/* Better be a v6 address... */
-	if(addr->proto != CIDR_IPV6)
+	/*
+	 * Note: We're allowing BOTH IPv4 and IPv6 addresses to go through
+	 * this function.  The reason is that this allows us to build up an
+	 * in6_addr struct to be used to connect to a v4 host (via a
+	 * v4-mapped address) through a v6 socket connection.  A v4
+	 * cidr_address, when built, has the upper bits of the address set
+	 * correctly for this to work.  We don't support "compat"-mode
+	 * addresses here, though, and won't.
+	 */
+	if(addr->proto!=CIDR_IPV6 && addr->proto!=CIDR_IPV4)
 		return(NULL);
 
 	/* Use their struct if they gave us one */
