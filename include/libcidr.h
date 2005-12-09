@@ -48,6 +48,8 @@ typedef struct cidr_addr CIDR;
 
 
 /* PROTOTYPES */
+CIDR *cidr_addr_broadcast(const CIDR *);
+CIDR *cidr_addr_network(const CIDR *);
 CIDR *cidr_alloc(void);
 int cidr_contains(const CIDR *, const CIDR *);
 void cidr_free(CIDR *);

@@ -1,5 +1,6 @@
 # Temporary Makefile just to handle early testing
 C_FILES = \
+		cidr_addr.c \
 		cidr_contains.c \
 		cidr_from_str.c \
 		cidr_get_pflen.c \
