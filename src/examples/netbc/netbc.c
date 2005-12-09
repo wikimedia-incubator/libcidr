@@ -45,10 +45,10 @@ main(int argc, char *argv[])
 			free(tstr);
 			free(bcstr);
 			free(netstr);
+			cidr_free(tcidr);
 			cidr_free(bc);
 			cidr_free(net);
 		}
-		cidr_free(tcidr);
 
 		argv++;
 	}

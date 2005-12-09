@@ -69,14 +69,15 @@ main(int argc, char *argv[])
 		else
 		{
 			tstr = cidr_to_str(tcidr, cflags);
-			if(tcidr==NULL)
+			if(tstr==NULL)
 				printf("***> ERROR: From '%s', got tcidr, got "
 						"str NULL!!\n", *argv);
 			else
 				printf("From '%s', got str '%s'.\n", *argv, tstr);
+
+			cidr_free(tcidr);
+			free(tstr);
 		}
-		cidr_free(tcidr);
-		free(tstr);
 
 		argv++;
 	}
