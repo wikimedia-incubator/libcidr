@@ -79,7 +79,8 @@ showkids(const CIDR *cur, short depth)
 	for(i=0 ; i<=1 ; i++)
 	{
 		net = cidr_to_str(kids[i], CIDR_NOFLAGS);
-		printf("%*.*s%s\n", depth, depth, "|.|.|.|.|.|.|.|.|.|.|.|.", net);
+		printf("%*.*s %s\n", depth-1, depth-1,
+				"________________________", net);
 		free(net);
 		showkids(kids[i], depth+1);
 		cidr_free(kids[i]);
