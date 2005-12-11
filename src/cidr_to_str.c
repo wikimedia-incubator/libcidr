@@ -21,6 +21,7 @@ cidr_to_str(const CIDR *block, int flags)
 	CIDR *nmtmp;
 	char *nmstr;
 	int nmflags;
+	uint16_t v6sect;
 
 	/* Just in case */
 	if( (block==NULL) || (block->proto==CIDR_NOPROTO) )
@@ -246,30 +247,20 @@ cidr_to_str(const CIDR *block, int flags)
 			 	 * CIDR_NOCOMPACT.
 			 	 */
 
-				/* If we're being VERBOSE, just spit it all out */
+				/* Combine the pair of octets into one number */
+				v6sect = 0;
+				v6sect |= (block->addr)[i] << 8;
+				v6sect |= (block->addr)[i+1];
+
+				/*
+				 * If we're being VERBOSE, use leading 0's.  Otherwise,
+				 * only use as many digits as we need.
+				 */
 				if(flags & CIDR_VERBOSE)
-				{
-					sprintf(tmpbuf, "%.2x%.2x",
-							(block->addr)[i], (block->addr)[i+1]);
-					strcat(toret, tmpbuf);
-				}
+					sprintf(tmpbuf, "%.4x", v6sect);
 				else
-				{
-					/* Not verbose, so be a little trickier. */
-
-					/*
-				 	 * If the first octet is non-zero, print it, with the
-				 	 * second octet padded out to both digits.  Else,
-				 	 * just print the second octet as it needs to be.
-				 	 */
-					if((block->addr)[i]!=0)
-						sprintf(tmpbuf, "%x%.2x", (block->addr)[i],
-								(block->addr)[i+1]);
-					else
-						sprintf(tmpbuf, "%x", (block->addr)[i+1]);
-
-					strcat(toret, tmpbuf);
-				}
+					sprintf(tmpbuf, "%x", v6sect);
+				strcat(toret, tmpbuf);
 
 				/* And loop back around to the next 2-octet set */
 			} /* for(each 16-bit set) */
