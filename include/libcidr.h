@@ -58,6 +58,7 @@ CIDR *cidr_from_inaddr(const struct in_addr *);
 CIDR *cidr_from_in6addr(const struct in6_addr *);
 CIDR *cidr_from_str(const char *);
 int cidr_get_pflen(const CIDR *);
+CIDR **cidr_net_subnets(const CIDR *);
 CIDR *cidr_net_supernet(const CIDR *);
 const char *cidr_numaddr(const CIDR *);
 const char *cidr_numaddr_pflen(int);

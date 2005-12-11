@@ -2,6 +2,7 @@
  * Functions to generate various networks based on a CIDR
  */
 
+#include <stdlib.h>
 #include <string.h>
 
 #include <libcidr.h>
@@ -52,5 +53,61 @@ cidr_net_supernet(const CIDR *addr)
 	}
 
 	/* And send it back */
+	return(toret);
+}
+
+
+/* Get the CIDR's two children */
+CIDR **
+cidr_net_subnets(const CIDR *addr)
+{
+	int i, j;
+	int pflen;
+	CIDR **toret;
+
+	if(addr==NULL)
+		return(NULL);
+	
+	/* You can't split a host address! */
+	pflen = cidr_get_pflen(addr);
+	if(  (addr->proto==CIDR_IPV4 && pflen==32)
+	  || (addr->proto==CIDR_IPV6 && pflen==128))
+		return(NULL);
+
+	toret = malloc(2 * sizeof(CIDR *));
+	if(toret==NULL)
+		return(NULL);
+	
+	/* Get a blank-ish slate for the first kid */
+	toret[0] = cidr_addr_network(addr);
+	if(toret[0]==NULL)
+	{
+		free(toret);
+		return(NULL);
+	}
+
+	/* Find its first host bit */
+	if(toret[0]->proto==CIDR_IPV4)
+		pflen += 96;
+	i = pflen / 8;
+	j = 7 - (pflen % 8);
+
+	/* Make it a network bit */
+	(toret[0])->mask[i] |= 1<<j;
+
+	/* Now dup the second kid off that */
+	toret[1] = cidr_dup(toret[0]);
+	if(toret[1]==NULL)
+	{
+		free(toret[0]);
+		free(toret);
+		return(NULL);
+	}
+
+	/* And set that first host bit */
+	(toret[1])->addr[i] |= 1<<j;
+
+
+	/* Return the pair */
 	return(toret);
 }
