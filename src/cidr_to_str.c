@@ -227,7 +227,7 @@ cidr_to_str(const CIDR *block, int flags)
 				if(i==zst && !(flags & CIDR_NOCOMPACT))
 				{
 					strcat(toret, "::");
-					i += (zlen*2)-2;
+					i += (zmax*2)-2;
 					lzer = 1;
 					continue;
 				}
