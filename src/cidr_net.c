@@ -29,20 +29,12 @@ cidr_net_supernet(const CIDR *addr)
 		return(NULL);
 	
 	/* Chop a bit off the netmask */
-	/* This gets the first host bit */
+	/* This gets the last network bit */
 	if(toret->proto==CIDR_IPV4)
 		pflen += 96;
+	pflen--;
 	i = pflen / 8;
 	j = 7 - (pflen % 8);
-
-	/* Back up one */
-	if(j==7)
-	{
-		i--;
-		j=0;
-	}
-	else
-		j++;
 
 	/* Make that bit a host bit */
 	(toret->mask)[i] &= ~(1<<j);
