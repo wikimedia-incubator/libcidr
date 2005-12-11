@@ -28,50 +28,37 @@ cidr_net_supernet(const CIDR *addr)
 	if(toret==NULL)
 		return(NULL);
 	
-	/* Special case: /32 or /128; do manually */
-	if(  (toret->proto==CIDR_IPV6 && pflen==128)
-	  || (toret->proto==CIDR_IPV4 && pflen==32))
+	/* Chop a bit off the netmask */
+	/* This gets the first host bit */
+	if(toret->proto==CIDR_IPV4)
+		pflen += 96;
+	i = pflen / 8;
+	j = 7 - (pflen % 8);
+
+	/* Back up one */
+	if(j==7)
 	{
-		(toret->mask)[15] = 0xfe;
-		goto post;
+		i--;
+		j=0;
 	}
+	else
+		j++;
 
-	/* Now step through the netmask until we hit 0, and chop off a bit */
-	for(i=0 ; i<=15 ; i++)
-	{
-		for(j=7 ; j>=0 ; j--)
-		{
-			/* If this is a host bit, move back one and zero */
-			if( ((toret->mask)[i] & 1<<j) == 0)
-			{
-				if(j==7)
-				{
-					i--;
-					j=0;
-				}
-				else
-					j++;
-
-				(toret->mask)[i] &= ~(1<<j);
-				goto post;
-			}
-		}
-	}
-
-post:
+	/* Make that bit a host bit */
+	(toret->mask)[i] &= ~(1<<j);
 
 	/*
-	 * Now zero out the host bits.  Do this manually instead of calling
-	 * cidr_addr_network() to save some extra copies and malloc()'s and
-	 * so forth.
+	 * Now zero out the host bits in the addr.  Do this manually instead
+	 * of calling cidr_addr_network() to save some extra copies and
+	 * malloc()'s and so forth.
 	 */
-	for(i=15 ; i>=0 ; i--)
-		for(j=0 ; j<=7 ; j++)
-			if( ((toret->mask)[i] & 1<<j) == 0)
-				(toret->addr)[i] &= ~(1<<j);
-			else
-				return(toret);
+	for(/* i */ ; i<=15 ; i++)
+	{
+		for(/* j */ ; j>=0 ; j--)
+			(toret->addr)[i] &= ~(1<<j);
+		j=7;
+	}
 
-	/* This will only be reached if we're sending a /0 */
+	/* And send it back */
 	return(toret);
 }
