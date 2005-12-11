@@ -13,9 +13,9 @@ char *
 cidr_to_str(const CIDR *block, int flags)
 {
 	int i;
+	int zst, zcur, zlen, zmax;
 	short pflen;
 	short lzer; /* Last zero */
-	short acomp; /* Already compacted */
 	char *toret;
 	char tmpbuf[128]; /* We shouldn't need more than ~5 anywhere */
 	CIDR *nmtmp;
@@ -155,65 +155,91 @@ cidr_to_str(const CIDR *block, int flags)
 		/* Are we showing the address part? */
 		if(!(flags & CIDR_ONLYPFLEN))
 		{
-			/*
-		 	 * It's a simple, boring, normal v6 address.  Now, what makes
-		 	 * it HARD is the options we have.  To make some things
-		 	 * simpler, we'll take two octets at a time for our run
-		 	 * through.
-		 	 * Note: For the moment, we're using suboptimal
-		 	 * zero-compression in that we're just eliminating the first
-		 	 * run of 'em.  That's just for simplicity.  We should
-		 	 * revisit this later to get a more optimal form.
+			/* It's a simple, boring, normal v6 address */
+
+		 	/* First, find the longest string of 0's, if there is one */
+		 	zst = zcur = -1;
+		 	zlen = zmax = 0;
+		 	for(i=0 ; i<=15 ; i+=2)
+		 	{
+		 		if(block->addr[i]==0 && block->addr[i+1]==0)
+		 		{
+		 			/* This section is zero */
+		 			if(zcur!=-1)
+		 			{
+		 				/* We're already in a block of 0's */
+		 				zlen++;
+		 			}
+		 			else
+		 			{
+		 				/* Starting a new block */
+		 				zcur = i;
+		 				zlen = 1;
+		 			}
+		 		}
+		 		else
+		 		{
+		 			/* This section is non-zero */
+		 			if(zcur!=-1)
+		 			{
+		 				/*
+		 				 * We were in 0's.  See if we set a new record,
+		 				 * and if we did, note it and move on.
+		 				 */
+		 				if(zlen > zmax)
+		 				{
+		 					zst = zcur;
+		 					zmax = zlen;
+		 				}
+
+		 				/* We're out of 0's, so reset start */
+		 				zcur = -1;
+		 			}
+		 		}
+		 	}
+
+		 	/*
+		 	 * If zcur is !=-1, we were in 0's when the loop ended.  Redo
+		 	 * the "if we have a record, update" logic.
 		 	 */
-			acomp = lzer = 0;
+		 	if(zcur!=-1 && zlen>zmax)
+		 	{
+		 		zst = zcur;
+		 		zmax = zlen;
+		 	}
+
+
+			/*
+			 * Now, what makes it HARD is the options we have.  To make
+			 * some things simpler, we'll take two octets at a time for
+			 * our run through.
+		 	 */
+			lzer = 0;
 			for(i=0 ; i<=15 ; i+=2)
 			{
 				/*
+				 * Start with a cheat; if this begins our already-found
+				 * longest block of 0's, and we're not NOCOMPACT'ing,
+				 * stick in a ::, increment past them, and keep on
+				 * playing.
+				 */
+				if(i==zst && !(flags & CIDR_NOCOMPACT))
+				{
+					strcat(toret, "::");
+					i += (zlen*2)-2;
+					lzer = 1;
+					continue;
+				}
+
+				/*
 			 	 * First, if we're not the first set, we may need a :
 			 	 * before us.  If we're not compacting, we always want
-			 	 * it.  Even if we ARE compacting, we want it unless the
+			 	 * it.  If we ARE compacting, we want it unless the
 			 	 * previous octet was a 0 that we're minimizing.
 			 	 */
 				if(i!=0 && ((flags & CIDR_NOCOMPACT) || lzer==0))
 					strcat(toret, ":");
-
-				/*
-			 	 * Now, if we're compacting, we haven't already
-			 	 * compacted, and this set is zero, just skip around,
-			 	 * UNLESS we're the first octet, in which case we should
-			 	 * push a : onto the list so things will work out right.
-			 	 */
-				if(!(flags & CIDR_NOCOMPACT) && (block->addr)[i]==0
-						&& (block->addr)[i+1]==0)
-				{
-					if(acomp==0)
-					{
-						/*
-					 	 * Add the : if necessary, set the flag for last
-					 	 * set being zero, and go back around the loop
-					 	 * for the next set.
-					 	 */
-						if(i==0)
-							strcat(toret, ":");
-						lzer=1;
-						continue;
-						/* NOTREACHED */
-					}
-				}
-
-				/*
-			 	 * If lzer is set here, that can only mean we WERE
-			 	 * compacting, and are now out of 0 sets to compact, so
-			 	 * zero it out, set that we've already compressed, add
-			 	 * the ending ':' for the compressed segment, and move
-			 	 * on.
-			 	 */
-				if(lzer==1)
-				{
-					lzer=0;
-					acomp=1;
-					strcat(toret, ":");
-				}
+				lzer = 0; /* Reset */
 
 				/*
 			 	 * From here on, we no longer have to worry about
@@ -247,10 +273,6 @@ cidr_to_str(const CIDR *block, int flags)
 
 				/* And loop back around to the next 2-octet set */
 			} /* for(each 16-bit set) */
-
-			/* If lzer==1, we were still minimizing, so add the extra ':' */
-			if(lzer==1)
-				strcat(toret, ":");
 		} /* ! ONLYPFLEN */
 
 		/* Prefix/netmask */
