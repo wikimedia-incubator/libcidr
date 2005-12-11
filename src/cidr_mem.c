@@ -23,6 +23,21 @@ cidr_alloc(void)
 }
 
 
+/* Duplicate a CIDR */
+CIDR *
+cidr_dup(const CIDR *src)
+{
+	CIDR *toret;
+
+	toret = cidr_alloc();
+	if(toret==NULL)
+		return(NULL);
+	memcpy(toret, src, sizeof(CIDR));
+	
+	return(toret);
+}
+
+
 /* Free a struct cidr_addr */
 void
 cidr_free(CIDR *tofree)
