@@ -21,6 +21,7 @@ cidr_to_str(const CIDR *block, int flags)
 	CIDR *nmtmp;
 	char *nmstr;
 	int nmflags;
+	uint8_t moct;
 	uint16_t v6sect;
 
 	/* Just in case */
@@ -120,10 +121,13 @@ cidr_to_str(const CIDR *block, int flags)
 				 */
 				for(i=12 ; i<=15 ; i++)
 				{
+					moct = (block->mask)[i];
+					if(flags & CIDR_WILDCARD)
+						moct = ~(moct);
 					if(flags & CIDR_VERBOSE)
-						sprintf(tmpbuf, "%03u", (block->mask)[i]);
+						sprintf(tmpbuf, "%03u", moct);
 					else
-						sprintf(tmpbuf, "%u", (block->mask)[i]);
+						sprintf(tmpbuf, "%u", moct);
 					strcat(toret, tmpbuf);
 					if(i<15)
 						strcat(toret, ".");
@@ -287,7 +291,10 @@ cidr_to_str(const CIDR *block, int flags)
 				}
 				nmtmp->proto = block->proto;
 				for(i=0 ; i<=15 ; i++)
-					nmtmp->addr[i] = block->mask[i];
+					if(flags & CIDR_WILDCARD)
+						nmtmp->addr[i] = ~(block->mask[i]);
+					else
+						nmtmp->addr[i] = block->mask[i];
 
 				/*
 				 * Strip flags:

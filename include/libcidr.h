@@ -21,6 +21,7 @@
 #define CIDR_NETMASK		1<<4 /* Show netmask instead of pflen */
 #define CIDR_ONLYADDR		1<<5 /* Only show the address */
 #define CIDR_ONLYPFLEN		1<<6 /* Only show the pf/mask */
+#define CIDR_WILDCARD		1<<7 /* Show wildcard-mask instead of netmask */
 
 /* Protocols */
 #define CIDR_NOPROTO        0

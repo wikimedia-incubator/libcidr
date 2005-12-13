@@ -21,7 +21,7 @@ main(int argc, char *argv[])
 
 	cflags=CIDR_NOFLAGS;
 	pname = *argv;
-	while((goch=getopt(argc, argv, "ev6cmap"))!=-1)
+	while((goch=getopt(argc, argv, "ev6cmapw"))!=-1)
 	{
 		switch((char)goch)
 		{
@@ -45,6 +45,9 @@ main(int argc, char *argv[])
 				break;
 			case 'p':
 				cflags |= CIDR_ONLYPFLEN;
+				break;
+			case 'w':
+				cflags |= CIDR_WILDCARD;
 				break;
 			default:
 				printf("Unknown argument: '%c'\n", goch);
@@ -98,7 +101,9 @@ usage(void)
 	       "       -m  Show netmask instead of prefix length [v4/v6]\n"
 	       "       -a  Show only the address, not the prefix [v4/v6]\n"
 	       "       -p  Show only the prefix length, not the address [v4/v6]\n"
-	       "           (or show netmask when combined with -m)\n\n",
+	       "           (or show netmask when combined with -m)\n"
+	       "       -w  Show wildcard mask instead of netmask [v4/v6]\n"
+	       "           (meaningless without -m)\n\n",
 	       pname);
 	exit(1);
 }
