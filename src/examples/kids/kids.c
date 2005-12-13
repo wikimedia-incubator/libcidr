@@ -78,9 +78,10 @@ showkids(const CIDR *cur, short depth)
 	/* Show 'em and recurse to their kids */
 	for(i=0 ; i<=1 ; i++)
 	{
+#define PADSTR "........................................"
 		net = cidr_to_str(kids[i], CIDR_NOFLAGS);
 		printf("%*.*s %s\n", depth-1, depth-1,
-				"________________________", net);
+				PADSTR, net);
 		free(net);
 		showkids(kids[i], depth+1);
 		cidr_free(kids[i]);
