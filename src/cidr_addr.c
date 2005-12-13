@@ -108,7 +108,7 @@ cidr_addr_hostmin(const CIDR *addr)
 	if(toret==NULL)
 		return(NULL);
 	
-	toret->mask[15] &= 1;
+	toret->addr[15] |= 1;
 
 	return(toret);
 }
@@ -124,7 +124,7 @@ cidr_addr_hostmax(const CIDR *addr)
 	if(toret==NULL)
 		return(NULL);
 	
-	toret->mask[15] &= 0xfe;
+	toret->addr[15] &= 0xfe;
 
 	return(toret);
 }
