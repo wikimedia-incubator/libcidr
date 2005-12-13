@@ -96,3 +96,35 @@ post:
 	/* And send it back */
 	return(toret);
 }
+
+
+/* Get the first host in a CIDR block */
+CIDR *
+cidr_addr_hostmin(const CIDR *addr)
+{
+	CIDR *toret;
+
+	toret = cidr_addr_network(addr);
+	if(toret==NULL)
+		return(NULL);
+	
+	toret->mask[15] &= 1;
+
+	return(toret);
+}
+
+
+/* Get the last host in a CIDR block */
+CIDR *
+cidr_addr_hostmax(const CIDR *addr)
+{
+	CIDR *toret;
+
+	toret = cidr_addr_broadcast(addr);
+	if(toret==NULL)
+		return(NULL);
+	
+	toret->mask[15] &= 0xfe;
+
+	return(toret);
+}
