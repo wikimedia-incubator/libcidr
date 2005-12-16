@@ -1,11 +1,13 @@
 /*
- * cidr_contains() - Is one block entirely contained in another?
+ * Various comparison functions
  */
 
 #include <stdio.h> /* For NULL */
 
 #include <libcidr.h>
 
+
+/* Is one block entirely contained in another? */
 int
 cidr_contains(const CIDR *big, const CIDR *little)
 {
