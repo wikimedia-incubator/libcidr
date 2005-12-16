@@ -31,11 +31,11 @@ cidr_to_inaddr(const CIDR *addr, struct in_addr *uptr)
 		return(NULL);
 	memset(toret, 0, sizeof(struct in_addr));
 
-	/* We have 4 octets to stuff in.  Just use & instead of adding. */
-	toret->s_addr &= (addr->addr)[12] << 24;
-	toret->s_addr &= (addr->addr)[13] << 16;
-	toret->s_addr &= (addr->addr)[14] << 8;
-	toret->s_addr &= (addr->addr)[15];
+	/* Add 'em up and stuff 'em in */
+	toret->s_addr = ((addr->addr)[12] << 24)
+			+ ((addr->addr)[13] << 16)
+			+ ((addr->addr)[14] << 8)
+			+ ((addr->addr)[15]);
 
 	/*
 	 * in_addr's are USUALLY used inside sockaddr_in's to do socket
