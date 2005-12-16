@@ -46,7 +46,7 @@ cidr_contains(const CIDR *big, const CIDR *little)
 	 */
 	if(big->proto==CIDR_IPV4)
 		i = 12;
-	else if(big->proto==CIDR_IPV4)
+	else if(big->proto==CIDR_IPV6)
 		i = 0;
 	else
 		return(-1); /* Shouldn't happen */
