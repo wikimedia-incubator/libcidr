@@ -31,7 +31,7 @@ cidr_contains(const CIDR *big, const CIDR *little)
 	 * the normal tests below will DTRT.  Save big's pflen for the test
 	 * loop.
 	 */
-	if(cidr_get_pflen(little) > (pflen = cidr_get_pflen(big)))
+	if(cidr_get_pflen(little) < (pflen = cidr_get_pflen(big)))
 		return(-1);
 	
 	/*
@@ -45,7 +45,10 @@ cidr_contains(const CIDR *big, const CIDR *little)
 	 * for anything real, but why make it harder unnecessarily?
 	 */
 	if(big->proto==CIDR_IPV4)
-		i = 12;
+	{
+		i = 96;
+		pflen += 96;
+	}
 	else if(big->proto==CIDR_IPV6)
 		i = 0;
 	else
