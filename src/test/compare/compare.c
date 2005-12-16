@@ -80,7 +80,7 @@ main(int argc, char *argv[])
 	}
 
 	/* First inside second? */
-	if(cidr_contains(second, first))
+	if(cidr_contains(second, first)==0)
 	{
 		printf("%s block '%s' is wholly contained within '%s'\n",
 				PROTOSTR(first), sfirst, ssecond);
@@ -88,7 +88,7 @@ main(int argc, char *argv[])
 	}
 
 	/* Second inside first? */
-	if(cidr_contains(first, second))
+	if(cidr_contains(first, second)==0)
 	{
 		printf("%s block '%s' is wholly contained within '%s'\n",
 				PROTOSTR(first), ssecond, sfirst);
