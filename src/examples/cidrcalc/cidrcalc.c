@@ -85,17 +85,20 @@ main(int argc, char *argv[])
 	const char *cstr;
 	int goch;
 	short proto;
-	short showbin;
+	short showbin, showss;
 
 	pname = *argv;
-	showbin = 0;
+	showbin = showss = 0;
 
-	while((goch=getopt(argc, argv, "b"))!=-1)
+	while((goch=getopt(argc, argv, "bs"))!=-1)
 	{
 		switch((char)goch)
 		{
 			case 'b':
 				showbin = 1;
+				break;
+			case 's':
+				showss = 1;
 				break;
 			default:
 				printf("Unknown argument: '%c'\n", goch);
@@ -194,25 +197,29 @@ main(int argc, char *argv[])
 			/* Don't free cstr */
 
 
-			/* Parent network */
-			addr2 = cidr_net_supernet(addr);
-			astr = cidr_to_str(addr2, CIDR_NOFLAGS);
-			printf("%*s: %s\n", DWID, "Supernet", astr);
-			free(astr);
-			cidr_free(addr2);
+			/* Super/subs? */
+			if(showss==1)
+			{
+				/* Parent network */
+				addr2 = cidr_net_supernet(addr);
+				astr = cidr_to_str(addr2, CIDR_NOFLAGS);
+				printf("%*s: %s\n", DWID, "Supernet", astr);
+				free(astr);
+				cidr_free(addr2);
 
-			
-			/* Children networks */
-			kids = cidr_net_subnets(addr);
-			astr = cidr_to_str(kids[0], CIDR_NOFLAGS);
-			astr2 = cidr_to_str(kids[1], CIDR_NOFLAGS);
-			printf("%*s: %s\n%*s  %s\n", DWID, "Subnets", astr,
-					DWID, "", astr2);
-			free(astr);
-			free(astr2);
-			cidr_free(kids[0]);
-			cidr_free(kids[1]);
-			free(kids);
+				
+				/* Children networks */
+				kids = cidr_net_subnets(addr);
+				astr = cidr_to_str(kids[0], CIDR_NOFLAGS);
+				astr2 = cidr_to_str(kids[1], CIDR_NOFLAGS);
+				printf("%*s: %s\n%*s  %s\n", DWID, "Subnets", astr,
+						DWID, "", astr2);
+				free(astr);
+				free(astr2);
+				cidr_free(kids[0]);
+				cidr_free(kids[1]);
+				free(kids);
+			}
 
 
 			/* That's it for this address */
@@ -230,8 +237,9 @@ main(int argc, char *argv[])
 void
 usage(void)
 {
-	printf("Usage: %s [-b] address [...]\n"
+	printf("Usage: %s [-bs] address [...]\n"
 	       "       -b  Show binary expansions\n"
+	       "       -s  Show super and subnets\n"
 	       "\n", pname);
 	exit(1);
 }
