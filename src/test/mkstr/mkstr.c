@@ -21,7 +21,7 @@ main(int argc, char *argv[])
 
 	cflags=CIDR_NOFLAGS;
 	pname = *argv;
-	while((goch=getopt(argc, argv, "ev6cmapw"))!=-1)
+	while((goch=getopt(argc, argv, "ev6cmapwf:"))!=-1)
 	{
 		switch((char)goch)
 		{
@@ -48,6 +48,17 @@ main(int argc, char *argv[])
 				break;
 			case 'w':
 				cflags |= CIDR_WILDCARD;
+				break;
+			case 'f':
+				if(strcmp(optarg, "4")==0)
+					cflags |= CIDR_FORCEV4;
+				else if(strcmp(optarg, "6")==0)
+					cflags |= CIDR_FORCEV6;
+				else
+				{
+					printf("Error: -f needs an argument.\n");
+					usage();
+				}
 				break;
 			default:
 				printf("Unknown argument: '%c'\n", goch);
@@ -92,9 +103,11 @@ main(int argc, char *argv[])
 void
 usage(void)
 {
-	printf("Usage: %s -[ev6cmap] address [...]\n\n"
+	printf("Usage: %s -[ev6cmap] [-f [4|6]] address [...]\n\n"
 	       "       -e  Expand zeros instead of ::'ing [v6]\n"
 	       "       -v  Show leading 0's in octets [v4/v6]\n"
+	       "       -f  Force parsing of address as v4 or v6 [v4/v6]\n"
+	       "           (depending on the arg to -f)\n"
 	       "       -6  Use v6-mapped form for addresses [v4]\n"
 	       "       -c  Use v6-compat form for addresses [v4]\n"
 	       "           (implies -6)\n"

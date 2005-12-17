@@ -57,7 +57,8 @@ cidr_to_str(const CIDR *block, int flags)
 	 * If it's a v4 address, we mask off everything but the last 4
 	 * octets, and just proceed from there.
 	 */
-	if(block->proto==CIDR_IPV4)
+	if( (block->proto==CIDR_IPV4 && !(flags & CIDR_FORCEV6))
+	   || (flags & CIDR_FORCEV4) )
 	{
 		/* Are we bothering to show the address? */
 		if(!(flags & CIDR_ONLYPFLEN))
@@ -145,6 +146,9 @@ cidr_to_str(const CIDR *block, int flags)
 					free(toret);
 					return(NULL);
 				}
+				/* Special handling for forced modes */
+				if(block->proto==CIDR_IPV6 && (flags & CIDR_FORCEV4))
+					pflen -= 96;
 
 				sprintf(tmpbuf, "%u",
 						(flags & CIDR_USEV6) ? pflen+96 : pflen);
@@ -155,7 +159,8 @@ cidr_to_str(const CIDR *block, int flags)
 		
 		/* That's it for a v4 address, in any of our forms */
 	}
-	else if(block->proto==CIDR_IPV6)
+	else if( (block->proto==CIDR_IPV6 && !(flags & CIDR_FORCEV4))
+	        || (flags & CIDR_FORCEV6) )
 	{
 		/* Are we showing the address part? */
 		if(!(flags & CIDR_ONLYPFLEN))
@@ -330,6 +335,9 @@ cidr_to_str(const CIDR *block, int flags)
 					free(toret);
 					return(NULL);
 				}
+				/* Special handling for forced modes */
+				if(block->proto==CIDR_IPV4 && (flags & CIDR_FORCEV6))
+					pflen += 96;
 
 				sprintf(tmpbuf, "%u", pflen);
 				strcat(toret, tmpbuf);

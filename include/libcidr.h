@@ -22,6 +22,8 @@
 #define CIDR_ONLYADDR		1<<5 /* Only show the address */
 #define CIDR_ONLYPFLEN		1<<6 /* Only show the pf/mask */
 #define CIDR_WILDCARD		1<<7 /* Show wildcard-mask instead of netmask */
+#define CIDR_FORCEV6		1<<8 /* Force treating as v6 address */
+#define CIDR_FORCEV4		1<<9 /* Force treating as v4 address */
 
 /* Protocols */
 #define CIDR_NOPROTO        0
