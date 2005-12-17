@@ -17,7 +17,7 @@
 <!ELEMENT note			- - (para+) >
 
 <!-- Edit this as required for your project -->
-<!ENTITY % subtypes.member	"(union|struct|primative)">
+<!ENTITY % subtypes.member	"(union|struct|primitive)">
 <!ATTLIST codelibrary
 		name	CDATA	#IMPLIED >
 <!ATTLIST member
