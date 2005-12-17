@@ -103,7 +103,7 @@ main(int argc, char *argv[])
 void
 usage(void)
 {
-	printf("Usage: %s -[ev6cmap] [-f [4|6]] address [...]\n\n"
+	printf("Usage: %s -[ev6cmwap] [-f [4|6]] address [...]\n\n"
 	       "       -e  Expand zeros instead of ::'ing [v6]\n"
 	       "       -v  Show leading 0's in octets [v4/v6]\n"
 	       "       -f  Force parsing of address as v4 or v6 [v4/v6]\n"
