@@ -112,11 +112,11 @@ usage(void)
 	       "       -c  Use v6-compat form for addresses [v4]\n"
 	       "           (implies -6)\n"
 	       "       -m  Show netmask instead of prefix length [v4/v6]\n"
+	       "       -w  Show wildcard mask instead of netmask [v4/v6]\n"
+	       "           (meaningless without -m)\n"
 	       "       -a  Show only the address, not the prefix [v4/v6]\n"
 	       "       -p  Show only the prefix length, not the address [v4/v6]\n"
 	       "           (or show netmask when combined with -m)\n"
-	       "       -w  Show wildcard mask instead of netmask [v4/v6]\n"
-	       "           (meaningless without -m)\n\n",
-	       pname);
+	       "\n", pname);
 	exit(1);
 }
