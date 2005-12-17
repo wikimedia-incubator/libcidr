@@ -30,6 +30,7 @@ void usage(void);
 static int _client_isallowed(const CIDR *, int );
 
 char *pname;
+short verbose;
 struct aclrules
 {
 	short   allowed;
@@ -63,12 +64,13 @@ main(int argc, char *argv[])
 	pname = *argv;
 	fname = NULL;
 	port = 0;
+	verbose = 0;
 	sckopt = 1;
 	for(i=0 ; i<=NRULES ; i++)
 		acls[i].allowed=-1;
 
 	/* Grab our args */
-	while((goch=getopt(argc, argv, "f:p:"))!=-1)
+	while((goch=getopt(argc, argv, "f:p:v"))!=-1)
 	{
 		switch((char)goch)
 		{
@@ -77,6 +79,9 @@ main(int argc, char *argv[])
 				break;
 			case 'p':
 				port = atoi(optarg);
+				break;
+			case 'v':
+				verbose++;
 				break;
 			default:
 				printf("Unknown argument: '%c'\n", goch);
@@ -360,9 +365,12 @@ after6:
 void
 usage(void)
 {
-	printf("Usage: %s [-f acl-file] [-p port]\n"
+	printf("Usage: %s [-v] [-f acl-file] [-p port]\n"
 	       "       -f  File containing the ACL list\n"
 	       "       -p  TCP port to listen on\n"
+	       "       -v  Be more verbose\n"
+	       "           Specified once, it shows the ACL's it checks locally\n"
+	       "           Specified twice, it sends them across the socket too\n"
 	       "\n", pname);
 	exit(1);
 }
@@ -372,6 +380,8 @@ usage(void)
 static int _client_isallowed(const CIDR *clcidr, int clsock)
 {
 	int i;
+	char tmpbuf[1024]; /* Hardcoded */
+	char *buf;
 
 	/*
 	 * Start checking.  Note that the ending i<NRULES condition should
@@ -381,16 +391,49 @@ static int _client_isallowed(const CIDR *clcidr, int clsock)
 	for(i=0 ; i<NRULES ; i++)
 	{
 		if(acls[i].allowed==-1)
+		{
+			if(verbose>0)
+			{
+				sprintf(tmpbuf, "\tDefault deny.\n");
+				printf(tmpbuf);
+				if(verbose>1)
+					write(clsock, tmpbuf, strlen(tmpbuf));
+			}
 			return(-1); /* Out of options, default deny */
+		}
 
 		/* Now compare */
+		if(verbose>0)
+		{
+			buf = cidr_to_str(acls[i].cidr, CIDR_NOFLAGS);
+			sprintf(tmpbuf, "\tChecking '%s'...  ", buf);
+			free(buf);
+		}
 		if(cidr_contains(acls[i].cidr, clcidr)==0)
 		{
 			/* This rule matches */
+			if(verbose>0)
+			{
+				strcat(tmpbuf, "matched!\n");
+				printf(tmpbuf);
+				if(verbose>1)
+					write(clsock, tmpbuf, strlen(tmpbuf));
+			}
+
+			/* See which it returns */
 			if(acls[i].allowed==1)
 				return(0); /* Accepted! */
 			else
 				return(-1); /* Denied! */
+		}
+
+		/* Didn't match */
+		if(verbose>0)
+		{
+			strcat(tmpbuf, "not matched!\n");
+			printf(tmpbuf);
+			if(verbose>1)
+				write(clsock, tmpbuf, strlen(tmpbuf));
 		}
 	}
 
