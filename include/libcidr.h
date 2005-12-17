@@ -56,6 +56,7 @@ CIDR *cidr_addr_network(const CIDR *);
 CIDR *cidr_alloc(void);
 int cidr_contains(const CIDR *, const CIDR *);
 CIDR *cidr_dup(const CIDR *);
+int cidr_equals(const CIDR *, const CIDR *);
 void cidr_free(CIDR *);
 CIDR *cidr_from_inaddr(const struct in_addr *);
 CIDR *cidr_from_in6addr(const struct in6_addr *);

@@ -70,3 +70,31 @@ cidr_contains(const CIDR *big, const CIDR *little)
 	/* If we get here, all their network bits are the same */
 	return(0);
 }
+
+
+/* Are two CIDR's the same? */
+int
+cidr_equals(const CIDR *one, const CIDR *two)
+{
+	int i;
+
+	/* Check protocols */
+	if(one->proto != two->proto)
+		return(-1);
+	
+	/* Check addresses/masks */
+	if(one->proto==CIDR_IPV4)
+		i = 12;
+	else
+		i = 0;
+	for(/* i */ ; i<=15 ; i++)
+	{
+		if(one->addr[i] != two->addr[i])
+			return(-1);
+		if(one->mask[i] != two->mask[i])
+			return(-1);
+	}
+
+	/* If we make it here, they're the same */
+	return(0);
+}
