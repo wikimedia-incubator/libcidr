@@ -19,8 +19,8 @@ void usage(void);
 int
 main(int argc, char *argv[])
 {
-	CIDR *cad;
-	char *cstr;
+	CIDR *cad, *ctmp;
+	char *cstr, *ctstr;
 	struct in_addr iaddr;
 	struct in6_addr i6addr;
 #define PSLEN 256
@@ -61,11 +61,23 @@ main(int argc, char *argv[])
 								cstr, pstr);
 						free(cstr);
 					}
+
+					/* Make sure we get back what we gave */
+					ctmp = cidr_from_inaddr(&iaddr);
+					if(cidr_equals(ctmp, cad)!=0)
+					{
+						cstr = cidr_to_str(cad, CIDR_NOFLAGS);
+						ctstr = cidr_to_str(ctmp, CIDR_NOFLAGS);
+						printf("Warning: Gave '%s', got back '%s'\n",
+								cstr, ctstr);
+						free(cstr);
+						free(ctstr);
+					}
+					cidr_free(ctmp);
 				}
 			}
 
 			/* Now (whether v4 or v6) try in6_addr */
-			/* Try the in_addr */
 			if(cidr_to_in6addr(cad, &i6addr)==NULL)
 				printf("cidr_to_in6addr() failed\n");
 			else
@@ -80,9 +92,25 @@ main(int argc, char *argv[])
 					printf("CIDR '%s' -> in6_addr '%s'\n",
 							cstr, pstr);
 					free(cstr);
+
+					/*
+					 * Make sure we get back what we gave, but skip
+					 * warning if we're a v4 address (since it will come
+					 * back as a v6, so the proto's won't be equal).
+					 */
+					ctmp = cidr_from_in6addr(&i6addr);
+					if(cidr_equals(ctmp, cad)!=0 && cad->proto==CIDR_IPV6)
+					{
+						cstr = cidr_to_str(cad, CIDR_NOFLAGS);
+						ctstr = cidr_to_str(ctmp, CIDR_NOFLAGS);
+						printf("Warning: Gave '%s', got back '%s'\n",
+								cstr, ctstr);
+						free(cstr);
+						free(ctstr);
+					}
+					cidr_free(ctmp);
 				}
 			}
-
 			cidr_free(cad);
 		}
 
@@ -92,7 +120,7 @@ main(int argc, char *argv[])
 		if(proto==CIDR_IPV4)
 		{
 			if(inet_pton(AF_INET, *argv, &iaddr)!=1)
-				printf("inet_pton(AF_INET) failed\n");
+				printf("inet_pton(AF_INET, '%s') failed\n", *argv);
 			else
 			{
 				/* Translate back */
@@ -105,7 +133,7 @@ main(int argc, char *argv[])
 					printf("in_addr '%s' -> CIDR '%s'\n",
 							*argv, cstr);
 					free(cstr);
-					free(cad);
+					cidr_free(cad);
 				}
 			}
 		}
@@ -117,7 +145,7 @@ main(int argc, char *argv[])
 		if(proto==CIDR_IPV6)
 		{
 			if(inet_pton(AF_INET6, *argv, &i6addr)!=1)
-				printf("inet_pton(AF_INET6) failed\n");
+				printf("inet_pton(AF_INET6, '%s') failed\n", *argv);
 			else
 			{
 				/* Translate back */
@@ -130,7 +158,7 @@ main(int argc, char *argv[])
 					printf("in6_addr '%s' -> CIDR '%s'\n",
 							*argv, cstr);
 					free(cstr);
-					free(cad);
+					cidr_free(cad);
 				}
 			}
 		}
