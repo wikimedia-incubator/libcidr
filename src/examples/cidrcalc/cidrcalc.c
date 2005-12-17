@@ -77,7 +77,7 @@ void usage(void);
 int
 main(int argc, char *argv[])
 {
-	CIDR *addr, *addr2, *addr3;
+	CIDR *addr, *addr2, *addr3, **kids;
 	char *astr, *astr2;
 	char boct[9];
 	int obi;
@@ -192,6 +192,27 @@ main(int argc, char *argv[])
 			cstr = cidr_numhost(addr);
 			printf("%*s: %s\n", DWID, "NumHosts", cstr);
 			/* Don't free cstr */
+
+
+			/* Parent network */
+			addr2 = cidr_net_supernet(addr);
+			astr = cidr_to_str(addr2, CIDR_NOFLAGS);
+			printf("%*s: %s\n", DWID, "Supernet", astr);
+			free(astr);
+			cidr_free(addr2);
+
+			
+			/* Children networks */
+			kids = cidr_net_subnets(addr);
+			astr = cidr_to_str(kids[0], CIDR_NOFLAGS);
+			astr2 = cidr_to_str(kids[1], CIDR_NOFLAGS);
+			printf("%*s: %s\n%*s  %s\n", DWID, "Subnets", astr,
+					DWID, "", astr2);
+			free(astr);
+			free(astr2);
+			cidr_free(kids[0]);
+			cidr_free(kids[1]);
+			free(kids);
 
 
 			/* That's it for this address */
