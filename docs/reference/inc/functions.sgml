@@ -1,0 +1,145 @@
+  <function type="public" name="cidr-alloc">
+   <name>cidr_alloc</name>
+   <desc>
+    Allocate and initialize a <dref target="cidr-addr"> structure.
+   </desc>
+   <longdesc>
+    <para>
+     Allocate memory for a <dref target="cidr-addr"> structure and
+     initialize the necessary pieces.
+    </para>
+    <para>
+     The returned structure should be freed using
+     <fref target="cidr-free">.
+    </para>
+   </longdesc>
+   <args></args>
+   <returns>
+    <type><dref target="cidr-addr"> *</type>
+    <longdesc>
+     <para>
+      Returns a pointed to an initialized <dref target="cidr-addr">
+      structure on success.
+      Returns NULL on failure.
+     </para>
+    </longdesc>
+   </returns>
+  </function>
+
+  <function type="public" name="cidr-free">
+   <name>cidr_free</name>
+   <desc>Free a <dref target="cidr-addr"> structure.</desc>
+   <longdesc>
+    <para>
+     Takes a <dref target="cidr-addr"> structure and
+     <func>free</func>'s all its component parts.
+    </para>
+   </longdesc>
+   <args>
+    <arg>
+     <type><dref target="cidr-addr"> *</type>
+     <name>tofree</name>
+     <desc>
+      A single <dref target="cidr-addr"> structure which has outlived its
+      usefulness.
+     </desc>
+    </arg>
+   </args>
+   <returns>
+    <type>void</type>
+   </returns>
+  </function>
+
+  <function type="public" name="cidr-from-in6addr">
+   <name>cidr_from_in6addr</name>
+   <desc>
+    Create a <dref target="cidr-addr"> from a struct in6_addr.
+   </desc>
+   <longdesc>
+    <para>
+     Takes a populated struct in6_addr, as you'd get from
+     <func>accept</func> or <func>getaddrinfo</func> or similar
+     functions.
+     Parses it out and generates a <dref target="cidr-addr"> structure
+     based on it.
+     Note that a in6_addr only contains a host address, so the netmask is
+     initialized to all-1's (/128).
+    </para>
+   </longdesc>
+   <args>
+    <arg>
+     <type>struct in6_addr *</type>
+     <name>uaddr</name>
+     <desc>
+      A populated struct in6_addr, from whatever source obtained.
+     </desc>
+    </arg>
+   </args>
+   <returns>
+    <type><dref target="cidr-addr"> *</type>
+    <longdesc>
+     <para>
+      Returns a pointer to a populated <dref target="cidr-addr">
+      containing the address in the passed-in struct in6_addr.
+      The netmask is initialized to all-1's, and the protocol to IPv6
+      (though it may contain an IPv4-mapped address).
+      Use <fref target="cidr-free"> to free the structure when you're
+      finished with it.
+     </para>
+    </longdesc>
+   </returns>
+  </function>
+
+  <function type="public" name="cidr-to-in6addr">
+   <name>cidr_to_in6addr</name>
+   <desc>
+    Create a struct in6_addr from a <dref target="cidr-addr">.
+   </desc>
+   <longdesc>
+    <para>
+     Takes in a <dref target="cidr-addr"> and creates a struct in6_addr
+     from it.
+     This struct can then be used in <func>connect</func> or similar
+     network-related functions.
+     If the users passes in a struct in6_addr, it will be filled in.
+     Otherwise, one will be allocated and returned.
+    </para>
+   </longdesc>
+   <args>
+    <arg>
+     <type>const <dref target="cidr-addr"> *</type>
+     <name>addr</name>
+     <desc>
+      A <dref target="cidr-addr"> structure describing the host to be
+      translated into a struct in6_addr.
+      Note that the netmask is irrelevant and will be ignored.
+      <fref target="cidr-to-in6addr"> supports both IPv4 and IPv6
+      addresses, as the underlying structure does as well.
+      IPv4 addresses are treated as v4-mapped IPv6 addresses.
+     </desc>
+    </arg>
+    <arg>
+     <type>struct in6_addr *</type>
+     <name>uptr</name>
+     <desc>
+      A pointer to a pre-allocated struct in6_addr, or NULL.
+      If non-NULL, the pointed-at structure will be filled in.
+      If NULL, a new structure will be allocated, filled in, and
+      returned.
+     </desc>
+    </arg>
+   </args>
+   <returns>
+    <type>struct in6_addr *</type>
+    <longdesc>
+     <para>
+      Returns a pointer to the filled-in struct in6_addr.
+      If the user passed one in, this will just point to the same place
+      and can profitably be ignored.
+      If the user passed in NULL, this will point to the struct in6_addr
+      we allocated, which should be <func>free</func>'d by the user when
+      they're finished with it.
+     </para>
+    </longdesc>
+   </returns>
+  </function>
