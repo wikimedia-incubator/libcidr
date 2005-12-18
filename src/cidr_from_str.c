@@ -228,9 +228,10 @@ cidr_from_str(const char *addr)
 			/*
 		 	 * Now pflen is in the 0...32 range and thus good.  Set it in
 		 	 * the structure.  Note that memset zero'd the whole thing to
-		 	 * start.  We ignore mask[<12] with v4 addresses, so while a
-		 	 * case could be made that they should be '1', I'm just
-		 	 * leaving them alone.
+		 	 * start.  We ignore mask[<12] with v4 addresses normally,
+		 	 * but they're already set to all-1 anyway, since if we ever
+		 	 * DO care about them, that's the most appropriate thing for
+		 	 * them to be.
 		 	 *
 		 	 * This is a horribly grody set of macros.  I'm only using
 		 	 * them here to test them out before using them in the v6
