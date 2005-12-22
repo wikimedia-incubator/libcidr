@@ -48,7 +48,7 @@ clean:
 	rm -rf ${BUILDDIR}
 
 allclean: clean
-	rm -f ${OUTDIR}/${FNAME}* codelibrary-html.css
+	rm -f ${OUTDIR}/${FNAME}* ${OUTDIR}/codelibrary-html.css
 
 validate:
 	nsgmls ${CODELIBCAT} -s ${INFILE}
