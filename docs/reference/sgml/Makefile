@@ -25,7 +25,7 @@ CODELIBDIR = ${RTPATH}/codelibrary
 PRINTSS = ${CODELIBDIR}/dsssl/print.dsl
 HTMLSS = ${CODELIBDIR}/dsssl/html-onepage.dsl
 
-OUTDIR = ${RTPATH}/docs
+OUTDIR = ${RTPATH}/..
 BUILDDIR = ${RTPATH}/.build
 
 # Args
@@ -48,7 +48,7 @@ clean:
 	rm -rf ${BUILDDIR}
 
 allclean: clean
-	rm -rf ${OUTDIR}
+	rm -f ${OUTDIR}/${FNAME}* codelibrary-html.css
 
 validate:
 	nsgmls ${CODELIBCAT} -s ${INFILE}
