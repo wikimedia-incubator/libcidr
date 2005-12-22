@@ -131,7 +131,7 @@ Return a pointer to a static string giving the number of total addresses
 available in the network described by
 .Fa cidr .
 Do not attempt to alter or
-.Xf 3 free
+.Xr free 3
 this string.
 .\"
 .It Cm const char *cidr_numaddr_pflen(int pflen)
@@ -139,7 +139,7 @@ Return a pointer to a static string giving the number of total addresses
 available in a network having a prefix length of
 .Fa pflen .
 Do not attempt to alter or
-.Xf 3 free
+.Xr free 3
 this string.
 You probably don't want to call this function manually often.
 .\"
@@ -148,7 +148,7 @@ Return a pointer to a static string giving the number of addresses
 available for hosts available in the network described by
 .Fa cidr .
 Do not attempt to alter or
-.Xf 3 free
+.Xr free 3
 this string.
 .\"
 .It Cm const char *cidr_numhost_pflen(int pflen)
@@ -156,7 +156,7 @@ Return a pointer to a static string giving the number of addresses
 available for hosts in a network having a prefix length of
 .Fa pflen .
 Do not attempt to alter or
-.Xf 3 free
+.Xr free 3
 this string.
 You probably don't want to call this function manually often.
 .\"
