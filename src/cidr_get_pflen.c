@@ -2,6 +2,7 @@
  * cidr_get_pflen() - Get the prefix length of a CIDR block
  */
 
+#include <errno.h>
 
 #include <libcidr.h>
 
@@ -18,7 +19,10 @@ cidr_get_pflen(const CIDR *block)
 	else if(block->proto==CIDR_IPV6)
 		i=0;
 	else
+	{
+		errno = ENOENT; /* Bad errno */
 		return(-1); /* Unknown */
+	}
 	
 	/*
 	 * We're intentionally not supporting non-contiguous netmasks.  So,
@@ -37,7 +41,10 @@ cidr_get_pflen(const CIDR *block)
 				 * host bit (0), we need to bomb.
 				 */
 				if(foundnmh==1)
+				{
+					errno = EINVAL;
 					return(-1);
+				}
 
 				pflen++;
 			}

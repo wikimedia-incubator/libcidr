@@ -2,6 +2,7 @@
  * Show some numbers
  */
 
+#include <errno.h>
 #include <string.h>
 
 #include <libcidr.h>
@@ -14,7 +15,10 @@ cidr_numaddr_pflen(int pflen)
 {
 
 	if(pflen<0 || pflen>128)
+	{
+		errno = EINVAL;
 		return(NULL);
+	}
 	return(__cidr_pow2[128-pflen]);
 }
 
@@ -38,7 +42,10 @@ cidr_numhost_pflen(int pflen)
 {
 
 	if(pflen<0 || pflen>128)
+	{
+		errno = EINVAL;
 		return(NULL);
+	}
 	return(__cidr_pow2m2[128-pflen]);
 }
 

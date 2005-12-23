@@ -2,6 +2,7 @@
  * Various libcidr memory-related functions
  */
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -16,7 +17,10 @@ cidr_alloc(void)
 
 	toret = malloc(sizeof(CIDR));
 	if(toret==NULL)
+	{
+		errno = ENOMEM;
 		return(NULL);
+	}
 	memset(toret, 0, sizeof(CIDR));
 
 	return(toret);
@@ -31,7 +35,7 @@ cidr_dup(const CIDR *src)
 
 	toret = cidr_alloc();
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 	memcpy(toret, src, sizeof(CIDR));
 	
 	return(toret);

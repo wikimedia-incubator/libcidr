@@ -2,6 +2,7 @@
  * Functions to convert to/from in[6]_addr structs
  */
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 /* netinet/in.h is pulled in by libcidr.h */
@@ -17,7 +18,10 @@ cidr_to_inaddr(const CIDR *addr, struct in_addr *uptr)
 
 	/* Better be a v4 address... */
 	if(addr->proto != CIDR_IPV4)
+	{
+		errno = EPROTOTYPE;
 		return(NULL);
+	}
 
 	/*
 	 * Use the user's struct if possible, otherwise allocate one.  It's
@@ -28,7 +32,10 @@ cidr_to_inaddr(const CIDR *addr, struct in_addr *uptr)
 	if(toret==NULL)
 		toret = malloc(sizeof(struct in_addr));
 	if(toret==NULL)
+	{
+		errno = ENOMEM;
 		return(NULL);
+	}
 	memset(toret, 0, sizeof(struct in_addr));
 
 	/* Add 'em up and stuff 'em in */
@@ -59,7 +66,7 @@ cidr_from_inaddr(const struct in_addr *uaddr)
 
 	toret = cidr_alloc();
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 	toret->proto = CIDR_IPV4;
 	
 	/*
@@ -108,14 +115,20 @@ cidr_to_in6addr(const CIDR *addr, struct in6_addr *uptr)
 	 * addresses here, though, and won't.
 	 */
 	if(addr->proto!=CIDR_IPV6 && addr->proto!=CIDR_IPV4)
+	{
+		errno = EPROTOTYPE;
 		return(NULL);
+	}
 
 	/* Use their struct if they gave us one */
 	toret = uptr;
 	if(toret==NULL)
 		toret = malloc(sizeof(struct in6_addr));
 	if(toret==NULL)
+	{
+		errno = ENOMEM;
 		return(NULL);
+	}
 	memset(toret, 0, sizeof(struct in6_addr));
 
 	/*
@@ -144,7 +157,7 @@ cidr_from_in6addr(const struct in6_addr *uaddr)
 
 	toret = cidr_alloc();
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 	toret->proto = CIDR_IPV6;
 	
 	/*

@@ -33,6 +33,18 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Given NULL</emean>
+    </err>
+    <note>
+     <para>
+      <fref target="cidr-addr-broadcast"> can also fail and set errno for
+      any of the reasons listed for <fref target="cidr-alloc">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-addr-hostmax">
@@ -71,6 +83,14 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <note>
+     <para>
+      <fref target="cidr-addr-hostmax"> can fail and set errno for any
+      of the reasons listed for <fref target="cidr-addr-broadcast">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-addr-hostmin">
@@ -109,6 +129,14 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <note>
+     <para>
+      <fref target="cidr-addr-hostmin"> can fail and set errno for any
+      of the reasons listed for <fref target="cidr-addr-network">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-addr-network">
@@ -146,6 +174,18 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Given NULL</emean>
+    </err>
+    <note>
+     <para>
+      <fref target="cidr-addr-network"> can also fail and set errno for
+      any of the reasons listed for <fref target="cidr-alloc">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-alloc">
@@ -174,6 +214,12 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>ENOMEM</ecode>
+     <emean><func>malloc</func> failed</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-contains">
@@ -219,10 +265,32 @@
     <longdesc>
      <para>
       Returns 0 if little is wholly contained within big.
-      Returns -1 otherwise.
+      Returns -1 if it's not, or error.
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>0</ecode>
+     <emean>No error (little not in big)</emean>
+    </err>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
+    <err>
+     <ecode>EINVAL</ecode>
+     <emean>Invalid argument</emean>
+    </err>
+    <err>
+     <ecode>ENOENT</ecode>
+     <emean>Internal error (shouldn't happen)</emean>
+    </err>
+    <err>
+     <ecode>EPROTO</ecode>
+     <emean>Protocols don't match</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-dup">
@@ -259,6 +327,14 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <note>
+     <para>
+      <fref target="cidr-dup"> can fail and set errno for any of the
+      reasons listed for <fref target="cidr-alloc">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-equals">
@@ -299,6 +375,7 @@
      </para>
     </longdesc>
    </returns>
+   <!-- No errs -->
   </function>
 
   <function type="public" name="cidr-free">
@@ -363,6 +440,14 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <note>
+     <para>
+      <fref target="cidr-from-inaddr"> can fail and set errno for any of
+      the reasons listed for <fref target="cidr-alloc">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-from-in6addr">
@@ -404,6 +489,14 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <note>
+     <para>
+      <fref target="cidr-from-inaddr"> can fail and set errno for any of
+      the reasons listed for <fref target="cidr-alloc">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-from-str">
@@ -482,6 +575,28 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
+    <err>
+     <ecode>EINVAL</ecode>
+     <emean>Can't parse the input string</emean>
+    </err>
+    <err>
+     <ecode>ENOENT</ecode>
+     <emean>Internal error (shouldn't happen)</emean>
+    </err>
+    <note>
+     <para>
+      <fref target="cidr-from-str"> can also fail and set errno for any
+      of the reasons listed for
+      <fref target="cidr-alloc"> or
+      <fref target="cidr-get-pflen">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-get-pflen">
@@ -515,6 +630,16 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EINVAL</ecode>
+     <emean>Invalid (non-contiguous) netmask</emean>
+    </err>
+    <err>
+     <ecode>ENOENT</ecode>
+     <emean>Internal error (shouldn't happen)</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-net-subnets">
@@ -551,6 +676,28 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>0</ecode>
+     <emean>No error (already a /32 or /128)</emean>
+    </err>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL argument</emean>
+    </err>
+    <err>
+     <ecode>ENOMEM</ecode>
+     <emean><func>malloc</func> failed</emean>
+    </err>
+    <note>
+     <para>
+      <fref target="cidr-net-subnets"> can also fail and set errno for
+      any of the reasons listed for
+      <fref target="cidr-addr-network"> or
+      <fref target="cidr-dup">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-net-supernet">
@@ -584,6 +731,22 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>0</ecode>
+     <emean>No error (already a /0)</emean>
+    </err>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL argument</emean>
+    </err>
+    <note>
+     <para>
+      <fref target="cidr-net-supernet"> can also fail and set errno for
+      any of the reasons listed for <fref target="cidr-dup">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-numaddr">
@@ -625,6 +788,14 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <note>
+     <para>
+      <fref target="cidr-numaddr"> can fail and set errno for any of the
+      reasons listed for <fref target="cidr-numaddr-pflen">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-numaddr-pflen">
@@ -669,6 +840,12 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EINVAL</ecode>
+     <emean>Invalid prefix length</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-numhost">
@@ -708,6 +885,14 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <note>
+     <para>
+      <fref target="cidr-numhost"> can fail and set errno for any of the
+      reasons listed for <fref target="cidr-numhost-pflen">.
+     </para>
+    </note>
+   </errs>
   </function>
 
   <function type="public" name="cidr-numhost-pflen">
@@ -752,6 +937,12 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EINVAL</ecode>
+     <emean>Invalid prefix length</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-to-inaddr">
@@ -806,6 +997,16 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>ENOMEM</ecode>
+     <emean><func>malloc</func> failed</emean>
+    </err>
+    <err>
+     <ecode>EPROTOTYPE</ecode>
+     <emean>Bad protocol type (must be IPv4)</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-to-in6addr">
@@ -861,6 +1062,16 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>ENOMEM</ecode>
+     <emean><func>malloc</func> failed</emean>
+    </err>
+    <err>
+     <ecode>EPROTOTYPE</ecode>
+     <emean>Bad protocol type (must be IPv4)</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-to-str">
@@ -954,4 +1165,26 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EINVAL</ecode>
+     <emean>Invalid argument (bad block or flags)</emean>
+    </err>
+    <err>
+     <ecode>ENOENT</ecode>
+     <emean>Internal error (shouldn't happen)</emean>
+    </err>
+    <err>
+     <ecode>ENOMEM</ecode>
+     <emean><func>malloc</func> failed</emean>
+    </err>
+    <note>
+     <para>
+      <fref target="cidr-to-str"> can also fail and set errno for
+      any of the reasons listed for
+      <fref target="cidr-alloc"> or
+      <fref target="cidr-get-pflen">.
+     </para>
+    </note>
+   </errs>
   </function>

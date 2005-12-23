@@ -3,6 +3,7 @@
  * subnet.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,14 +27,20 @@ cidr_to_str(const CIDR *block, int flags)
 
 	/* Just in case */
 	if( (block==NULL) || (block->proto==CIDR_NOPROTO) )
+	{
+		errno = EINVAL;
 		return(NULL);
+	}
 	
 	/*
 	 * Sanity: If we have both ONLYADDR and ONLYPFLEN, we really don't
 	 * have anything to *DO*...
 	 */
 	if((flags & CIDR_ONLYADDR) && (flags & CIDR_ONLYPFLEN))
+	{
+		errno = EINVAL;
 		return(NULL);
+	}
 	
 	/*
 	 * Now, in any case, there's a maximum length for any address, which
@@ -50,7 +57,10 @@ cidr_to_str(const CIDR *block, int flags)
 	 */
 	toret = malloc(128);
 	if(toret==NULL)
+	{
+		errno = ENOMEM;
 		return(NULL);
+	}
 	memset(toret, 0, 128);
 
 	/*
@@ -144,7 +154,7 @@ cidr_to_str(const CIDR *block, int flags)
 				if(pflen==-1)
 				{
 					free(toret);
-					return(NULL);
+					return(NULL); /* Preserve errno */
 				}
 				/* Special handling for forced modes */
 				if(block->proto==CIDR_IPV6 && (flags & CIDR_FORCEV4))
@@ -292,7 +302,7 @@ cidr_to_str(const CIDR *block, int flags)
 				if(nmtmp==NULL)
 				{
 					free(toret);
-					return(NULL);
+					return(NULL); /* Preserve errno */
 				}
 				nmtmp->proto = block->proto;
 				for(i=0 ; i<=15 ; i++)
@@ -317,7 +327,7 @@ cidr_to_str(const CIDR *block, int flags)
 				if(nmstr==NULL)
 				{
 					free(toret);
-					return(NULL);
+					return(NULL); /* Preserve errno */
 				}
 
 				/* No need to strip the prefix, it doesn't have it */
@@ -333,7 +343,7 @@ cidr_to_str(const CIDR *block, int flags)
 				if(pflen==-1)
 				{
 					free(toret);
-					return(NULL);
+					return(NULL); /* Preserve errno */
 				}
 				/* Special handling for forced modes */
 				if(block->proto==CIDR_IPV4 && (flags & CIDR_FORCEV6))
@@ -348,6 +358,7 @@ cidr_to_str(const CIDR *block, int flags)
 	{
 		/* Well, *I* dunno what the fuck it is */
 		free(toret);
+		errno = ENOENT; /* Bad choice of errno */
 		return(NULL);
 	}
 

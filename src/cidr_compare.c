@@ -2,6 +2,7 @@
  * Various comparison functions
  */
 
+#include <errno.h>
 #include <stdio.h> /* For NULL */
 
 #include <libcidr.h>
@@ -16,15 +17,24 @@ cidr_contains(const CIDR *big, const CIDR *little)
 
 	/* Sanity */
 	if(big==NULL || little==NULL)
+	{
+		errno = EFAULT;
 		return(-1);
+	}
 
 	/* First off, they better be the same type */
 	if(big->proto != little->proto)
+	{
+		errno = EPROTO;
 		return(-1);
+	}
 	
 	/* We better understand the protocol, too */
 	if(big->proto!=CIDR_IPV4 && big->proto!=CIDR_IPV6)
+	{
+		errno = EINVAL;
 		return(-1);
+	}
 	
 	/*
 	 * little better be SMALL enough to fit in big.  Note: The prefix
@@ -34,7 +44,10 @@ cidr_contains(const CIDR *big, const CIDR *little)
 	 * loop.
 	 */
 	if(cidr_get_pflen(little) < (pflen = cidr_get_pflen(big)))
+	{
+		errno = 0;
 		return(-1);
+	}
 	
 	/*
 	 * Now let's compare.  Note that for IPv4 addresses, the first 12
@@ -54,7 +67,11 @@ cidr_contains(const CIDR *big, const CIDR *little)
 	else if(big->proto==CIDR_IPV6)
 		i = 0;
 	else
-		return(-1); /* Shouldn't happen */
+	{
+		/* Shouldn't happen */
+		errno = ENOENT; /* This is a really bad choice of errno */
+		return(-1);
+	}
 	
 	/* Start comparing */
 	for( /* i */ ; i < pflen ; i++ )
@@ -64,7 +81,10 @@ cidr_contains(const CIDR *big, const CIDR *little)
 		bit = 7-(i%8);
 
 		if((big->addr[oct] & (1<<bit)) != (little->addr[oct] & (1<<bit)))
+		{
+			errno = 0;
 			return(-1);
+		}
 	}
 
 	/* If we get here, all their network bits are the same */

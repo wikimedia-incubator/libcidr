@@ -4,6 +4,7 @@
  */
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h> /* I'm always stuffing debug printf's into here */
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +24,10 @@ cidr_from_str(const char *addr)
 
 	/* Just in case */
 	if(addr==NULL)
+	{
+		errno = EFAULT;
 		return(NULL);
+	}
 
 	/*
 	 * Shortest possible addr would be v6 '::' (we assume max prefix
@@ -31,11 +35,14 @@ cidr_from_str(const char *addr)
 	 */
 	alen = strlen(addr);
 	if(alen<2)
+	{
+		errno = EINVAL;
 		return(NULL);
+	}
 	
 	toret = cidr_alloc();
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 
 
 	/*
@@ -104,6 +111,7 @@ cidr_from_str(const char *addr)
 	if(toret->proto==CIDR_NOPROTO)
 	{
 		cidr_free(toret);
+		errno = EINVAL;
 		return(NULL);
 	}
 
@@ -162,7 +170,7 @@ cidr_from_str(const char *addr)
 			{
 				/* This shouldn't happen */
 				cidr_free(toret);
-				return(NULL);
+				return(NULL); /* Preserve errno */
 			}
 			/* Stick it in the mask */
 			for(i=0 ; i<=11 ; i++)
@@ -177,7 +185,7 @@ cidr_from_str(const char *addr)
 			{
 				/* Failed; probably non-contiguous */
 				cidr_free(toret);
-				return(NULL);
+				return(NULL); /* Preserve errno */
 			}
 
 			/* And set us to before the '/' like below */
@@ -212,6 +220,7 @@ cidr_from_str(const char *addr)
 			{
 				/* Always bad */
 				cidr_free(toret);
+				errno = EINVAL;
 				return(NULL);
 			}
 			if(pflen>32)
@@ -221,6 +230,7 @@ cidr_from_str(const char *addr)
 				if(pflen<0 || pflen>32)
 				{
 					cidr_free(toret);
+					errno = EINVAL;
 					return(NULL);
 				}
 			}
@@ -296,6 +306,7 @@ cidr_from_str(const char *addr)
 			if(octet<0 || octet>255)
 			{
 				cidr_free(toret);
+				errno = EINVAL;
 				return(NULL);
 			}
 
@@ -313,6 +324,7 @@ cidr_from_str(const char *addr)
 
 		/* If we get here, it failed to get all 4 */
 		cidr_free(toret);
+		errno = EINVAL;
 		return(NULL);
 	}
 	else if(toret->proto==CIDR_IPV6)
@@ -348,7 +360,7 @@ cidr_from_str(const char *addr)
 			{
 				/* This shouldn't happen */
 				cidr_free(toret);
-				return(NULL);
+				return(NULL); /* Preserve errno */
 			}
 			/* Stick it in the mask */
 			for(i=0 ; i<=15 ; i++)
@@ -361,7 +373,7 @@ cidr_from_str(const char *addr)
 			{
 				/* Failed; probably non-contiguous */
 				cidr_free(toret);
-				return(NULL);
+				return(NULL); /* Preserve errno */
 			}
 
 			/* And set us to before the '/' like below */
@@ -388,6 +400,7 @@ cidr_from_str(const char *addr)
 			{
 				/* Always bad */
 				cidr_free(toret);
+				errno = EINVAL;
 				return(NULL);
 			}
 
@@ -457,6 +470,7 @@ cidr_from_str(const char *addr)
 			if(!isxdigit(addr[i]) && addr[i]!=':' && i>0)
 			{
 				cidr_free(toret);
+				errno = EINVAL;
 				return(NULL);
 			}
 
@@ -473,6 +487,7 @@ cidr_from_str(const char *addr)
 			if(octet<0 || octet>0xffff)
 			{
 				cidr_free(toret);
+				errno = EINVAL;
 				return(NULL);
 			}
 
@@ -511,6 +526,7 @@ cidr_from_str(const char *addr)
 				if(i==0 && !isxdigit(addr[i]))
 				{
 					cidr_free(toret);
+					errno = EINVAL;
 					return(NULL);
 				}
 
@@ -524,6 +540,7 @@ cidr_from_str(const char *addr)
 				if(octet<0 || octet>0xffff)
 				{
 					cidr_free(toret);
+					errno = EINVAL;
 					return(NULL);
 				}
 
@@ -576,12 +593,14 @@ cidr_from_str(const char *addr)
 
 		/* If we get here, it failed somewhere odd */
 		cidr_free(toret);
+		errno = EINVAL;
 		return(NULL);
 	}
 	else
 	{
 		/* Shouldn't happen */
 		cidr_free(toret);
+		errno = ENOENT; /* Bad choice of errno */
 		return(NULL);
 	}
 

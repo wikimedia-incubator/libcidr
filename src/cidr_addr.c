@@ -2,6 +2,7 @@
  * Functions to generate various addresses based on a CIDR
  */
 
+#include <errno.h>
 #include <string.h>
 
 #include <libcidr.h>
@@ -16,11 +17,14 @@ cidr_addr_network(const CIDR *addr)
 
 	/* Quick check */
 	if(addr==NULL)
+	{
+		errno = EFAULT;
 		return(NULL);
+	}
 	
 	toret = cidr_alloc();
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 	toret->proto = addr->proto;
 	
 	/* The netmask is the same */
@@ -58,11 +62,14 @@ cidr_addr_broadcast(const CIDR *addr)
 
 	/* Quick check */
 	if(addr==NULL)
+	{
+		errno = EFAULT;
 		return(NULL);
+	}
 	
 	toret = cidr_alloc();
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 	toret->proto = addr->proto;
 	
 	/* The netmask is the same */
@@ -106,7 +113,7 @@ cidr_addr_hostmin(const CIDR *addr)
 
 	toret = cidr_addr_network(addr);
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 	
 	toret->addr[15] |= 1;
 
@@ -122,7 +129,7 @@ cidr_addr_hostmax(const CIDR *addr)
 
 	toret = cidr_addr_broadcast(addr);
 	if(toret==NULL)
-		return(NULL);
+		return(NULL); /* Preserve errno */
 	
 	toret->addr[15] &= 0xfe;
 
