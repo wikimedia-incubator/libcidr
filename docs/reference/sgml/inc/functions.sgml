@@ -1316,3 +1316,26 @@
     </note>
    </errs>
   </function>
+
+  <function type="public" name="cidr-version">
+   <name>cidr_version</name>
+   <desc>
+    Library version
+   </desc>
+   <longdesc>
+    <para>
+     Returns a static string describing the library release version.
+    </para>
+   </longdesc>
+   <args></args>
+   <returns>
+    <type>const char *</type>
+    <longdesc>
+     <para>
+      Returns a pointer to a static string describing the library version
+      number.
+      It shouldn't be overwritten or <func>free</func>'d.
+     </para>
+    </longdesc>
+   </returns>
+  </function>
