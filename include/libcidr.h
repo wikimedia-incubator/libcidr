@@ -30,6 +30,11 @@
 #define CIDR_IPV4           1
 #define CIDR_IPV6           2
 
+/* Versioning info */
+#define CIDR_VERSION "1.0"
+#define CIDR_RELEASE "devel"
+#define CIDR_REVISION ""
+
 
 /* DATA STRUCTURES */
 /*
@@ -80,6 +85,7 @@ const char *cidr_numhost_pflen(int);
 struct in_addr *cidr_to_inaddr(const CIDR *, struct in_addr *);
 struct in6_addr *cidr_to_in6addr(const CIDR *, struct in6_addr *);
 char *cidr_to_str(const CIDR *, int);
+const char *cidr_version(void);
 
 
 #endif /* __LIBCIDR_H */

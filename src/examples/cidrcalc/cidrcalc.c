@@ -245,6 +245,6 @@ usage(void)
 	printf("Usage: %s [-bs] address [...]\n"
 	       "       -b  Show binary expansions\n"
 	       "       -s  Show super and subnets\n"
-	       "\n", pname);
+	       "\nUsing libcidr %s\n", pname, cidr_version());
 	exit(1);
 }
