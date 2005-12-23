@@ -21,7 +21,10 @@ ROADMAP
   	           programs using libcidr to #include, defining the various
   	           interfaces and flags.
   - src/     - The actual source for libcidr, as well as various examples
-  	           and test programs.
+  	           and test programs.  Particularly, the test/example
+  	           programs are invaluable in understanding how the functions
+  	           are meant to be used, and should certainly be perused by
+  	           anybody looking at the functionality libcidr offers.
 
 
 SUPPORT
