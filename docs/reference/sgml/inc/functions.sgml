@@ -9,7 +9,7 @@
      broadcast address of the passed-in netblock.
     </para>
     <para>
-     The returned structure should be free'd using
+     The returned structure should be cleaned up using
      <fref target="cidr-free">.
     </para>
    </longdesc>
@@ -47,7 +47,7 @@
      netblock.
     </para>
     <para>
-     The returned structure should be free'd using
+     The returned structure should be cleaned up using
      <fref target="cidr-free">.
     </para>
    </longdesc>
@@ -85,7 +85,7 @@
      netblock.
     </para>
     <para>
-     The returned structure should be free'd using
+     The returned structure should be cleaned up using
      <fref target="cidr-free">.
     </para>
    </longdesc>
@@ -122,7 +122,7 @@
      network address of the passed-in netblock.
     </para>
     <para>
-     The returned structure should be free'd using
+     The returned structure should be cleaned up using
      <fref target="cidr-free">.
     </para>
    </longdesc>
@@ -151,7 +151,7 @@
   <function type="public" name="cidr-alloc">
    <name>cidr_alloc</name>
    <desc>
-    Create a a <dref target="cidr-addr">
+    Create a <dref target="cidr-addr">
    </desc>
    <longdesc>
     <para>
@@ -159,7 +159,7 @@
      initialize the necessary pieces.
     </para>
     <para>
-     The returned structure should be free'd using
+     The returned structure should be cleaned up using
      <fref target="cidr-free">.
     </para>
    </longdesc>
@@ -236,7 +236,7 @@
      duplicate of the information given.
     </para>
     <para>
-     The returned structure should be free'd using
+     The returned structure should be cleaned up using
      <fref target="cidr-free">.
     </para>
    </longdesc>
@@ -544,7 +544,7 @@
      <para>
       Returns a 2-element array of <dref target="cidr-addr"> structs,
       containing the two subnets of addr.
-      Each of the elements should be free'd with
+      Each of the elements should be cleaned up with
       <fref target="cidr-free">, and the array itself then cleaned up
       with <func>free</func>.
       Returns NULL on failure.
