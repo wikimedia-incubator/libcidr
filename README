@@ -16,6 +16,13 @@ INSTALLATION
   need to run the mkgmake.sh script to generate GNU make Makefiles, if
   you use GNU make.
 
+  This library requires the POSIX/C99 uintX_t types, as well as basic
+  IPv6 header file support.  If your system lacks either of these, you
+  can probably get the system to build by typedef'ing uint8_t as an
+  unsigned char in the former case, and by removing the
+  cidr_{from,to}_in6addr() functions in the latter.  I've not tested
+  this, and neither should be necessary on a reasonably modern system.
+
   In both cases, there are a few variables you can tweak to determine
   where things get installed.  Generally, you should only need to set
   DESTDIR, and the other variables will be set based on that.  See the
@@ -59,7 +66,8 @@ SUPPORT
   the full reference manual explaining the calling conventions and usage
   of the various functions.  And, I like to think the source is generally
   pretty readable in extremis.  However, if you have further questions or
-  suggestions, please feel free to email me.
+  suggestions, please feel free to email me.  See the project homepage at
+  <http://www.over-yonder.net/~fullermd/projects/libcidr/> for updates.
 
 
 -- 
