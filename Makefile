@@ -64,7 +64,7 @@ install:
 			> ${EXDIR}/Makefile.inc
 	${INSTALL} -m 444 src/examples/README ${EXDIR}/
 	@${MAKE} EX=cidrcalc install-example
-	@${MAKE} EX=acl install-example
+	@${MAKE} EX=acl EXFILE=acl.example install-example
 .endif
 	@${ECHO} ""
 	@${ECHO} "libcidr install complete"
@@ -74,6 +74,9 @@ install-example:
 	@${ECHO} "-> Installing examples/${EX}..."
 	-@${MKDIR} ${EXDIR}/${EX}
 	${INSTALL} -m 444 src/examples/${EX}/${EX}.c ${EXDIR}/${EX}/
+.ifdef EXFILE
+	${INSTALL} -m 444 src/examples/${EX}/${EXFILE} ${EXDIR}/${EX}/
+.endif
 	@${SED} -e "s,\.\./\.\./\.\./include,${INCDIR}," \
 			-e "s,-L\.\./\.\.,-L${LIBDIR}," \
 			-e "s,\.\./\.\./libcidr.so,${LIBDIR}/libcidr.so," \
