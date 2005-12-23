@@ -9,6 +9,12 @@ if [ "X${dstdir}" = "X" ]; then
 	exit
 fi
 
+if [ -r ${dstdir} ]; then
+	echo "Sorry, I'm not running on a directory that exists."
+	exit
+fi
+
+
 mkdir -p ${dstdir}/.bzr
 tar -cf - -C ../.bzr/ . | tar -xpf - -C ${dstdir}/.bzr
 (cd ${dstdir} && bzr revert ; sh mkgmake.sh)
