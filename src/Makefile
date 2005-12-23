@@ -1,4 +1,4 @@
-# Temporary Makefile just to handle early testing
+# Stuff for main library building
 C_FILES = \
 		cidr_addr.c \
 		cidr_compare.c \

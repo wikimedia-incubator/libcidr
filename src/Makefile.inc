@@ -1,5 +1,4 @@
-# Temporary Makefile just to handle early testing
-
+# Shared stuff among various make invocations
 C_WARNS = -Wall -Wstrict-prototypes -Wredundant-decls \
 		-Wmissing-prototypes -Wpointer-arith -Winline \
 		-Wcast-align -Wcast-qual -Wchar-subscripts \
