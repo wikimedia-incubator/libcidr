@@ -62,6 +62,7 @@ install:
 			-e "s,\.\./Makefile\.inc,/dev/null," \
 			< src/Makefile.inc \
 			> ${EXDIR}/Makefile.inc
+	${INSTALL} -m 444 src/examples/README ${EXDIR}/
 	@${MAKE} EX=cidrcalc install-example
 	@${MAKE} EX=acl install-example
 .endif
