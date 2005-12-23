@@ -24,7 +24,7 @@
 			}
 
 /* Show binary form of something */
-#define SHOWBIN(pt, pname) \
+#define SHOWBIN(arr, pname) \
 			{ \
 				printf("%*s:", DWID, "Bin" pname); \
 				if(proto==CIDR_IPV4) \
@@ -32,7 +32,7 @@
 					/* Show v4 inline */ \
 					for(i=12 ; i<=15 ; i++) \
 					{ \
-						OCTET_BIN(addr->pt[i]) \
+						OCTET_BIN(arr[i]) \
 						printf(" %s", boct); \
 					} \
  	 	 	 	 	\
@@ -41,7 +41,7 @@
  	 	 	 	 	\
 					/* And show the decimal octets below */ \
 					for(i=12 ; i<=15 ; i++) \
-						printf(" %5d%3s", addr->pt[i], ""); \
+						printf(" %5d%3s", arr[i], ""); \
 					printf("\n"); \
 				} \
 				else if(proto==CIDR_IPV6) \
@@ -52,14 +52,14 @@
 						/* 4 octets in binary */ \
 						for(j=i*4 ; j<=(i*4)+3 ; j++) \
 						{ \
-							OCTET_BIN(addr->pt[j]) \
+							OCTET_BIN(arr[j]) \
 							printf(" %s", boct); \
 						} \
 						\
 						/* Those 4 octets in hex */ \
 						printf("\n%*s ", DWID, ""); \
 						for(j=i*4 ; j<=i*4+3 ; j++) \
-							printf("    %.2x   ", addr->pt[j]); \
+							printf("    %.2x   ", arr[j]); \
 						\
 						/* Prep for next round */ \
 						if(i<3) \
@@ -86,6 +86,7 @@ main(int argc, char *argv[])
 	int goch;
 	short proto;
 	short showbin, showss;
+	uint8_t *bits;
 
 	pname = *argv;
 	showbin = showss = 0;
@@ -123,7 +124,7 @@ main(int argc, char *argv[])
 		else
 		{
 			/* Start putting out the pieces */
-			proto = addr->proto;
+			proto = cidr_get_proto(addr);
 
 			/* Address */
 			astr = cidr_to_str(addr, CIDR_ONLYADDR);
@@ -152,8 +153,12 @@ main(int argc, char *argv[])
 			/* Show binary forms? */
 			if(showbin==1)
 			{
-				SHOWBIN(addr, "Addr")
-				SHOWBIN(mask, "Mask")
+				bits = cidr_get_addr(addr);
+				SHOWBIN(bits, "Addr")
+				free(bits);
+				bits = cidr_get_mask(addr);
+				SHOWBIN(bits, "Mask")
+				free(bits);
 			}
 
 

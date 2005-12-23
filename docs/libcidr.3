@@ -105,9 +105,18 @@ and return a
 .Vt CIDR *
 representing it.
 .\"
+.It Cm uint8_t *cidr_get_addr(const CIDR *cidr)
+Return the address in an array of binary octets.
+.\"
+.It Cm uint8_t *cidr_get_mask(const CIDR *cidr)
+Return the netmask in an array of binary octets.
+.\"
 .It Cm int cidr_get_pflen(const CIDR *cidr)
 Return the length of the netmask prefix of
 .Fa cidr .
+.\"
+.It Cm int cidr_get_proto(const CIDR *cidr)
+Return the protocol of an address.
 .\"
 .It Cm CIDR **cidr_net_subnets(const CIDR *cidr)
 Return a 2-element array of
