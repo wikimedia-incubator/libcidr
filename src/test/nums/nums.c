@@ -20,6 +20,7 @@ main(int argc, char *argv[])
 	const char *naddr, *nhost;
 
 	pname = *argv++;
+	argc--;
 
 	if(argc==0)
 		usage();
