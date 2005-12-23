@@ -1,0 +1,40 @@
+OVERVIEW
+
+  This is libcidr, a library to handle manipulating CIDR netblocks in
+  IPv4 and IPv6 in a host of ways.  It's useful for parsing textual
+  representations of addresses and blocks, comparing blocks in various
+  ways, and outputting them in different formats.
+
+
+INSTALLATION
+
+  Steps to install (this needs to be written)
+
+
+ROADMAP
+
+  Here's a quick overview of the pieces of this dist.  See README files
+  in the various subdirs for more information about them.
+
+  - docs/    - The documentation for libcidr, in various formats.
+  - include/ - The public header file which will be installed for
+  	           programs using libcidr to #include, defining the various
+  	           interfaces and flags.
+  - src/     - The actual source for libcidr, as well as various examples
+  	           and test programs.
+
+
+SUPPORT
+
+  libcidr is intended to be pretty self-explanatory, particularly with
+  the aid of the example programs.  It's also very well documented, with
+  the full reference manual explaining the calling conventions and usage
+  of the various functions.  And, I like to think the source is generally
+  pretty readable in extremis.  However, if you have further questions or
+  suggestions, please feel free to email me.
+
+
+-- 
+Matthew Fuller
+<fullermd@over-yonder.net>
+<http://www.over-yonder.net/~fullermd/>
