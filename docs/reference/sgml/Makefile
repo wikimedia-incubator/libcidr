@@ -107,7 +107,7 @@ ${FNAME}.pdf: tex
 	@echo %%%%% PDF built %%%%%
 
 ${FNAME}.dvi: tex
-	tex "&jadetex" ${FNAME}.tex
+	jadetex ${FNAME}.tex
 	@echo %%%%% DVI built %%%%%
 
 ${FNAME}.tex: ${INFILE} ${INFILES}
