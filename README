@@ -8,7 +8,18 @@ OVERVIEW
 
 INSTALLATION
 
-  Steps to install (this needs to be written)
+  To install from a release tarball, all you should need to do is a
+  standard "make ; make install" procedure.
+
+  To install from a raw source tree, you'll need to either build the docs
+  manually, or set NO_DOCS in your install environment.  You may also
+  need to run the mkgmake.sh script to generate GNU make Makefiles, if
+  you use GNU make.
+
+  In both cases, there are a few variables you can tweak to determine
+  where things get installed.  Generally, you should only need to set
+  DESTDIR, and the other variables will be set based on that.  See the
+  beginning of the Makefile for more details if you need them.
 
 
 ROADMAP
@@ -25,6 +36,8 @@ ROADMAP
   	           programs are invaluable in understanding how the functions
   	           are meant to be used, and should certainly be perused by
   	           anybody looking at the functionality libcidr offers.
+  - tools/   - Various bits&pieces of things used to build libcidr.  No
+  	           user-serviceable parts inside.
 
 
 SUPPORT

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Make GNU make Makefiles
-MAKEFILES="Makefile.inc src/Makefile src/Makefile.inc
+MAKEFILES="Makefile Makefile.inc src/Makefile src/Makefile.inc
 		src/examples/acl/Makefile src/examples/cidrcalc/Makefile
 		src/test/compare/Makefile
 		src/test/inaddr/Makefile
