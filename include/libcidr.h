@@ -39,6 +39,10 @@
  * now, we'll get all of inttypes.h because some older platforms only
  * have it, and define the uint*_t's in there (FreeBSD 4.x being the most
  * obvious one I care about).  Revisit this down the line if necessary.
+ *
+ * Note that you should almost certainly not be messing with this
+ * structure directly from external programs.  Use the cidr_get_*()
+ * functions to get a copy to work with.
  */
 struct cidr_addr
 {
