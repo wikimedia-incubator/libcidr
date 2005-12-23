@@ -1,21 +1,21 @@
 # Shared stuff among various make invocations
+
+# Get top-level stuff
+.include "../Makefile.inc"
+
 C_WARNS = -Wall -Wstrict-prototypes -Wredundant-decls \
 		-Wmissing-prototypes -Wpointer-arith -Winline \
 		-Wcast-align -Wcast-qual -Wchar-subscripts \
 		-Winline -Wnested-externs -Wmissing-declarations \
 		-Werror
 _CFLAGS := -g -pipe ${C_WARNS} -I../include -Iinclude ${C_FLAGS}
-.ifdef(OPTIMIZE)
+.ifdef OPTIMIZE
 _CFLAGS += -Os
 .endif
 CFLAGS = ${_CFLAGS}
 
 O_FILES = ${C_FILES:%.c=%.o}
 SO_FILES = ${C_FILES:%.c=%.So}
-
-LIB_VERS = 0
-SHLIB_NAME = libcidr.so.${LIB_VERS}
-SHLIB_LINK = libcidr.so
 
 CC = gcc
 LD = ld
