@@ -636,7 +636,7 @@
     <type>uint8_t *</type>
     <longdesc>
      <para>
-      Returns a pointer to an 8-element array of uint8_t's representing
+      Returns a pointer to an 16-element array of uint8_t's representing
       the address.
       This array must be <func>free</func>'d when you're through with it.
       Returns NULL on error.
@@ -681,7 +681,7 @@
     <type>uint8_t *</type>
     <longdesc>
      <para>
-      Returns a pointer to an 8-element array of uint8_t's representing
+      Returns a pointer to an 16-element array of uint8_t's representing
       the netmask.
       This array must be <func>free</func>'d when you're through with it.
       Returns NULL on error.

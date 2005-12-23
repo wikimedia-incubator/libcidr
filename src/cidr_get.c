@@ -68,7 +68,7 @@ cidr_get_addr(const CIDR *addr)
 {
 	uint8_t *toret;
 
-	toret = malloc(8*sizeof(uint8_t));
+	toret = malloc(16*sizeof(uint8_t));
 	if(toret==NULL)
 	{
 		errno = ENOMEM;
@@ -88,7 +88,7 @@ cidr_get_mask(const CIDR *addr)
 {
 	uint8_t *toret;
 
-	toret = malloc(8*sizeof(uint8_t));
+	toret = malloc(16*sizeof(uint8_t));
 	if(toret==NULL)
 	{
 		errno = ENOMEM;
