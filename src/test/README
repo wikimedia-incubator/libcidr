@@ -6,6 +6,13 @@ functions work and what their uses are.
 Some, like mkstr, can also be particularly useful on their own in certain
 cases.  Note that pretty much all of them use cidr_from_str() and
 cidr_to_str() to take their input and show their output, of course.
+
+Note that there's a "run.sh" program provided in this dir; this uses the
+LD_LIBRARY_PATH environmental variable to allow running the programs
+using the shared library, even though it's not in any of the standard
+system library paths.  Thus, you'd build the programs, then run them with
+an invocation something like "../run.sh ./cidr_mkstr 1.2.3.4/5".
+
 Here's a quick rundown of what they cover:
 
 
