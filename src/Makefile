@@ -3,7 +3,7 @@ C_FILES = \
 		cidr_addr.c \
 		cidr_compare.c \
 		cidr_from_str.c \
-		cidr_get_pflen.c \
+		cidr_get.c \
 		cidr_inaddr.c \
 		cidr_mem.c \
 		cidr_net.c \
