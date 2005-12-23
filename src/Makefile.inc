@@ -5,7 +5,7 @@ C_WARNS = -Wall -Wstrict-prototypes -Wredundant-decls \
 		-Winline -Wnested-externs -Wmissing-declarations \
 		-Werror
 _CFLAGS := -g -pipe ${C_WARNS} -I../include -Iinclude ${C_FLAGS}
-.if defined(OPTIMIZE)
+.ifdef(OPTIMIZE)
 _CFLAGS += -Os
 .endif
 CFLAGS = ${_CFLAGS}
