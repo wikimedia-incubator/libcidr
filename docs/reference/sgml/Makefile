@@ -131,5 +131,5 @@ ${OUTDIR}/${FNAME}-big.html: ${INFILE} ${INFILES}
 .endif
 	@echo %%%%% HTML built %%%%%
 
-${OUTDIR}/${BUILDDIR}:
+${BUILDDIR}:
 	mkdir -p ${BUILDDIR}
