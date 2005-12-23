@@ -1,7 +1,11 @@
 # Shared stuff among various make invocations
 
-# Get top-level stuff
-.include "../Makefile.inc"
+# Library naming and versioning
+# XXX Keep this in sync with top-level Makefile.inc!
+# We can't just .include because GNU make is stupid
+LIB_VERS = 0
+SHLIB_NAME = libcidr.so.${LIB_VERS}
+SHLIB_LINK = libcidr.so
 
 C_WARNS = -Wall -Wstrict-prototypes -Wredundant-decls \
 		-Wmissing-prototypes -Wpointer-arith -Winline \
