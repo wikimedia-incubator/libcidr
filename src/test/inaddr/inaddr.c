@@ -28,6 +28,7 @@ main(int argc, char *argv[])
 	int proto;
 
 	pname = *argv++;
+	argc--;
 
 	if(argc==0)
 		usage();
