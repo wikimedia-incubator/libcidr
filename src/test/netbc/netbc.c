@@ -19,6 +19,7 @@ main(int argc, char *argv[])
 	char *tstr, *netstr, *bcstr;
 
 	pname = *argv++;
+	argc--;
 
 	if(argc==0)
 		usage();
