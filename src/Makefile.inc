@@ -5,10 +5,11 @@ C_WARNS = -Wall -Wstrict-prototypes -Wredundant-decls \
 		-Wcast-align -Wcast-qual -Wchar-subscripts \
 		-Winline -Wnested-externs -Wmissing-declarations \
 		-Werror
-CFLAGS = -g -pipe ${C_WARNS} -I../include -Iinclude ${C_FLAGS}
+_CFLAGS := -g -pipe ${C_WARNS} -I../include -Iinclude ${C_FLAGS}
 .if defined(OPTIMIZE)
-CFLAGS += -Os
+_CFLAGS += -Os
 .endif
+CFLAGS = ${_CFLAGS}
 
 O_FILES = ${C_FILES:%.c=%.o}
 SO_FILES = ${C_FILES:%.c=%.So}
