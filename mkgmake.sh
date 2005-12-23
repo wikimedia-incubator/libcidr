@@ -9,7 +9,8 @@ MAKEFILES="Makefile.inc src/Makefile src/Makefile.inc
 		src/test/mkstr/Makefile
 		src/test/netbc/Makefile
 		src/test/nums/Makefile
-		src/test/parent/Makefile"
+		src/test/parent/Makefile
+		docs/reference/sgml/Makefile"
 
 case $1 in
 	rm)

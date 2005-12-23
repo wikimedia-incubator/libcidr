@@ -9,6 +9,7 @@
 # Meta-directives
 /^.include/ { gsub("\"", "", $2); printf("include %s\n", $2); next; }
 /^.ifdef/ { gsub("\"", "", $2); printf("ifdef %s\n", $2); next; }
+/^.ifndef/ { gsub("\"", "", $2); printf("ifndef %s\n", $2); next; }
 /^.else/ { print("else\n"); next; }
 /^.endif/ { print("endif\n"); next; }
 
