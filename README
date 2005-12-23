@@ -21,6 +21,18 @@ INSTALLATION
   DESTDIR, and the other variables will be set based on that.  See the
   beginning of the Makefile for more details if you need them.
 
+  DESTDIR defaults to /usr/local, which is probably the right choice for
+  most sites.  Installation will install several things:
+
+  - The shared library itself, in ${DESTDIR}/lib,
+  - The global header file libcidr.h, in ${DESTDIR}/include,
+  - The compiled cidrcalc example program, in ${DESTDIR}/bin,
+  - The libcidr(3) manpage, in ${DESTDIR}/man/man3,
+  - Several useful extra bits, under ${DESTDIR}/share/libcidr:
+    o The reference manual in various formats, under docs/
+    o The source and Make infrastructure for the cidrcalc and acl example
+      programs, under examples/
+
 
 ROADMAP
 
