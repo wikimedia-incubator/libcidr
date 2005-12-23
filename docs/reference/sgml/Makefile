@@ -89,40 +89,40 @@ build-all all-formats: tex ps pdf dvi html txt rtf
 do-build-minimal: html txt
 
 # Aliases
-ps: ${OUTDIR}/${FNAME}.ps
-pdf: ${OUTDIR}/${FNAME}.pdf
-dvi: ${OUTDIR}/${FNAME}.dvi
-tex: ${OUTDIR}/${FNAME}.tex
-txt: ${OUTDIR}/${FNAME}.txt
-ascii: ${OUTDIR}/${FNAME}.txt
-html: ${OUTDIR}/${FNAME}-big.html
-rtf: ${OUTDIR}/${FNAME}.rtf
+ps: ${FNAME}.ps
+pdf: ${FNAME}.pdf
+dvi: ${FNAME}.dvi
+tex: ${FNAME}.tex
+txt: ${FNAME}.txt
+ascii: ${FNAME}.txt
+html: ${FNAME}-big.html
+rtf: ${FNAME}.rtf
 
-${OUTDIR}/${FNAME}.ps: dvi
+${FNAME}.ps: dvi
 	dvips -o ${FNAME}.ps ${FNAME}.dvi
 	@echo %%%%% Postscript built %%%%%
 
-${OUTDIR}/${FNAME}.pdf: tex
+${FNAME}.pdf: tex
 	pdftex "&pdfjadetex" ${FNAME}.tex
 	@echo %%%%% PDF built %%%%%
 
-${OUTDIR}/${FNAME}.dvi: tex
+${FNAME}.dvi: tex
 	jadetex ${FNAME}.tex
 	@echo %%%%% DVI built %%%%%
 
-${OUTDIR}/${FNAME}.tex: ${INFILE} ${INFILES}
+${FNAME}.tex: ${INFILE} ${INFILES}
 	openjade ${JADESTD} -d ${PRINTSS} -t tex -o ${@} ${INFILE}
 	@echo %%%%% TeX built %%%%%
 
-${OUTDIR}/${FNAME}.rtf: ${INFILE} ${INFILES}
+${FNAME}.rtf: ${INFILE} ${INFILES}
 	openjade ${JADESTD} -d ${PRINTSS} -t rtf -o ${@} ${INFILE}
 	@echo %%%%% RTF built %%%%%
 
-${OUTDIR}/${FNAME}.txt: ${FNAME}-big.html
+${FNAME}.txt: html
 	lynx -dump -nolist ${FNAME}-big.html > ${FNAME}.txt
 	@echo %%%%% ASCII built %%%%%
 
-${OUTDIR}/${FNAME}-big.html: ${INFILE} ${INFILES}
+${FNAME}-big.html: ${INFILE} ${INFILES}
 	openjade ${JADESTD} -d ${HTMLSS} -t sgml ${INFILE} > ${FNAME}-big-notidy.html
 .ifndef NOTIDY
 	tidy ${TIDYARGS} < ${FNAME}-big-notidy.html > ${FNAME}-big.html
