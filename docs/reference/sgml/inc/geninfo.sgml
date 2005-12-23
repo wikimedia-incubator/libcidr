@@ -35,4 +35,11 @@
     It's just a set of functions for manipulating raw IP addresses in
     various ways.
    </para>
+   <para>
+    This reference manual is build using the codelibrary SGML DTD, which
+    is specifically designed for documenting libraries.
+    See the codelibrary homepage at
+    &lt;http://www.over-yonder.net/~fullermd/projects/sgml/codelibrary&gt;
+    for more details on it.
+   </para>
   </longdesc>
