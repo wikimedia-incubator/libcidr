@@ -1282,7 +1282,7 @@
      (::ffff:a.b.c.d)
      <br>
      CIDR_USEV4COMPAT: Use IPv4-compat form (::a.b.c.d) instead of
-     IPV4-mapped form (only meaningful in combination with CIDR_USEV6)
+     IPv4-mapped form (only meaningful in combination with CIDR_USEV6)
      <br>
      CIDR_NETMASK: Return a netmask in standard form after the slash,
      instead of the prefix length.
