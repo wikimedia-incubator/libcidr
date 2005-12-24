@@ -62,11 +62,18 @@ ROADMAP
 SUPPORT
 
   libcidr is intended to be pretty self-explanatory, particularly with
-  the aid of the example programs.  It's also very well documented, with
-  the full reference manual explaining the calling conventions and usage
-  of the various functions.  And, I like to think the source is generally
-  pretty readable in extremis.  However, if you have further questions or
-  suggestions, please feel free to email me.  See the project homepage at
+  the aid of the example programs.  And don't neglect the programs in
+  "test/"; they're intended for me to use to test the functions when I
+  write or change them, but because of that, they show how the functions
+  work fairly cleanly.  The mkstr program in particular, for its ability
+  to exercise all the different flags to cidr_to_str(), is invaluable.
+  libcidr is also very well documented, with the full reference manual
+  explaining the calling conventions and usage of the various functions.
+  And, I like to think the source is generally pretty readable in
+  extremis.
+  
+  However, if you have further questions or suggestions, please feel free
+  to email me.  See the project homepage at
   <http://www.over-yonder.net/~fullermd/projects/libcidr/> for updates.
 
 
