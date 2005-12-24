@@ -5,8 +5,7 @@
 #include <libcidr.h>
 
 
-static const char *__libcidr_version =
-		(CIDR_VERSION "-" CIDR_RELEASE CIDR_REVISION);
+static const char *__libcidr_version = CIDR_VERSION_STR;
 
 /* Library version info */
 const char *
