@@ -14,7 +14,7 @@ INSTALLATION
   To install from a raw source tree, you'll need to either build the docs
   manually, or set NO_DOCS in your install environment.  You may also
   need to run the mkgmake.sh script to generate GNU make Makefiles, if
-  you use GNU make.
+  you use GNU make (this should be already done on released tarballs).
 
   This library requires the POSIX/C99 uintX_t types, as well as basic
   IPv6 header file support.  If your system lacks either of these, you
@@ -51,7 +51,7 @@ ROADMAP
   	           programs using libcidr to #include, defining the various
   	           interfaces and flags.
   - src/     - The actual source for libcidr, as well as various examples
-  	           and test programs.  Particularly, the test/example
+  	           and test programs.  Particularly, the test and example
   	           programs are invaluable in understanding how the functions
   	           are meant to be used, and should certainly be perused by
   	           anybody looking at the functionality libcidr offers.
