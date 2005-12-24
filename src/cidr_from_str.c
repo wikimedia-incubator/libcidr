@@ -16,7 +16,7 @@ cidr_from_str(const char *addr)
 {
 	size_t alen;
 	CIDR *toret, *ctmp;
-	const char *pfx;
+	const char *pfx, *buf;
 	int i, j;
 	int pflen;
 	int octet, nocts, eocts;
@@ -45,9 +45,191 @@ cidr_from_str(const char *addr)
 		return(NULL); /* Preserve errno */
 
 
+	/* First check if we're a PTR-style string */
 	/*
-	 * Find the '/' prefix marker if we can.  We support both prefix
-	 * length and netmasks after the /, so flag if we find a mask.
+	 * XXX This could be folded with *pfx; they aren't used in code paths
+	 * that overlap.  I'm keeping them separate just to keep my sanity
+	 * though.
+	 */
+	buf = NULL;
+	/* Handle the deprecated RFC1886 form of v6 PTR */
+	if(strcasecmp(addr+alen-8, ".ip6.int")==0)
+	{
+		toret->proto = CIDR_IPV6;
+		buf = addr+alen-8;
+	}
+
+	if(buf!=NULL || strcasecmp(addr+alen-5, ".arpa")==0)
+	{
+		/*
+		 * Do all this processing here, instead of trying to intermix it
+		 * with the rest of the formats.  This might lead to some code
+		 * duplication, but it'll be easier to read.
+		 */
+		if(buf==NULL) /* If not set by .ip6.int above */
+		{
+			/* First, see what protocol it is */
+			if(strncasecmp(addr+alen-9, ".ip6", 3)==0)
+			{
+				toret->proto = CIDR_IPV6;
+				buf = addr+alen-9;
+			}
+			else if(strncasecmp(addr+alen-13, ".in-addr", 7)==0)
+			{
+				toret->proto = CIDR_IPV4;
+				buf = addr+alen-13;
+			}
+			else
+			{
+				/* Unknown */
+				cidr_free(toret);
+				errno = EINVAL;
+				return(NULL);
+			}
+		}
+		/*
+		 * buf now points to the period after the last (first) bit of
+		 * address numbering in the PTR name.
+		 */
+
+		/*
+		 * Now convert based on that protocol.  Note that we're going to
+		 * be slightly asymmetrical to the way cidr_to_str() works, in
+		 * how we handle the netmask.  cidr_to_str() ignores it, and
+		 * treats the PTR-style output solely as host addresses.  We'll
+		 * use the netmask bits to specify how much of the address is
+		 * given in the PTR we get.  That is, if we get
+		 * "3.2.1.in-addr.arpa", we'll set a /24 netmask on the returned
+		 * result.  This way, the calling program can tell the difference
+		 * between "3.2.1..." and "0.3.2.1..." if it really cares to.
+		 */
+		buf--; /* Step before the period */
+		if(toret->proto == CIDR_IPV4)
+		{
+			for(i=11 ; i<=14 ; /* */)
+			{
+				/* If we're before the beginning, we're done */
+				if(buf<addr)
+					break;
+
+				/* Step backward until we at the start of an octet */
+				while(isdigit(*buf) && buf>=addr)
+					buf--;
+
+				/*
+				 * Save that number (++i here to show that this octet is
+				 * now set.
+				 */
+				toret->addr[++i] = (uint8_t)strtol(buf+1, NULL, 10);
+
+
+				/*
+				 * Back up a step to get before the '.', and process the
+				 * next [previous] octet.  If we were at the beginning of
+				 * the string already, the test at the top of the loop
+				 * will drop us out.
+				 */
+				buf--;
+			}
+
+			/*
+			 * Now, what about the mask?  We set the netmask bits to
+			 * describe how much information we've actually gotten, if we
+			 * didn't get all 4 octets.  Because of the way .in-addr.arpa
+			 * works, the mask can only fall on an octet boundary, so we
+			 * don't need too many fancy tricks.  'i' is still set from
+			 * the above loop to whatever the last octet we filled in is,
+			 * so we don't even have to special case anything.
+			 */
+			for(j=0 ; j<=i ; j++)
+				toret->mask[j] = 0xff;
+
+			/* Done processing */
+		}
+		else if(toret->proto == CIDR_IPV6)
+		{
+			/*
+			 * This processing happens somewhat similarly to IPV4 above,
+			 * the format is simplier, and we need to be a little
+			 * sneakier about the mask, since it can fall on a half-octet
+			 * boundary with .ip6.arpa format.
+			 */
+			for(i=0 ; i<=15 ; i++)
+			{
+				/* If we're before the beginning, we're done */
+				if(buf<addr)
+					break;
+
+				/* We better point at a number */
+				if(!isxdigit(*buf))
+				{
+					/* Bad input */
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+
+				/* Save the current number */
+				toret->addr[i] = ((uint8_t)strtol(buf, NULL, 16)) << 4;
+				toret->mask[i] = 0xf0;
+
+				/* If we're at the beginning of the string, we're thru */
+				if(buf==addr)
+					break;
+
+				/* If we're not, stepping back should give us a period */
+				if(*--buf != '.')
+				{
+					/* Bad input */
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+
+				/* Stepping back again should give us a number */
+				if(!isxdigit(*--buf))
+				{
+					/* Bad input */
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+
+				/* Save that one */
+				toret->addr[i] |= ((uint8_t)strtol(buf, NULL, 16)) & 0x0f;
+				toret->mask[i] |= 0x0f;
+
+
+				/*
+				 * Step back and loop back around.  If that last step
+				 * back moves us to before the beginning of the string,
+				 * the condition at the top of the loop will drop us out.
+				 */
+				while(*--buf=='.' && buf>=addr)
+					/* nothing */;
+			}
+
+			/* Mask is set in the loop for v6 */
+		}
+		else
+		{
+			/* Shouldn't happen */
+			cidr_free(toret);
+			errno = ENOENT; /* Bad choice of errno */
+			return(NULL);
+		}
+
+		/* Return the value we built up, and we're done! */
+		return(toret);
+
+		/* NOTREACHED */
+	}
+
+
+	/*
+	 * It's not a PTR form, so find the '/' prefix marker if we can.  We
+	 * support both prefix length and netmasks after the /, so flag if we
+	 * find a mask.
 	 */
 	foundpf=foundmask=0;
 	for(i=alen-1 ; i>=0 ; i--)

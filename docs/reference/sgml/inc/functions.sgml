@@ -531,6 +531,21 @@
      host addresses (/32 or /128, depending on address family).
     </para>
     <para>
+     Also, this will parse PTR-style address forms.
+     That would be like "4.3.2.1.in-addr.arpa" for IPv4, and an
+     extremely long forms ending in .ip6.arpa for IPv6.
+     <fref target="cidr-from-str"> also understands the deprecated
+     RFC1886 form of IPv6 PTR records, which ends in .ip6.int, though
+     <fref target="cidr-to-str"> will only generate the current
+     RFC3152-style .ip6.arpa version.
+     Note also that while <fref target="cidr-to-str"> treats all
+     addresses as host addresses when building the PTR string (ignoring
+     the netmask), <fref target="cidr-from-str"> will fill in the netmask
+     bits as appropriate for the string given; any octets (or
+     half-octets, in the IPv6 form) that are left off the beginning will
+     have their netmask bits set to 0.
+    </para>
+    <para>
      It's not the intention of the author that this function necessarily
      be able to decipher any possible address format.
      It doesn't support IPv4 addresses expressed as a single 32-bit
@@ -1263,6 +1278,9 @@
      record name for the given block.
      Note that this always treats it solely as an address; the netmask is
      ignored.
+     See some notes in <fref target="cidr-from-str"> for details of the
+     asymmetric treatment of this form of address representation relating
+     to the netmask.
     </para>
     <para>
      Many combinations can give somewhat surprising results, but they
