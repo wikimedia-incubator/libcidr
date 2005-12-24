@@ -218,10 +218,15 @@ main(int argc, char *argv[])
 			{
 				/* Parent network */
 				addr2 = cidr_net_supernet(addr);
-				astr = cidr_to_str(addr2, CIDR_NOFLAGS);
-				printf("%*s: %s\n", DWID, "Supernet", astr);
-				free(astr);
-				cidr_free(addr2);
+				if(addr2!=NULL)
+				{
+					astr = cidr_to_str(addr2, CIDR_NOFLAGS);
+					printf("%*s: %s\n", DWID, "Supernet", astr);
+					free(astr);
+					cidr_free(addr2);
+				}
+				else
+					printf("%*s: (none)\n", DWID, "Supernet");
 
 				
 				/* Children networks */
