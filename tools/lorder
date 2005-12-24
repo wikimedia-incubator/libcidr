@@ -47,8 +47,8 @@ case $# in
 esac
 
 # temporary files
-R=$(mktemp -t _reference_)
-S=$(mktemp -t _symbol_)
+R=$(mktemp _reference_.XXXXXX)
+S=$(mktemp _symbol_.XXXXXX)
 NM=${NM:-nm}
 
 # remove temporary files on HUP, INT, QUIT, PIPE, TERM
@@ -78,10 +78,11 @@ ${NM} -go $* | sed "
 "
 
 # eliminate references that can be resolved by the same library.
-if [ $(expr "$*" : '.*\.a[[:>:]]') -ne 0 ]; then
+#if [ $(expr "$*" : '.*\.a[[:>:]]') -ne 0 ]; then
+if [ $(expr "$*" : '.*\.a') -ne 0 ]; then
 	sort -u -o $S $S
 	sort -u -o $R $R
-	T=$(mktemp -t _temp_)
+	T=$(mktemp _temp_.XXXXXX)
 	comm -23 $R $S >$T
 	mv $T $R
 fi
