@@ -26,7 +26,7 @@ LD = ld
 MV = mv
 LN = ln
 RM = rm
-LORDER = lorder
+LORDER = ../tools/lorder
 TSORT = tsort
 
 def: all
