@@ -226,15 +226,20 @@ main(int argc, char *argv[])
 				
 				/* Children networks */
 				kids = cidr_net_subnets(addr);
-				astr = cidr_to_str(kids[0], CIDR_NOFLAGS);
-				astr2 = cidr_to_str(kids[1], CIDR_NOFLAGS);
-				printf("%*s: %s\n%*s  %s\n", DWID, "Subnets", astr,
-						DWID, "", astr2);
-				free(astr);
-				free(astr2);
-				cidr_free(kids[0]);
-				cidr_free(kids[1]);
-				free(kids);
+				if(kids!=NULL)
+				{
+					astr = cidr_to_str(kids[0], CIDR_NOFLAGS);
+					astr2 = cidr_to_str(kids[1], CIDR_NOFLAGS);
+					printf("%*s: %s\n%*s  %s\n", DWID, "Subnets", astr,
+							DWID, "", astr2);
+					free(astr);
+					free(astr2);
+					cidr_free(kids[0]);
+					cidr_free(kids[1]);
+					free(kids);
+				}
+				else
+					printf("%*s: (none)\n", DWID, "Subnets");
 			}
 
 
