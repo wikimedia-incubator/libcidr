@@ -1286,6 +1286,10 @@
      Many combinations can give somewhat surprising results, but they
      should allow any of a host of manipulations to output just the data
      you might be interested in.
+     The "mkstr" test program in the source tree is extremely useful for
+     manual testing of the various flags to see visually what they do,
+     and is a lot quicker than trying to code them all to test it out.
+     Use it to your advantage.
     </para>
    </longdesc>
    <args>
