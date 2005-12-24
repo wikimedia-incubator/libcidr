@@ -21,7 +21,7 @@ main(int argc, char *argv[])
 
 	cflags=CIDR_NOFLAGS;
 	pname = *argv;
-	while((goch=getopt(argc, argv, "ev6cmapwf:"))!=-1)
+	while((goch=getopt(argc, argv, "ev6cmapwrf:"))!=-1)
 	{
 		switch((char)goch)
 		{
@@ -48,6 +48,9 @@ main(int argc, char *argv[])
 				break;
 			case 'w':
 				cflags |= CIDR_WILDCARD;
+				break;
+			case 'r':
+				cflags |= CIDR_REVERSE;
 				break;
 			case 'f':
 				if(strcmp(optarg, "4")==0)
@@ -117,6 +120,7 @@ usage(void)
 	       "       -a  Show only the address, not the prefix [v4/v6]\n"
 	       "       -p  Show only the prefix length, not the address [v4/v6]\n"
 	       "           (or show netmask when combined with -m)\n"
+	       "       -r  Show .{in-addr,ip6}.arpa PTR forms [v4/v6]\n"
 	       "\n", pname);
 	exit(1);
 }

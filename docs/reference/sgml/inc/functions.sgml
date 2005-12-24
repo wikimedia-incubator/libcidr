@@ -1258,6 +1258,11 @@
      IPv4 address, no matter what it really is.
      This doesn't do any conversion or translation; just treats the raw
      data as if it were IPv4.
+     <br>
+     CIDR_REVERSE: Generates a .in-addr.arpa or .ip6.arpa-style PTR
+     record name for the given block.
+     Note that this always treats it solely as an address; the netmask is
+     ignored.
     </para>
     <para>
      Many combinations can give somewhat surprising results, but they

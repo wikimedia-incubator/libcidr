@@ -70,6 +70,25 @@ cidr_to_str(const CIDR *block, int flags)
 	if( (block->proto==CIDR_IPV4 && !(flags & CIDR_FORCEV6))
 	   || (flags & CIDR_FORCEV4) )
 	{
+		/* First off, creating the in-addr.arpa form is special */
+		if(flags & CIDR_REVERSE)
+		{
+			/*
+			 * Build the d.c.b.a.in-addr.arpa form.  Note that we ignore
+			 * flags like CIDR_VERBOSE and the like here, since they lead
+			 * to non-valid reverse paths (or at least, paths that no DNS
+			 * implementation will look for).  So it pretty much always
+			 * looks exactly the same.  Also, we don't mess with dealing
+			 * with netmaks or anything here; we just assume it's a
+			 * host address, and treat it as such.
+			 */
+
+			sprintf(toret, "%d.%d.%d.%d.in-addr.arpa",
+					block->addr[15], block->addr[14],
+					block->addr[13], block->addr[12]);
+			return(toret);
+		}
+
 		/* Are we bothering to show the address? */
 		if(!(flags & CIDR_ONLYPFLEN))
 		{
@@ -172,6 +191,34 @@ cidr_to_str(const CIDR *block, int flags)
 	else if( (block->proto==CIDR_IPV6 && !(flags & CIDR_FORCEV4))
 	        || (flags & CIDR_FORCEV6) )
 	{
+		/* First off, creating the .ip6.arpa form is special */
+		if(flags & CIDR_REVERSE)
+		{
+			/*
+			 * Build the ...ip6.arpa form.  See notes in the CIDR_REVERSE
+			 * section of PROTO_IPV4 above for various notes.
+			 */
+			sprintf(toret, "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x."
+					"%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x."
+					"%x.%x.%x.%x.%x.ip6.arpa",
+					block->addr[15] & 0x0f, block->addr[15] >> 4,
+					block->addr[14] & 0x0f, block->addr[14] >> 4,
+					block->addr[13] & 0x0f, block->addr[13] >> 4,
+					block->addr[12] & 0x0f, block->addr[12] >> 4,
+					block->addr[11] & 0x0f, block->addr[11] >> 4,
+					block->addr[10] & 0x0f, block->addr[10] >> 4,
+					block->addr[9]  & 0x0f, block->addr[9]  >> 4,
+					block->addr[8]  & 0x0f, block->addr[8]  >> 4,
+					block->addr[7]  & 0x0f, block->addr[7]  >> 4,
+					block->addr[6]  & 0x0f, block->addr[6]  >> 4,
+					block->addr[5]  & 0x0f, block->addr[5]  >> 4,
+					block->addr[4]  & 0x0f, block->addr[4]  >> 4,
+					block->addr[3]  & 0x0f, block->addr[3]  >> 4,
+					block->addr[2]  & 0x0f, block->addr[2]  >> 4,
+					block->addr[1]  & 0x0f, block->addr[1]  >> 4,
+					block->addr[0]  & 0x0f, block->addr[0]  >> 4);
+			return(toret);
+		}
 		/* Are we showing the address part? */
 		if(!(flags & CIDR_ONLYPFLEN))
 		{

@@ -24,6 +24,7 @@
 #define CIDR_WILDCARD     (1<<7) /* Show wildcard-mask instead of netmask */
 #define CIDR_FORCEV6      (1<<8) /* Force treating as v6 address */
 #define CIDR_FORCEV4      (1<<9) /* Force treating as v4 address */
+#define CIDR_REVERSE      (1<<10) /* Return a DNS PTR name */
 
 /* Protocols */
 #define CIDR_NOPROTO        0
