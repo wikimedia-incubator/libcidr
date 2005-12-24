@@ -5,9 +5,10 @@
    </para>
    <para>
     The core of the library is a pair of functions that take a human
-    readable string, turn it into our internal representation of a CIDR
-    address block, and take that internal representation and turn it into
-    a human-readable string.
+    readable string and turn it into our internal representation of a
+    CIDR address block (<fref target="cidr-from-str">), and one to take
+    that internal representation and turn it into a human-readable string
+    (<fref target="cidr-to-str">).
     There are a large number of options for how to format that string, as
     well.
    </para>
