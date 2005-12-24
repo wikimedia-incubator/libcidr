@@ -18,6 +18,12 @@ libcidr docs
     and which is designed specifically for documenting libraries.
 
 
+  Although they're not technically documentation, the example/ and test/
+  programs in the library src directory give good examples of how the
+  functions can be used.  cidr_to_str(), for instance, has a huge number
+  of options, which the test/mkstr/ program can let you play with easily.
+
+
 
 -- 
 Matt

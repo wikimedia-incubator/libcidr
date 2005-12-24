@@ -47,6 +47,7 @@ ROADMAP
   in the various subdirs for more information about them.
 
   - docs/    - The documentation for libcidr, in various formats.
+               See the README in here for more info.
   - include/ - The public header file which will be installed for
   	           programs using libcidr to #include, defining the various
   	           interfaces and flags.
