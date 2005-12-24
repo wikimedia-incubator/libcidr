@@ -78,6 +78,7 @@ uint8_t *cidr_get_addr(const CIDR *);
 uint8_t *cidr_get_mask(const CIDR *);
 int cidr_get_pflen(const CIDR *);
 int cidr_get_proto(const CIDR *);
+int cidr_is_v4mapped(const CIDR *);
 CIDR **cidr_net_subnets(const CIDR *);
 CIDR *cidr_net_supernet(const CIDR *);
 const char *cidr_numaddr(const CIDR *);

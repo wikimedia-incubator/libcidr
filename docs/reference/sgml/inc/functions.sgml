@@ -786,6 +786,38 @@
    </returns>
   </function>
 
+  <function type="public" name="cidr-is-v4mapped">
+   <name>cidr_is_v4mapped</name>
+   <desc>
+    Is address IPv4-mapped IPv6 address?
+   </desc>
+   <longdesc>
+    <para>
+     An IPv6 address may be in the network range reserved for IPv4-mapped
+     addresses.
+     This function will tell you whether it is or not.
+    </para>
+   </longdesc>
+   <args>
+    <arg>
+     <type>const <dref target="cidr-addr"> *</type>
+     <name>addr</name>
+     <desc>
+      An arbitrary netblock.
+     </desc>
+    </arg>
+   </args>
+   <returns>
+    <type>int</type>
+    <longdesc>
+     <para>
+      Returns 0 if the address is an IPv4-mapped IPv6 address.
+      Returns -1 otherwise.
+     </para>
+    </longdesc>
+   </returns>
+  </function>
+
   <function type="public" name="cidr-net-subnets">
    <name>cidr_net_subnets</name>
    <desc>

@@ -132,6 +132,17 @@ main(int argc, char *argv[])
 			free(astr);
 
 
+			/* Check if it's v4-mapped */
+			if(proto==CIDR_IPV6 && cidr_is_v4mapped(addr)==0)
+			{
+				astr = cidr_to_str(addr,
+						CIDR_ONLYADDR | CIDR_FORCEV4 | CIDR_USEV6);
+				printf("%*s: %s\n", DWID, "v4-mapped", astr);
+				free(astr);
+			}
+
+
+
 			/* Show the full 'expanded' address form */
 			if(proto==CIDR_IPV6)
 			{

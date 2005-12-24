@@ -123,6 +123,9 @@ Return the length of the netmask prefix of
 .It Cm int cidr_get_proto(const CIDR *cidr)
 Return the protocol of an address.
 .\"
+.It Cm int cidr_is_v4mapped(const CIDR *addr)
+Checks if an IPv6 address is in the IPv4-mapped range.
+.\"
 .It Cm CIDR **cidr_net_subnets(const CIDR *cidr)
 Return a 2-element array of
 .Vt CIDR * 's
