@@ -265,7 +265,7 @@
     <longdesc>
      <para>
       Returns 0 if little is wholly contained within big.
-      Returns -1 if it's not, or error.
+      Returns -1 if it's not, or if an error occured.
      </para>
     </longdesc>
    </returns>
@@ -531,9 +531,10 @@
      host addresses (/32 or /128, depending on address family).
     </para>
     <para>
-     Also, this will parse PTR-style address forms.
-     That would be like "4.3.2.1.in-addr.arpa" for IPv4, and an
-     extremely long forms ending in .ip6.arpa for IPv6.
+     Also, <fref target="cidr-from-str"> will parse DNS PTR-record-style
+     address formats.
+     That is, representations like "4.3.2.1.in-addr.arpa" for IPv4, and
+     an extremely long and annoying form ending in .ip6.arpa for IPv6.
      <fref target="cidr-from-str"> also understands the deprecated
      RFC1886 form of IPv6 PTR records, which ends in .ip6.int, though
      <fref target="cidr-to-str"> will only generate the current
@@ -1229,7 +1230,7 @@
      This function has a lot of flexibility, depending on the flags
      passed to it.
      The default output is "address/pflen" form, with the address in a
-     reasonably compact form, and the prefix length given numberically.
+     reasonably compact form, and the prefix length given numerically.
      Flags alter the output in various ways, and are set as bitmasks, so
      they can be combined however you wish.
      They can be used in any combination that makes sense, and a large
