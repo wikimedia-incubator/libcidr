@@ -4,6 +4,9 @@
  * XXX This isn't really well suited for localization...
  */
 
+#ifndef __LIBCIDR__POW2_P_H
+#define __LIBCIDR__POW2_P_H
+
 /* Powers of two */
 static const char *__cidr_pow2[] = {
 		"1",
@@ -268,3 +271,6 @@ static const char *__cidr_pow2m2[] = {
 		"85,070,591,730,234,615,865,843,651,857,942,052,862",
 		"170,141,183,460,469,231,731,687,303,715,884,105,726",
 		"340,282,366,920,938,463,463,374,607,431,768,211,454"};
+
+
+#endif /* __LIBCIDR__POW2_P_H */
