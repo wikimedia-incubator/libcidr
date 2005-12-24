@@ -24,4 +24,4 @@ tar -cf - -C ../.bzr/ . | tar -xpf - -C ${dstdir}/.bzr
 	revid=`bzr testament | grep ^revision-id | awk '{print $2}'` ; \
 	sed -i "" -e "s/CIDR_REVISION \"\"/CIDR_REVISION \" (${revid})\"/" \
 			libcidr.h )
-(cd ${dstdir} && rm -rf .bzr .bzrignore tools/mktar.sh)
+(cd ${dstdir} && rm -rf .bzr .bzrignore)
