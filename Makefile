@@ -32,6 +32,18 @@ all build clean:
 	(cd src/examples/cidrcalc && ${MAKE} ${@})
 
 
+# Provide a quick&dirty 'uninstall' target
+uninstall:
+	@${ECHO} "-> Trying to delete everything libcidr-related..."
+	${RM} ${LIBDIR}/${SHLIB_NAME} ${LIBDIR}/${SHLIB_LINK}
+	${RM} ${BINDIR}/cidrcalc
+	${RM} ${INCDIR}/libcidr.h
+	${RM} ${MANDIR}/man3/libcidr.3.gz
+	${RM} -r ${DOCDIR}
+	${RM} -r ${EXDIR}
+	@${ECHO} "-> Uninstallation complete"
+
+
 # Now the bits of installing
 install:
 	@${ECHO} "-> Installing ${SHLIB_NAME}..."
