@@ -15,9 +15,8 @@ if [ -r ${dstdir} ]; then
 fi
 
 
-mkdir -p ${dstdir}/.bzr
-tar -cf - -C ../.bzr/ . | tar -xpf - -C ${dstdir}/.bzr
-(cd ${dstdir} && bzr revert ; sh mkgmake.sh)
+bzr checkout --lightweight .. ${dstdir}
+(cd ${dstdir} && sh mkgmake.sh)
 (cd ${dstdir}/docs/reference/sgml/ && make all clean)
 (cd ${dstdir}/src && sed -i "" -e "s/-Werror/#-Werror/" Makefile.inc )
 (cd ${dstdir}/include && \
