@@ -1243,7 +1243,7 @@
     </err>
     <err>
      <ecode>EPROTOTYPE</ecode>
-     <emean>Bad protocol type (must be IPv4)</emean>
+     <emean>Bad protocol type (must be IPv4 or IPv6)</emean>
     </err>
    </errs>
   </function>
