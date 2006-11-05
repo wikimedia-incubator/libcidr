@@ -1,3 +1,5 @@
 *.So
 *.so.*
 GNUmakefile*
+src/examples/cidrcalc/cidrcalc
+src/test/*/cidr_*
