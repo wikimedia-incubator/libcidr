@@ -273,8 +273,8 @@ cidr_from_str(const char *addr)
 		/*
 		 * Special v4 forms
 		 */
-		if(*addr=='0' && *(addr+1)=='x'
-		   && addr[2+strspn(addr+2, "0123456789abcdef")]=='\0')
+		if(*addr=='0' && tolower(*(addr+1))=='x'
+		   && addr[2+strspn(addr+2, "0123456789abcdefABCDEF")]=='\0')
 			toret->proto = CIDR_IPV4; /* Valid hex  */
 		else if(*addr=='0' && addr[1+strspn(addr+1, "01234567")]=='\0')
 			toret->proto = CIDR_IPV4; /* Valid octal */
@@ -474,7 +474,7 @@ cidr_from_str(const char *addr)
 			 * keep backing up.  Could be hex, so don't just use
 			 * isdigit().
 			 */
-			if((isxdigit(addr[i]) || addr[i]=='x') && i>0)
+			if((isxdigit(addr[i]) || tolower(addr[i])=='x') && i>0)
 				continue;
 
 			/*
@@ -485,7 +485,7 @@ cidr_from_str(const char *addr)
 			if(i==0)
 				i--;
 			/* Theoretically, this can be in hex/oct/dec... */
-			if(strncmp(addr+i+1, "0x", 2)==0)
+			if(addr[i+1]=='0' && tolower(addr[i+2])=='x')
 				octet = strtoul(addr+i+1, &buf2, 16);
 			else if(addr[i+1] == '0')
 				octet = strtoul(addr+i+1, &buf2, 8);
