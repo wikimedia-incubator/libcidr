@@ -794,6 +794,8 @@
      An IPv6 address may be in the network range reserved for IPv4-mapped
      addresses.
      This function will tell you whether it is or not.
+     Note that an IPv4 <dref target="cidr-addr"> is NOT considered an
+     IPv4-mapped address, and so will return failure.
     </para>
    </longdesc>
    <args>
