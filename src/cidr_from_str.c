@@ -17,29 +17,20 @@ cidr_from_str(const char *addr)
 	size_t alen;
 	CIDR *toret, *ctmp;
 	const char *pfx, *buf;
+	char *buf2; /* strtoul() can't use a (const char *) */
 	int i, j;
 	int pflen;
-	int octet, nocts, eocts;
-	short foundpf, foundmask;
+	unsigned long octet;
+	int nocts, eocts;
+	short foundpf, foundmask, nsect;
 
-	/* Just in case */
-	if(addr==NULL)
+	/* There has to be *SOMETHING* to work with */
+	if(addr==NULL || (alen=strlen(addr))<1)
 	{
 		errno = EFAULT;
 		return(NULL);
 	}
 
-	/*
-	 * Shortest possible addr would be v6 '::' (we assume max prefix
-	 * length if none is given), so it better be at least 2 chars long...
-	 */
-	alen = strlen(addr);
-	if(alen<2)
-	{
-		errno = EINVAL;
-		return(NULL);
-	}
-	
 	toret = cidr_alloc();
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
@@ -269,8 +260,9 @@ cidr_from_str(const char *addr)
 	/*
 	 * Now, let's figure out what kind of address this is.  A v6 address
 	 * will contain a : within the first 5 characters ('0000:'), a v4
-	 * address will have a . within the first 4 ('123.'), and anything
-	 * else isn't an address we know anything about, so fail.
+	 * address will have a . within the first 4 ('123.'), UNLESS it's
+	 * just a single number (in hex, octal, or decimal).  Anything else
+	 * isn't an address we know anything about, so fail.
 	 */
 	if((buf = strchr(addr, ':'))!=NULL && (buf-addr)<=5)
 		toret->proto = CIDR_IPV6;
@@ -278,10 +270,23 @@ cidr_from_str(const char *addr)
 		toret->proto = CIDR_IPV4;
 	else
 	{
-		/* Unknown */
-		cidr_free(toret);
-		errno = EINVAL;
-		return(NULL);
+		/*
+		 * Special v4 forms
+		 */
+		if(*addr=='0' && *(addr+1)=='x'
+		   && addr[2+strspn(addr+2, "0123456789abcdef")]=='\0')
+			toret->proto = CIDR_IPV4; /* Valid hex  */
+		else if(*addr=='0' && addr[1+strspn(addr+1, "01234567")]=='\0')
+			toret->proto = CIDR_IPV4; /* Valid octal */
+		else if(addr[strspn(addr, "0123456789")]=='\0')
+			toret->proto = CIDR_IPV4; /* Valid decimal */
+		else
+		{
+			/* Unknown */
+			cidr_free(toret);
+			errno = EINVAL;
+			return(NULL);
+		}
 	}
 	buf=NULL; /* Done */
 
@@ -295,7 +300,30 @@ cidr_from_str(const char *addr)
 		/*
 		 * Parse a v4 address.  Now, we're being a little tricksy here,
 		 * and parsing it from the end instead of from the front.
-		 *
+		 */
+
+		/*
+		 * First, find out how many bits we have.  We need to have 4 or
+		 * less...
+		 */
+		buf = strchr(addr, '.');
+		/* Through here, nsect counts dots */
+		for(nsect=0 ; buf!=NULL ; buf=strchr(buf, '.'))
+		{
+			nsect++; /* One more section */
+			buf++; /* Move past . */
+			if(nsect>3)
+			{
+				/* Bad!  We can't have more than 4 sections... */
+				cidr_free(toret);
+				errno = EINVAL;
+				return(NULL);
+			}
+		}
+		buf=NULL; /* Done */
+		nsect++; /* sects = dots+1 */
+
+		/*
 		 * First, initialize this so we can skip building the bits if we
 		 * don't have to.
 		 */
@@ -441,8 +469,12 @@ cidr_from_str(const char *addr)
 		/* i was set in our mask conditions above */
 		for( /* i */ ; i>=0 ; i--)
 		{
-			/* As long as it's still a number, move on */
-			if(isdigit(addr[i]) && i>0)
+			/*
+			 * As long as it's still a number or an 'x' (as in '0x'),
+			 * keep backing up.  Could be hex, so don't just use
+			 * isdigit().
+			 */
+			if((isxdigit(addr[i]) || addr[i]=='x') && i>0)
 				continue;
 
 			/*
@@ -452,19 +484,60 @@ cidr_from_str(const char *addr)
 			/* Cheat for "beginning-of-string" rather than "NaN" */
 			if(i==0)
 				i--;
-			octet = (int)strtol(addr+i+1, NULL, 10);
+			/* Theoretically, this can be in hex/oct/dec... */
+			if(strncmp(addr+i+1, "0x", 2)==0)
+				octet = strtoul(addr+i+1, &buf2, 16);
+			else if(addr[i+1] == '0')
+				octet = strtoul(addr+i+1, &buf2, 8);
+			else
+				octet = strtoul(addr+i+1, &buf2, 10);
 
-			/* Sanity */
-			if(octet<0 || octet>255)
+			/* If buf isn't pointing at one of [./'\0'], it's screwed */
+			if(!(*buf2=='.' || *buf2=='/' || *buf2=='\0'))
+			{
+				cidr_free(toret);
+				errno = EINVAL;
+				return(NULL);
+			}
+			buf2=NULL; /* Done */
+
+			/*
+			 * Now, because of the way compressed IPv4 addresses work,
+			 * this number CAN be greater than 255, IF it's the last bit
+			 * in the address (the first bit we parse), in which case it
+			 * must be no bigger than needed to fill the unaccounted-for
+			 * 'slots' in the address.
+			 *
+			 * See
+			 * <http://www.opengroup.org/onlinepubs/007908799/xns/inet_addr.html>
+			 * for details.
+			 */
+			if( octet<0 || (nocts!=0 && octet>255)
+			    || (nocts==0 && octet>(0xffffffff >> (7*(nsect-1)))) )
 			{
 				cidr_free(toret);
 				errno = EINVAL;
 				return(NULL);
 			}
 
-			/* Save it */
-			toret->addr[15-nocts] = octet;
-			nocts++;
+			/* Save the lower 8 bits into this octet */
+			toret->addr[15-nocts++] = octet & 0xff;
+
+			/*
+			 * If this is the 'last' piece of the address (the first we
+			 * process), and there are fewer than 4 pieces total, we need
+			 * to extend it out into additional fields.  See above
+			 * reference.
+			 */
+			if(nocts==1)
+			{
+				if(nsect<=3)
+					toret->addr[15-nocts++] = (octet >> 8) & 0xff;
+				if(nsect<=2)
+					toret->addr[15-nocts++] = (octet >> 16) & 0xff;
+				if(nsect==1)
+					toret->addr[15-nocts++] = (octet >> 24) & 0xff;
+			}
 
 			/*
 			 * If we've got 4 of 'em, we're actually done.  We got the
@@ -474,7 +547,10 @@ cidr_from_str(const char *addr)
 				return(toret);
 		}
 
-		/* If we get here, it failed to get all 4 */
+		/*
+		 * If we get here, it failed to get all 4.  That shouldn't
+		 * happen, since we catch proper abbreviated forms above.
+		 */
 		cidr_free(toret);
 		errno = EINVAL;
 		return(NULL);
@@ -627,7 +703,7 @@ cidr_from_str(const char *addr)
 						continue;
 
 					/* Should be a [decimal] octet right after here */
-					octet = (int)strtol(addr+i+1, NULL, 10);
+					octet = strtoul(addr+i+1, NULL, 10);
 					/* Be sure */
 					if(octet<0 || octet>255)
 					{
@@ -637,7 +713,7 @@ cidr_from_str(const char *addr)
 					}
 
 					/* Save it */
-					toret->addr[15-nocts] = octet;
+					toret->addr[15-nocts] = octet & 0xff;
 					nocts++;
 
 					/* And find the next octet */
@@ -698,7 +774,7 @@ cidr_from_str(const char *addr)
 			/* Cheat for "beginning-of-string" rather than "NaN" */
 			if(i==0)
 				i--;
-			octet = (int)strtol(addr+i+1, NULL, 16);
+			octet = strtoul(addr+i+1, NULL, 16);
 
 			/* Remember, this is TWO octets */
 			if(octet<0 || octet>0xffff)
@@ -709,9 +785,9 @@ cidr_from_str(const char *addr)
 			}
 
 			/* Save it */
-			toret->addr[15-nocts] = octet;
+			toret->addr[15-nocts] = octet & 0xff;
 			nocts++;
-			toret->addr[15-nocts] = octet>>8;
+			toret->addr[15-nocts] = (octet>>8) & 0xff;
 			nocts++;
 
 			/* If we've got all of 'em, just return from here. */
@@ -751,7 +827,7 @@ cidr_from_str(const char *addr)
 				 * We should be pointing at the beginning of a digit
 				 * string now.  Translate it into an octet.
 				 */
-				octet = (int)strtol(addr+i, NULL, 16);
+				octet = strtoul(addr+i, NULL, 16);
 
 				/* Sanity (again, 2 octets) */
 				if(octet<0 || octet>0xffff)
@@ -762,9 +838,9 @@ cidr_from_str(const char *addr)
 				}
 
 				/* Save it */
-				toret->addr[nocts-eocts] = octet>>8;
+				toret->addr[nocts-eocts] = (octet>>8) & 0xff;
 				nocts++;
-				toret->addr[nocts-eocts] = octet;
+				toret->addr[nocts-eocts] = octet & 0xff;
 				nocts++;
 
 				/*
