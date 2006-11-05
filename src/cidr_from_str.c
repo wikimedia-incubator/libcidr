@@ -294,9 +294,7 @@ cidr_from_str(const char *addr)
 	{
 		/*
 		 * Parse a v4 address.  Now, we're being a little tricksy here,
-		 * and parsing it from the end instead of from the front.  This
-		 * lets us ignore leading garbage (like, for instance, the
-		 * address being given in v6-mapped format).
+		 * and parsing it from the end instead of from the front.
 		 *
 		 * First, initialize this so we can skip building the bits if we
 		 * don't have to.
@@ -304,11 +302,10 @@ cidr_from_str(const char *addr)
 		pflen=0;
 
 		/*
-		 * To handle the v6-mapped form seamlessly, set the first 10
-		 * octets of the address to 0, and the 11th and 12th to 1, giving
-		 * us the ::ffff: prefix.  And set first 12 octets of the netmask
-		 * to 1, since they're "network" bits when we're treating it as a
-		 * v6 address.
+		 * Initialize the first 12 octets of the address/mask to look
+		 * like a v6-mapped address.  This is the correct info for those
+		 * octets to have if/when we decide to use this v4 address as a
+		 * v6 one.
 		 */
 		for(i=0 ; i<=9 ; i++)
 			toret->addr[i] = 0;
@@ -381,28 +378,13 @@ cidr_from_str(const char *addr)
 		 */
 		if(pflen!=0)
 		{
-			/*
-		 	 * Now, normally, it needs to be 0...32, but we're also accepting
-		 	 * v6-mapped forms, which can have it be 96...128.  So, cover our
-		 	 * rears and bomb on invalid values, and canonicalize valid ones.
-		 	 */
-			if(pflen<0)
+			/* 0 <= pflen <= 32 */
+			if(pflen<0 || pflen>32)
 			{
 				/* Always bad */
 				cidr_free(toret);
 				errno = EINVAL;
 				return(NULL);
-			}
-			if(pflen>32)
-			{
-				/* See if it's a 96...128 v6 mapped prefix length */
-				pflen-=96;
-				if(pflen<0 || pflen>32)
-				{
-					cidr_free(toret);
-					errno = EINVAL;
-					return(NULL);
-				}
 			}
 
 			/*
