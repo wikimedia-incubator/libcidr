@@ -246,7 +246,6 @@ cidr_from_str(const char *addr)
 			break;
 		}
 	}
-	i=0; /* Done */
 
 	if(foundpf==0)
 	{
@@ -264,6 +263,7 @@ cidr_from_str(const char *addr)
 		/* Remember where the prefix is */
 		pfx = addr+i;
 	}
+	i=0; /* Done */
 
 
 	/*
@@ -610,12 +610,77 @@ cidr_from_str(const char *addr)
 
 		/*
 		 * Now we have 16 octets to grab.  If any of 'em fail, or are
-		 * outside the 0...0xff range, bomb.
+		 * outside the 0...0xff range, bomb.  However, we MAY have a
+		 * v4-ish form, whether it's a formal v4 mapped/compat address,
+		 * or just a v4 address written in a v6 block.  So, look for
+		 * .-separated octets, but there better be exactly 4 of them
+		 * before we hit a :.
 		 */
 		nocts = 0;
 		/* i-- to step before the / of the prefix */
 		for( i-- ; i>=0 ; i--)
 		{
+			/*
+			 * First, check the . cases, and handle them all in one
+			 * place.  These can only happen at the beginning, when we
+			 * have no octets yet, and if it happens at all, we need to
+			 * have 4 of them.
+			 */
+			if(nocts==0 && addr[i]=='.')
+			{
+				i++; /* Shift back to after the '.' */
+
+				for( /* i */ ; i>0 && nocts<4 ; i--)
+				{
+					/* This shouldn't happen except at the end */
+					if(addr[i]==':' && nocts<3)
+					{
+						cidr_free(toret);
+						errno = EINVAL;
+						return(NULL);
+					}
+
+					/* If it's not a . or :, move back 1 */
+					if(addr[i]!='.' && addr[i]!=':')
+						continue;
+
+					/* Should be a [decimal] octet right after here */
+					octet = (int)strtol(addr+i+1, NULL, 10);
+					/* Be sure */
+					if(octet<0 || octet>255)
+					{
+						cidr_free(toret);
+						errno = EINVAL;
+						return(NULL);
+					}
+
+					/* Save it */
+					toret->addr[15-nocts] = octet;
+					nocts++;
+
+					/* And find the next octet */
+				}
+
+				/*
+				 * At this point, 4 dotted-decimal octets should be
+				 * consumed, and addr[i] should be the ':' that preceeds
+				 * them.  Verify.
+				 */
+				if(nocts!=4 || addr[i]!=':')
+				{
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+			}
+
+			/*
+			 * Now we've either gotten 4 octets filled in from
+			 * dotted-decimal stuff, or we've filled in nothing and have
+			 * no dotted decimal.
+			 */
+
+
 			/* As long as it's not our separator, keep moving */
 			if(addr[i]!=':' && i>0)
 				continue;
