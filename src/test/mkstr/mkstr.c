@@ -106,6 +106,11 @@ main(int argc, char *argv[])
 void
 usage(void)
 {
+	/*
+	 * Split into two to pacify C89-spec'd gcc:
+	 * mkstr.c:124: warning: string length `736' is greater than the
+	 *        length `509' ISO C89 compilers are required to support
+	 */
 	printf("Usage: %s -[ev6cmwap] [-f [4|6]] address [...]\n\n"
 	       "       -e  Expand zeros instead of ::'ing [v6]\n"
 	       "       -v  Show leading 0's in octets [v4/v6]\n"
@@ -113,14 +118,14 @@ usage(void)
 	       "           (depending on the arg to -f)\n"
 	       "       -6  Use v6-mapped form for addresses [v4]\n"
 	       "       -c  Use v6-compat form for addresses [v4]\n"
-	       "           (implies -6)\n"
-	       "       -m  Show netmask instead of prefix length [v4/v6]\n"
+	       "           (implies -6)\n", pname);
+	printf("       -m  Show netmask instead of prefix length [v4/v6]\n"
 	       "       -w  Show wildcard mask instead of netmask [v4/v6]\n"
 	       "           (meaningless without -m)\n"
 	       "       -a  Show only the address, not the prefix [v4/v6]\n"
 	       "       -p  Show only the prefix length, not the address [v4/v6]\n"
 	       "           (or show netmask when combined with -m)\n"
 	       "       -r  Show .{in-addr,ip6}.arpa PTR forms [v4/v6]\n"
-	       "\n", pname);
+	       "\n");
 	exit(1);
 }
