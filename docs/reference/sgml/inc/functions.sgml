@@ -512,9 +512,17 @@
     <para>
      This is probably the most intricate function in the library.
      It accepts addresses in "address/mask" format.
-     'address' is an IP address in normal written form; 4
-     period-separated octets for IPv4, 8 colon-separated double-octets
-     for IPv6.
+     'address' is an IP address in valid written form.
+     For IPv4, it's 1 through 4 period-separated pieces, expressed in
+     octal, hex, or decimal, with the last octet being treated as an 8,
+     16, 24, or 32-bit quantity depending on whether there are 4, 3, 2,
+     or 1 pieces given (respectively).
+     Of course, you're nuts for using that flexibility.
+     For IPv6, it's nice and simple; 8 colon-separated double-octets,
+     excepting that the last 4 octets can be expressed as a 4-piece
+     dotted-decimal, like an IPv4 address (the full flexibility of the
+     IPv4 parsing engine is not available, however; intentionally, though
+     that may change if necessary).
      'mask' can be either a prefix length (/0-/32 for IPv4, /0-/128 for
      IPv6), or a netmask written in the standard form for the address
      family.
@@ -522,10 +530,7 @@
     <para>
      IPv6 addresses can be specified in fully expanded form, or with
      ::-style contraction.
-     IPv4 addresses can also be specified as v4-mapped IPv6 addresses
-     (::ffff:a.b.c.d), and will be recognized and stored as IPv4
-     addresses, though if they're written in pure v6 form
-     (::ffff:0a0b:0c0d), they will be treated and stored as IPv6
+     IPv4-mapped IPv6 addresses (::ffff:a.b.c.d),  will be treated as IPv6
      addresses.
      The mask can be left off, in which case addresses are treated as
      host addresses (/32 or /128, depending on address family).
@@ -549,16 +554,9 @@
     <para>
      It's not the intention of the author that this function necessarily
      be able to decipher any possible address format.
-     It doesn't support IPv4 addresses expressed as a single 32-bit
-     integer, in decimal or hex.
-     It doesn't support binary forms.
-     Notably, it doesn't support 0-minimized IPv4 addresses (127.1 =
-     127.0.0.1, 127.1.2 = 127.0.1.2), because those forms are confusing
-     and thus hardly ever used, and I agree with not using them.
-     Support for parsing them may be added in the future if there's
-     demand; right now, I don't forsee it.
-    </para>
-    <para>
+     However, the capabilities given should parse any rational address
+     specification, and many irrational ones (like hex and collapsed v4
+     addresses).
      The intention is rather to support the ways the addresses and
      netmasks are commonly written and read, so that a human-readable
      form can quickly be transformed into a format that libcidr can then
@@ -1276,7 +1274,7 @@
      <br>
      CIDR_NOCOMPACT: Don't do ::-style IPv6 compaction
      <br>
-     CIDR_VERBOSE: Show leading 0's in octets [v4/v6]
+     CIDR_VERBOSE: Show leading 0's in octets [v6 only]
      <br>
      CIDR_USEV6: Use IPv4-mapped address form for IPv4 addresses
      (::ffff:a.b.c.d)
