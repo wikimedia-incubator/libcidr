@@ -224,6 +224,7 @@ cidr_from_str(const char *addr)
 
 		/* NOTREACHED */
 	}
+	buf=NULL; /* Done */
 
 
 	/*
@@ -245,15 +246,12 @@ cidr_from_str(const char *addr)
 			break;
 		}
 	}
+	i=0; /* Done */
 
 	if(foundpf==0)
 	{
-		/*
-		 * We didn't actually find a prefix, so reset the foundmask, and
-		 * point back at the end of the string for the below check.
-		 */
+		/* We didn't actually find a prefix, so reset the foundmask */
 		foundmask=0;
-		i = alen-1;
 
 		/*
 		 * pfx is only used if foundpf==1, but set it to NULL here to
@@ -269,33 +267,23 @@ cidr_from_str(const char *addr)
 
 
 	/*
-	 * Now, let's figure out what kind of address this is.  Start moving
-	 * backward from the / we found above (or the end of the string if it
-	 * wasn't not found) , then stepping backward until we hit a . (v4)
-	 * or a : (v6).  We go backward so that if we're given a v6-mapped v4
-	 * address (:ffff:1.2.3.4), we correctly recognize it as v4.
+	 * Now, let's figure out what kind of address this is.  A v6 address
+	 * will contain a : within the first 5 characters ('0000:'), a v4
+	 * address will have a . within the first 4 ('123.'), and anything
+	 * else isn't an address we know anything about, so fail.
 	 */
-	for( /* i */ ; i>=0 ; i--)
+	if((buf = strchr(addr, ':'))!=NULL && (buf-addr)<=5)
+		toret->proto = CIDR_IPV6;
+	else if((buf = strchr(addr, '.'))!=NULL && (buf-addr)<=4)
+		toret->proto = CIDR_IPV4;
+	else
 	{
-		if(addr[i]=='.')
-		{
-			toret->proto = CIDR_IPV4;
-			break;
-		}
-		else if(addr[i]==':')
-		{
-			toret->proto = CIDR_IPV6;
-			break;
-		}
-	}
-
-	/* This shouldn't happen */
-	if(toret->proto==CIDR_NOPROTO)
-	{
+		/* Unknown */
 		cidr_free(toret);
 		errno = EINVAL;
 		return(NULL);
 	}
+	buf=NULL; /* Done */
 
 
 	/*
