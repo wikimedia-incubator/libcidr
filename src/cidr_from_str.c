@@ -255,7 +255,7 @@ cidr_from_str(const char *addr)
 
 		/*
 		 * pfx is only used if foundpf==1, but set it to NULL here to
-		 * quite gcc down.
+		 * quiet gcc down.
 		 */
 		pfx=NULL;
 	}
@@ -295,7 +295,7 @@ cidr_from_str(const char *addr)
 		/*
 		 * Parse a v4 address.  Now, we're being a little tricksy here,
 		 * and parsing it from the end instead of from the front.  This
-		 * let's us ignore leading garbage (like, for instance, the
+		 * lets us ignore leading garbage (like, for instance, the
 		 * address being given in v6-mapped format).
 		 *
 		 * First, initialize this so we can skip building the bits if we
