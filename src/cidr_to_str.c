@@ -122,10 +122,7 @@ cidr_to_str(const CIDR *block, int flags)
 			/* Now, slap on the v4 address */
 			for(i=12 ; i<=15 ; i++)
 			{
-				if(flags & CIDR_VERBOSE)
-					sprintf(tmpbuf, "%03u", (block->addr)[i]);
-				else
-					sprintf(tmpbuf, "%u", (block->addr)[i]);
+				sprintf(tmpbuf, "%u", (block->addr)[i]);
 				strcat(toret, tmpbuf);
 				if(i<15)
 					strcat(toret, ".");
@@ -154,10 +151,7 @@ cidr_to_str(const CIDR *block, int flags)
 					moct = (block->mask)[i];
 					if(flags & CIDR_WILDCARD)
 						moct = ~(moct);
-					if(flags & CIDR_VERBOSE)
-						sprintf(tmpbuf, "%03u", moct);
-					else
-						sprintf(tmpbuf, "%u", moct);
+					sprintf(tmpbuf, "%u", moct);
 					strcat(toret, tmpbuf);
 					if(i<15)
 						strcat(toret, ".");
