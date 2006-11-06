@@ -345,7 +345,7 @@ cidr_from_str(const char *addr)
 		 */
 		buf = strchr(addr, '.');
 		/* Through here, nsect counts dots */
-		for(nsect=0 ; buf!=NULL ; buf=strchr(buf, '.'))
+		for(nsect=0 ; buf!=NULL && (pfx!=NULL?buf<pfx:1) ; buf=strchr(buf, '.'))
 		{
 			nsect++; /* One more section */
 			buf++; /* Move past . */
