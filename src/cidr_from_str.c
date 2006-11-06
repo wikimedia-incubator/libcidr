@@ -253,6 +253,43 @@ cidr_from_str(const char *addr)
 	{
 		/* Remember where the prefix is */
 		pfx = addr+i;
+
+		if(foundmask==0)
+		{
+			/*
+		 	 * If we didn't find a netmask, it may be that it's one of
+		 	 * the v4 forms without dots.  Technically, it COULD be
+		 	 * expressed as a single (32-bit) number that happens to be
+		 	 * between 0 and 32 inclusive, so there's no way to be
+		 	 * ABSOLUTELY sure when we have a prefix length and not a
+		 	 * netmask.  But, that would be a non-contiguous netmask,
+		 	 * which we don't attempt to support, so we can probably
+		 	 * safely ignore that case.  So try a few things...
+		 	 */
+		 	/* If it's a hex or octal number, assume it's a mask */
+		 	if(pfx[1]=='0' && tolower(pfx[2])=='x')
+		 		foundmask=1; /* Hex */
+		 	else if(pfx[1]=='0')
+		 		foundmask=1; /* Oct */
+		 	else if(isdigit(pfx[1]))
+		 	{
+		 		/*
+		 		 * If we get here, it looks like a decimal number, and we
+		 		 * know there aren't any periods or colons in it, so if
+		 		 * it's valid, it can ONLY be a single 32-bit decimal
+		 		 * spanning the whole 4-byte v4 address range.  If that's
+		 		 * true, it's GOTTA be a valid number, it's GOTTA reach
+		 		 * to the end of the strong, and it's GOTTA be at least
+		 		 * 2**31 and less than 2**32.
+		 		 */
+		 		octet = strtoul(pfx+1, &buf2, 10);
+		 		if(*buf2=='\0' && octet >= (unsigned long)(1<<31)
+		 				&& octet <= (unsigned long)0xffffffff)
+		 			foundmask=1; /* Valid! */
+
+				octet=0; buf2=NULL; /* Done */
+			}
+		}
 	}
 	i=0; /* Done */
 
