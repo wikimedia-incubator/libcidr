@@ -18,10 +18,11 @@ main(int argc, char *argv[])
 	CIDR *tcidr;
 	char *tstr;
 	int cflags, goch;
+	short regr=0;
 
 	cflags=CIDR_NOFLAGS;
 	pname = *argv;
-	while((goch=getopt(argc, argv, "ev6cmapwrf:"))!=-1)
+	while((goch=getopt(argc, argv, "ev6cmapwrf:_"))!=-1)
 	{
 		switch((char)goch)
 		{
@@ -63,6 +64,9 @@ main(int argc, char *argv[])
 					usage();
 				}
 				break;
+			case '_':
+				regr=1; /* Hidden arg for regression test mode */
+				break;
 			default:
 				printf("Unknown argument: '%c'\n", goch);
 				usage();
@@ -82,15 +86,24 @@ main(int argc, char *argv[])
 		tstr = NULL;
 		tcidr = cidr_from_str(*argv);
 		if(tcidr==NULL)
-			printf("***> ERROR: From '%s', got NULL!!\n", *argv);
+			if(regr==1)
+				printf("'%s' -> FROMFAILED\n", *argv);
+			else
+				printf("***> ERROR: From '%s', got NULL!!\n", *argv);
 		else
 		{
 			tstr = cidr_to_str(tcidr, cflags);
 			if(tstr==NULL)
-				printf("***> ERROR: From '%s', got tcidr, got "
-						"str NULL!!\n", *argv);
+				if(regr==1)
+					printf("'%s' -> TOFAILED\n", *argv);
+				else
+					printf("***> ERROR: From '%s', got tcidr, got "
+							"str NULL!!\n", *argv);
 			else
-				printf("From '%s', got str '%s'.\n", *argv, tstr);
+				if(regr==1)
+					printf("'%s' -> '%s'\n", *argv, tstr);
+				else
+					printf("From '%s', got str '%s'.\n", *argv, tstr);
 
 			cidr_free(tcidr);
 			free(tstr);
