@@ -126,7 +126,7 @@ usage(void)
 	 */
 	printf("Usage: %s -[ev6cmwap] [-f [4|6]] address [...]\n\n"
 	       "       -e  Expand zeros instead of ::'ing [v6]\n"
-	       "       -v  Show leading 0's in octets [v4/v6]\n"
+	       "       -v  Show leading 0's in octets [v6]\n"
 	       "       -f  Force parsing of address as v4 or v6 [v4/v6]\n"
 	       "           (depending on the arg to -f)\n"
 	       "       -6  Use v6-mapped form for addresses [v4]\n"
