@@ -87,7 +87,7 @@ main(int argc, char *argv[])
 		tcidr = cidr_from_str(*argv);
 		if(tcidr==NULL)
 			if(regr==1)
-				printf("'%s' -> FROMFAILED\n", *argv);
+				printf("'%s' -> 'FROMFAILED'\n", *argv);
 			else
 				printf("***> ERROR: From '%s', got NULL!!\n", *argv);
 		else
@@ -95,7 +95,7 @@ main(int argc, char *argv[])
 			tstr = cidr_to_str(tcidr, cflags);
 			if(tstr==NULL)
 				if(regr==1)
-					printf("'%s' -> TOFAILED\n", *argv);
+					printf("'%s' -> 'TOFAILED'\n", *argv);
 				else
 					printf("***> ERROR: From '%s', got tcidr, got "
 							"str NULL!!\n", *argv);
