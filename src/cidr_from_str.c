@@ -310,14 +310,31 @@ cidr_from_str(const char *addr)
 		/*
 		 * Special v4 forms
 		 */
-		if(*addr=='0' && tolower(*(addr+1))=='x'
-		   && addr[2+strspn(addr+2, "0123456789abcdefABCDEF")]=='\0')
-			toret->proto = CIDR_IPV4; /* Valid hex  */
-		else if(*addr=='0' && addr[1+strspn(addr+1, "01234567")]=='\0')
-			toret->proto = CIDR_IPV4; /* Valid octal */
-		else if(addr[strspn(addr, "0123456789")]=='\0')
-			toret->proto = CIDR_IPV4; /* Valid decimal */
+		if(*addr=='0' && tolower(*(addr+1))=='x')
+		{
+			/* Hex? */
+			buf = (addr+2) + strspn(addr+2, "0123456789abcdefABCDEF");
+			if(*buf=='\0' || *buf=='/')
+				toret->proto = CIDR_IPV4; /* Yep */
+		}
+		else if(*addr=='0')
+		{
+			/* Oct? */
+			/* (note: this also catches the [decimal] address '0' */
+			buf = (addr+1) + strspn(addr+1, "01234567");
+			if(*buf=='\0' || *buf=='/')
+				toret->proto = CIDR_IPV4; /* Yep */
+		}
 		else
+		{
+			/* Dec? */
+			buf = (addr) + strspn(addr, "0123456789");
+			if(*buf=='\0' || *buf=='/')
+				toret->proto = CIDR_IPV4; /* Yep */
+		}
+
+		/* Did we catch anything? */
+		if(toret->proto == 0)
 		{
 			/* Unknown */
 			cidr_free(toret);
