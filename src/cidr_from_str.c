@@ -940,15 +940,24 @@ cidr_from_str(const char *addr)
 					return(toret);
 
 				/*
-				 * Else, there's more to come, so skip until there IS a
-				 * xdigit...
+				 * Else, there's more to come.  We better be pointing at
+				 * a ':', else die.
 				 */
-				while(!isxdigit(addr[i]) && i<j)
-					i++;
+				if(addr[i]!=':')
+				{
+					cidr_free(toret);
+					return(NULL);
+				}
 
-				/* Ditto above */
+				/* Skip past : */
+				i++;
+
+				/* If we're at j now, we had a ':::', which is invalid */
 				if(i==j)
-					return(toret);
+				{
+					cidr_free(toret);
+					return(NULL);
+				}
 
 				/* Head back around */
 			}
