@@ -828,7 +828,15 @@ cidr_from_str(const char *addr)
 			/* Cheat for "beginning-of-string" rather than "NaN" */
 			if(i==0)
 				i--;
-			octet = strtoul(addr+i+1, NULL, 16);
+			octet = strtoul(addr+i+1, &buf2, 16);
+			if(*buf2!=':' && *buf2!='/' && *buf2!='\0')
+			{
+				/* Got something unexpected */
+				cidr_free(toret);
+				errno = EINVAL;
+				return(NULL);
+			}
+			buf2=NULL;
 
 			/* Remember, this is TWO octets */
 			if(octet<0 || octet>0xffff)
@@ -881,7 +889,15 @@ cidr_from_str(const char *addr)
 				 * We should be pointing at the beginning of a digit
 				 * string now.  Translate it into an octet.
 				 */
-				octet = strtoul(addr+i, NULL, 16);
+				octet = strtoul(addr+i, &buf2, 16);
+				if(*buf2!=':' && *buf2!='/' && *buf2!='\0')
+				{
+					/* Got something unexpected */
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+				buf2=NULL;
 
 				/* Sanity (again, 2 octets) */
 				if(octet<0 || octet>0xffff)
