@@ -567,7 +567,7 @@ cidr_from_str(const char *addr)
 			 * for details.
 			 */
 			if( octet<0 || (nocts!=0 && octet>255)
-			    || (nocts==0 && octet>(0xffffffff >> (7*(nsect-1)))) )
+			    || (nocts==0 && octet>(0xffffffff >> (8*(nsect-1)))) )
 			{
 				cidr_free(toret);
 				errno = EINVAL;
