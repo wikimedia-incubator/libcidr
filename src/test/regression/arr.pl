@@ -118,22 +118,56 @@ our %TESTS = (
 
 
 		# Stuff we expect to fail
+		# Too long/too big/etc
 		'27.226.49.7.11' => [
-			{ 'res' => 'FROMFAILED', },
-		],
-		'17.29.393.195' => [
-			{ 'res' => 'FROMFAILED', },
-		],
-		'1.2.3.4/255.255.255.17' => [
 			{ 'res' => 'FROMFAILED', },
 		],
 		'fe27::eeb97' => [
 			{ 'res' => 'FROMFAILED', },
 		],
+		'17.29.393.195' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'17.29.195.393' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+
+		# Invalid masks
+		'1.2.3.4/255.255.255.17' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'1.2.3.4/255.255.255.256' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'1.2.3.4/255.255.0.255' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+
+		# Invalid characters
+		'1.2.b.4' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'1.2.08.4' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'1.2.0xg.4' => [
+			{ 'res' => 'FROMFAILED', },
+		],
 		'fe27::geb9' => [
 			{ 'res' => 'FROMFAILED', },
 		],
+		'ge27::1ab2' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'e2g::1ab2' => [
+			{ 'res' => 'FROMFAILED', },
+		],
 		'fe27::geeb9' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+
+		# Downright wrong formats
+		'fe38:::1234' => [
 			{ 'res' => 'FROMFAILED', },
 		],
 
