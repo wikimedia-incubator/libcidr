@@ -772,13 +772,14 @@ cidr_from_str(const char *addr)
 
 					/* And find the next octet */
 				}
-
+				
 				/*
 				 * At this point, 4 dotted-decimal octets should be
-				 * consumed, and addr[i] should be the ':' that preceeds
-				 * them.  Verify.
+				 * consumed.  i has gone back one step past the : before
+				 * the decimal, so addr[i+1] should be the ':' that
+				 * preceeds them.  Verify.
 				 */
-				if(nocts!=4 || addr[i]!=':')
+				if(nocts!=4 || addr[i+1]!=':')
 				{
 					cidr_free(toret);
 					errno = EINVAL;
