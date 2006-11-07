@@ -31,6 +31,14 @@ cidr_from_str(const char *addr)
 		return(NULL);
 	}
 
+	/* And we know it can only contain a given set of chars */
+	buf = addr + strspn(addr, "0123456789abcdefABCDEFxX.:/");
+	if(*buf!='\0')
+	{
+		errno = EINVAL;
+		return(NULL);
+	}
+
 	toret = cidr_alloc();
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
