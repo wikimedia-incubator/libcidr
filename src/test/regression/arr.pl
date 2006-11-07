@@ -133,6 +133,9 @@ our %TESTS = (
 		'fe27::geb9' => [
 			{ 'res' => 'FROMFAILED', },
 		],
+		'fe27::geeb9' => [
+			{ 'res' => 'FROMFAILED', },
+		],
 
 	},
 );
