@@ -13,7 +13,12 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+/* Linux (FC6) needs this #define to get strdup()?  The hell? */
+#define __USE_BSD
 #include <string.h>
+#undef __USE_BSD
+
 #include <unistd.h>
 /* Linux systems need this, contrary to SuSv3 */
 #include <getopt.h>
@@ -221,7 +226,9 @@ main(int argc, char *argv[])
 		exit(1);
 	}
 	setsockopt(sp4, SOL_SOCKET, SO_REUSEADDR, &sckopt, sizeof(sckopt));
+#if defined(SO_REUSEPORT) /* May not exist */
 	setsockopt(sp4, SOL_SOCKET, SO_REUSEPORT, &sckopt, sizeof(sckopt));
+#endif
 	if(bind(sp4, (struct sockaddr *) &srv4, sizeof(srv4)) == -1)
 	{
 		printf("Error: Couldn't bind v4 socket: %s\n", strerror(errno));
@@ -239,7 +246,9 @@ main(int argc, char *argv[])
 		exit(1);
 	}
 	setsockopt(sp6, SOL_SOCKET, SO_REUSEADDR, &sckopt, sizeof(sckopt));
+#if defined(SO_REUSEPORT) /* May not exist */
 	setsockopt(sp6, SOL_SOCKET, SO_REUSEPORT, &sckopt, sizeof(sckopt));
+#endif
 	if(bind(sp6, (struct sockaddr *) &srv6, sizeof(srv6)) == -1)
 	{
 		printf("Error: Couldn't bind v6 socket: %s\n", strerror(errno));
