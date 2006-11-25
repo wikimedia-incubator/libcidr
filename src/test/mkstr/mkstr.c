@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-/* Linux systems need this, contrary to SUSv3 */
-#include <getopt.h>
 
 #include <libcidr.h>
 
