@@ -289,6 +289,21 @@ our %TESTS = (
 		'amooseoncebitmysister' => [
 			{ 'res' => 'FROMFAILED', },
 		],
+		'/' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'/27' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'/255.255.255.0' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'/ffff::' => [
+			{ 'res' => 'FROMFAILED', },
+		],
+		'/120::' => [
+			{ 'res' => 'FROMFAILED', },
+		],
 
 	},
 );
