@@ -5,6 +5,11 @@ CLEAN_FILES = ${O_FILES} cidr_mkstr *core .depend
 
 L_FLAGS = -g -pipe -L../.. -lcidr
 
+.ifdef USE_DMALLOC
+C_FLAGS += -w -I/usr/local/include -DUSE_DMALLOC
+L_FLAGS += -L/usr/local/lib -ldmalloc
+.endif
+
 .include "../../Makefile.inc"
 
 # This need to be after the include

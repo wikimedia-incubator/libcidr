@@ -9,6 +9,10 @@
 
 #include <libcidr.h>
 
+#ifdef USE_DMALLOC
+#include <dmalloc.h>
+#endif
+
 char *pname;
 void usage(void);
 
