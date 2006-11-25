@@ -119,7 +119,15 @@ cidr_from_str(const char *addr)
 				 * Save that number (++i here to show that this octet is
 				 * now set.
 				 */
-				toret->addr[++i] = (uint8_t)strtol(buf+1, NULL, 10);
+				octet = strtoul(buf+1, NULL, 10);
+				if(octet > (unsigned long)0xff)
+				{
+					/* Bad octet!  No biscuit! */
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+				toret->addr[++i] = octet;
 
 
 				/*
@@ -129,6 +137,14 @@ cidr_from_str(const char *addr)
 				 * will drop us out.
 				 */
 				buf--;
+			}
+
+			/* Too much? */
+			if(buf>=addr)
+			{
+				cidr_free(toret);
+				errno = EINVAL;
+				return(NULL);
 			}
 
 			/*
@@ -169,12 +185,24 @@ cidr_from_str(const char *addr)
 				}
 
 				/* Save the current number */
-				toret->addr[i] = ((uint8_t)strtol(buf, NULL, 16)) << 4;
+				octet = strtoul(buf, NULL, 16);
+				if(octet > (unsigned long)0xff)
+				{
+					/* Bad octet!  No biscuit! */
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+				toret->addr[i] = octet << 4;
 				toret->mask[i] = 0xf0;
 
 				/* If we're at the beginning of the string, we're thru */
 				if(buf==addr)
+				{
+					/* Shift back to skip error condition at end of loop */
+					buf--;
 					break;
+				}
 
 				/* If we're not, stepping back should give us a period */
 				if(*--buf != '.')
@@ -195,7 +223,15 @@ cidr_from_str(const char *addr)
 				}
 
 				/* Save that one */
-				toret->addr[i] |= ((uint8_t)strtol(buf, NULL, 16)) & 0x0f;
+				octet = strtoul(buf, NULL, 16);
+				if(octet > (unsigned long)0xff)
+				{
+					/* Bad octet!  No biscuit! */
+					cidr_free(toret);
+					errno = EINVAL;
+					return(NULL);
+				}
+				toret->addr[i] |= octet & 0x0f;
 				toret->mask[i] |= 0x0f;
 
 
@@ -206,6 +242,14 @@ cidr_from_str(const char *addr)
 				 */
 				while(*--buf=='.' && buf>=addr)
 					/* nothing */;
+			}
+
+			/* Too much? */
+			if(buf>=addr)
+			{
+				cidr_free(toret);
+				errno = EINVAL;
+				return(NULL);
 			}
 
 			/* Mask is set in the loop for v6 */
