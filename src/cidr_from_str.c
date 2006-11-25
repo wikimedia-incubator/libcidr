@@ -389,7 +389,7 @@ cidr_from_str(const char *addr)
 		 * First, initialize this so we can skip building the bits if we
 		 * don't have to.
 		 */
-		pflen=0;
+		pflen=-1;
 
 		/*
 		 * Initialize the first 12 octets of the address/mask to look
@@ -407,11 +407,17 @@ cidr_from_str(const char *addr)
 		/*
 		 * Handle the prefix/netmask.  If it's not set at all, slam it to
 		 * the maximum, and put us at the end of the string to start out.
+		 * Ditto if the '/' is the end of the string.
 		 */
 		if(foundpf==0)
 		{
 			pflen=32;
 			i=alen-1;
+		}
+		else if(foundpf==1 && *(pfx+1)=='\0')
+		{
+			pflen=32;
+			i=pfx-addr-1;
 		}
 
 		/*
@@ -420,7 +426,7 @@ cidr_from_str(const char *addr)
 		 * recursively, and then just count the bits in our returned
 		 * address for the pflen.
 		 */
-		if(foundpf==1 && foundmask==1)
+		if(foundpf==1 && foundmask==1 && pflen==-1)
 		{
 			ctmp = cidr_from_str(pfx+1);
 			if(ctmp==NULL)
@@ -454,7 +460,7 @@ cidr_from_str(const char *addr)
 		 * just pull it it, parse it out, and set ourselves to the first
 		 * character before the / for the address reading
 		 */
-		if(foundpf==1 && foundmask==0)
+		if(foundpf==1 && foundmask==0 && pflen==-1)
 		{
 			pflen = (int)strtol(pfx+1, NULL, 10);
 			i = pfx-addr-1;
@@ -466,9 +472,9 @@ cidr_from_str(const char *addr)
 		 * XXX pflen actually should ALWAYS be set, so we might not need
 		 * to make this conditional at all...
 		 */
-		if(pflen!=0)
+		if(pflen>0)
 		{
-			/* 0 <= pflen <= 32 */
+			/* 0 < pflen <= 32 */
 			if(pflen<0 || pflen>32)
 			{
 				/* Always bad */
@@ -629,7 +635,7 @@ cidr_from_str(const char *addr)
 		 *
 		 * Initialize the prefix length
 		 */
-		pflen=0;
+		pflen=-1;
 
 		/* If no prefix was found, assume the max */
 		if(foundpf==0)
@@ -638,12 +644,17 @@ cidr_from_str(const char *addr)
 			/* Stretch back to the end of the string */
 			i=alen-1;
 		}
+		else if(foundpf==1 && *(pfx+1)=='\0')
+		{
+			pflen = 128;
+			i=pfx-addr-1;
+		}
 
 		/*
 		 * If we got a netmask, rather than a prefix length, parse it and
 		 * count the bits, like we did for v4.
 		 */
-		if(foundpf==1 && foundmask==1)
+		if(foundpf==1 && foundmask==1 && pflen==-1)
 		{
 			ctmp = cidr_from_str(pfx+1);
 			if(ctmp==NULL)
@@ -671,7 +682,7 @@ cidr_from_str(const char *addr)
 		}
 
 		/* Finally, the normal prefix case */
-		if(foundpf==1 && foundmask==0)
+		if(foundpf==1 && foundmask==0 && pflen==-1)
 		{
 			pflen = (int)strtol(pfx+1, NULL, 10);
 			i = pfx-addr-1;
@@ -683,7 +694,7 @@ cidr_from_str(const char *addr)
 		 * XXX pflen actually should ALWAYS be set, so we might not need
 		 * to make this conditional at all...
 		 */
-		if(pflen!=0)
+		if(pflen>0)
 		{
 			/* Better be 0...128 */
 			if(pflen<0 || pflen>128)

@@ -110,6 +110,15 @@ our %TESTS = (
 			{ 'args' => '-m', 'res' => '::/::', },
 		],
 
+		# Arbitrary decision: Nothing after / is {32,128}, just as if no
+		# / where given at all.
+		'1.2.3.4/' => [
+			{ 'res' => '1.2.3.4/32', },
+		],
+		'12::34/' => [
+			{ 'res' => '12::34/128', },
+		],
+
 
 		# Play with v4 mapped/compat
 		'192.168.27.49/24' => [
