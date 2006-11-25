@@ -16,9 +16,9 @@ fi
 
 
 bzr checkout --lightweight .. ${dstdir}
+(cd ${dstdir}/src && sed -i "" -e "s/-Werror/#-Werror/" Makefile.inc )
 (cd ${dstdir} && sh mkgmake.sh)
 (cd ${dstdir}/docs/reference/sgml/ && make all clean)
-(cd ${dstdir}/src && sed -i "" -e "s/-Werror/#-Werror/" Makefile.inc )
 (cd ${dstdir}/include && \
 	revid=`bzr testament | grep ^revision-id | awk '{print $2}'` ; \
 	sed -i "" -e "s/CIDR_REVISION \"\"/CIDR_REVISION \" (${revid})\"/" \
