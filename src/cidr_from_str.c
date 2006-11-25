@@ -534,7 +534,11 @@ cidr_from_str(const char *addr)
 		 * outside the 0...255 range, bomb.
 		 */
 		nocts = 0;
-		/* i was set in our mask conditions above */
+
+		/* Here, i should be before the /, but we may have multiple */
+		while(i>0 && addr[i]=='/')
+			i--;
+		
 		for( /* i */ ; i>=0 ; i--)
 		{
 			/*
@@ -748,8 +752,12 @@ cidr_from_str(const char *addr)
 		 * before we hit a :.
 		 */
 		nocts = 0;
-		/* i-- to step before the / of the prefix */
-		for( i-- ; i>=0 ; i--)
+
+		/* Bump before / (or multiple /'s */
+		while(i>0 && addr[i]=='/')
+			i--;
+
+		for( /* i */ ; i>=0 ; i--)
 		{
 			/*
 			 * First, check the . cases, and handle them all in one
