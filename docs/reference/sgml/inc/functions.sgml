@@ -555,8 +555,8 @@
      It's not the intention of the author that this function necessarily
      be able to decipher any possible address format.
      However, the capabilities given should parse any rational address
-     specification, and many irrational ones (like hex and collapsed v4
-     addresses).
+     specification, and many irrational ones (like hex/oct and collapsed
+     v4 addresses).
      The intention is rather to support the ways the addresses and
      netmasks are commonly written and read, so that a human-readable
      form can quickly be transformed into a format that libcidr can then
