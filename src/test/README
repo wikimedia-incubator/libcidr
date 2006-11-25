@@ -13,8 +13,16 @@ using the shared library, even though it's not in any of the standard
 system library paths.  Thus, you'd build the programs, then run them with
 an invocation something like "../run.sh ./cidr_mkstr 1.2.3.4/5".
 
+
 Here's a quick rundown of what they cover:
 
+- regression/ contains a perl script intended for automated regression
+  testing.  Currently, it only tests 'mkstr', since the place I'm worried
+  about regressions (and finding always more weird edge cases in) is in
+  cidr_from_str(); the rest of the functions are sufficiently simple that
+  I've not yet found a need for automated testing of them.
+  cidr_from_str() is fiendishly complicated, and fixing one thing often
+  breaks another, so it's needed here.
 
 - compare/ takes two blocks on the command line, and uses cidr_contains()
   to tell you whether they're the same block, one contains the other, or
