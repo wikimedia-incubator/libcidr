@@ -3,6 +3,7 @@
 # Make GNU make Makefiles
 MAKEFILES="Makefile Makefile.inc src/Makefile src/Makefile.inc
 		src/examples/acl/Makefile src/examples/cidrcalc/Makefile
+		src/test/Makefile
 		src/test/compare/Makefile
 		src/test/inaddr/Makefile
 		src/test/kids/Makefile
