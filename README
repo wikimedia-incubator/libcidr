@@ -16,6 +16,13 @@ INSTALLATION
   need to run the mkgmake.sh script to generate GNU make Makefiles, if
   you use GNU make (this should be already done on released tarballs).
 
+  The Makefiles are written with the assumption that you're using gcc.
+  There is, however, to my knowledge, nothing in the code that requires
+  gcc specifically.  The code is aimed at C99-compliant systems (with a
+  few extremely common POSIX/SUS extensions in sample programs), but
+  _should_ work on C89 systems as well.  If you're using a compiler other
+  than gcc, you may need to adjust the flags given to the compiler.
+
   This library requires the POSIX/C99 uintX_t types, as well as basic
   IPv6 header file support.  If your system lacks either of these, you
   can probably get the system to build by typedef'ing uint8_t as an
