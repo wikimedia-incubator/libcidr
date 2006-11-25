@@ -14,7 +14,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Linux (FC6) needs this #define to get strdup()?  The hell? */
+/*
+ * Linux (FC6) blows beats on strdup() when -std=c99 (or c89) is set in
+ * the gcc command line.  Why?  I have no earthly idea.  This #define
+ * hacks around it, but may have other wonky side effects.
+ */
 #define __USE_BSD
 #include <string.h>
 #undef __USE_BSD
