@@ -441,10 +441,14 @@
     </longdesc>
    </returns>
    <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
     <note>
      <para>
-      <fref target="cidr-from-inaddr"> can fail and set errno for any of
-      the reasons listed for <fref target="cidr-alloc">.
+      <fref target="cidr-from-inaddr"> can also fail and set errno for
+      any of the reasons listed for <fref target="cidr-alloc">.
      </para>
     </note>
    </errs>
@@ -490,10 +494,14 @@
     </longdesc>
    </returns>
    <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
     <note>
      <para>
-      <fref target="cidr-from-inaddr"> can fail and set errno for any of
-      the reasons listed for <fref target="cidr-alloc">.
+      <fref target="cidr-from-inaddr"> can also fail and set errno for
+      any of the reasons listed for <fref target="cidr-alloc">.
      </para>
     </note>
    </errs>
@@ -659,6 +667,10 @@
    </returns>
    <errs>
     <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
+    <err>
      <ecode>ENOMEM</ecode>
      <emean><func>malloc</func> failed</emean>
     </err>
@@ -704,6 +716,10 @@
    </returns>
    <errs>
     <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
+    <err>
      <ecode>ENOMEM</ecode>
      <emean><func>malloc</func> failed</emean>
     </err>
@@ -742,6 +758,10 @@
     </longdesc>
    </returns>
    <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
     <err>
      <ecode>EINVAL</ecode>
      <emean>Invalid (non-contiguous) netmask</emean>
@@ -782,6 +802,12 @@
      </para>
     </longdesc>
    </returns>
+   <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
+   </errs>
   </function>
 
   <function type="public" name="cidr-is-v4mapped">
@@ -965,10 +991,14 @@
     </longdesc>
    </returns>
    <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
     <note>
      <para>
-      <fref target="cidr-numaddr"> can fail and set errno for any of the
-      reasons listed for <fref target="cidr-numaddr-pflen">.
+      <fref target="cidr-numaddr"> can also also fail and set errno for
+      any of the reasons listed for <fref target="cidr-numaddr-pflen">.
      </para>
     </note>
    </errs>
@@ -1062,10 +1092,14 @@
     </longdesc>
    </returns>
    <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
     <note>
      <para>
-      <fref target="cidr-numhost"> can fail and set errno for any of the
-      reasons listed for <fref target="cidr-numhost-pflen">.
+      <fref target="cidr-numhost"> can also also fail and set errno for
+      any of the reasons listed for <fref target="cidr-numhost-pflen">.
      </para>
     </note>
    </errs>
@@ -1175,6 +1209,10 @@
    </returns>
    <errs>
     <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
+    <err>
      <ecode>ENOMEM</ecode>
      <emean><func>malloc</func> failed</emean>
     </err>
@@ -1239,6 +1277,10 @@
     </longdesc>
    </returns>
    <errs>
+    <err>
+     <ecode>EFAULT</ecode>
+     <emean>Passed NULL</emean>
+    </err>
     <err>
      <ecode>ENOMEM</ecode>
      <emean><func>malloc</func> failed</emean>
