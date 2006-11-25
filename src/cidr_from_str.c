@@ -32,7 +32,7 @@ cidr_from_str(const char *addr)
 	}
 
 	/* And we know it can only contain a given set of chars */
-	buf = addr + strspn(addr, "0123456789abcdefABCDEFxX.:/");
+	buf = addr + strspn(addr, "0123456789abcdefABCDEFxX.:/in-rpt");
 	if(*buf!='\0')
 	{
 		errno = EINVAL;
