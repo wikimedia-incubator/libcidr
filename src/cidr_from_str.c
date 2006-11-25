@@ -1050,6 +1050,7 @@ cidr_from_str(const char *addr)
 	}
 
 
-	/* Give back the build-up struct */
-	return(toret);
+	/* NOTREACHED */
+	errno = ENOENT;
+	return(NULL);
 }
