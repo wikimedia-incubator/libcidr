@@ -37,7 +37,7 @@ CFLAGS = ${_CFLAGS}
 O_FILES = ${C_FILES:%.c=%.o}
 SO_FILES = ${C_FILES:%.c=%.So}
 
-CC = gcc
+CC = cc
 LD = ld
 MV = mv
 LN = ln
