@@ -45,8 +45,8 @@ the uses to which the libcidr functions can be put.
   sort of digesting functions can be useful in analysis or cosmetics;
   I've some vague plans to use these capabilities as the backend of yet
   another IP address/subnet management tool, for instance.  I've also
-  the output of this sort of tool handy when I'm trying to explain the
-  concepts of subnetting to somebody.
+  found the output of this sort of tool handy when I'm trying to explain
+  the concepts of subnetting to somebody.
 
 
 
