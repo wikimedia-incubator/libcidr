@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+/* Linux systems need this, contrary to SuSv3 */
+#include <getopt.h>
 
 #include <libcidr.h>
 
