@@ -8,6 +8,7 @@
 #include <stdio.h> /* I'm always stuffing debug printf's into here */
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include <libcidr.h>
 
