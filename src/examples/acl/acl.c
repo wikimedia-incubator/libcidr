@@ -20,7 +20,7 @@
 #undef __USE_BSD
 
 #include <unistd.h>
-/* Linux systems need this, contrary to SuSv3 */
+/* Linux systems need this, contrary to SUSv3 */
 #include <getopt.h>
 
 #include <libcidr.h>
