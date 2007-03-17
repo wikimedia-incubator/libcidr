@@ -32,8 +32,8 @@
 #define CIDR_IPV6           2
 
 /* Versioning info */
-#define CIDR_VERSION "1.1"
-#define CIDR_RELEASE "release"
+#define CIDR_VERSION "1.2"
+#define CIDR_RELEASE "devel"
 #define CIDR_REVISION ""
 #define CIDR_VERSION_STR (CIDR_VERSION "-" CIDR_RELEASE CIDR_REVISION)
 
