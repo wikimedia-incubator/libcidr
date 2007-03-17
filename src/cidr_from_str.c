@@ -310,35 +310,35 @@ cidr_from_str(const char *addr)
 		if(foundmask==0)
 		{
 			/*
-		 	 * If we didn't find a netmask, it may be that it's one of
-		 	 * the v4 forms without dots.  Technically, it COULD be
-		 	 * expressed as a single (32-bit) number that happens to be
-		 	 * between 0 and 32 inclusive, so there's no way to be
-		 	 * ABSOLUTELY sure when we have a prefix length and not a
-		 	 * netmask.  But, that would be a non-contiguous netmask,
-		 	 * which we don't attempt to support, so we can probably
-		 	 * safely ignore that case.  So try a few things...
-		 	 */
-		 	/* If it's a hex or octal number, assume it's a mask */
-		 	if(pfx[1]=='0' && tolower(pfx[2])=='x')
-		 		foundmask=1; /* Hex */
-		 	else if(pfx[1]=='0')
-		 		foundmask=1; /* Oct */
-		 	else if(isdigit(pfx[1]))
-		 	{
-		 		/*
-		 		 * If we get here, it looks like a decimal number, and we
-		 		 * know there aren't any periods or colons in it, so if
-		 		 * it's valid, it can ONLY be a single 32-bit decimal
-		 		 * spanning the whole 4-byte v4 address range.  If that's
-		 		 * true, it's GOTTA be a valid number, it's GOTTA reach
-		 		 * to the end of the strong, and it's GOTTA be at least
-		 		 * 2**31 and less than 2**32.
-		 		 */
-		 		octet = strtoul(pfx+1, &buf2, 10);
-		 		if(*buf2=='\0' && octet >= (unsigned long)(1<<31)
-		 				&& octet <= (unsigned long)0xffffffff)
-		 			foundmask=1; /* Valid! */
+			 * If we didn't find a netmask, it may be that it's one of
+			 * the v4 forms without dots.  Technically, it COULD be
+			 * expressed as a single (32-bit) number that happens to be
+			 * between 0 and 32 inclusive, so there's no way to be
+			 * ABSOLUTELY sure when we have a prefix length and not a
+			 * netmask.  But, that would be a non-contiguous netmask,
+			 * which we don't attempt to support, so we can probably
+			 * safely ignore that case.  So try a few things...
+			 */
+			/* If it's a hex or octal number, assume it's a mask */
+			if(pfx[1]=='0' && tolower(pfx[2])=='x')
+				foundmask=1; /* Hex */
+			else if(pfx[1]=='0')
+				foundmask=1; /* Oct */
+			else if(isdigit(pfx[1]))
+			{
+				/*
+				 * If we get here, it looks like a decimal number, and we
+				 * know there aren't any periods or colons in it, so if
+				 * it's valid, it can ONLY be a single 32-bit decimal
+				 * spanning the whole 4-byte v4 address range.  If that's
+				 * true, it's GOTTA be a valid number, it's GOTTA reach
+				 * to the end of the strong, and it's GOTTA be at least
+				 * 2**31 and less than 2**32.
+				 */
+				octet = strtoul(pfx+1, &buf2, 10);
+				if(*buf2=='\0' && octet >= (unsigned long)(1<<31)
+						&& octet <= (unsigned long)0xffffffff)
+					foundmask=1; /* Valid! */
 
 				octet=0; buf2=NULL; /* Done */
 			}
@@ -529,33 +529,33 @@ cidr_from_str(const char *addr)
 			}
 
 			/*
-		 	 * Now pflen is in the 0...32 range and thus good.  Set it in
-		 	 * the structure.  Note that memset zero'd the whole thing to
-		 	 * start.  We ignore mask[<12] with v4 addresses normally,
-		 	 * but they're already set to all-1 anyway, since if we ever
-		 	 * DO care about them, that's the most appropriate thing for
-		 	 * them to be.
-		 	 *
-		 	 * This is a horribly grody set of macros.  I'm only using
-		 	 * them here to test them out before using them in the v6
-		 	 * section, where I'll need them more due to the sheer number
-		 	 * of clauses I'll have to get written.  Here's the straight
-		 	 * code I had written that the macro should be writing for me
-		 	 * now:
-		 	 *
-		 	 * if(pflen>24)
-		 	 *   for(j=24 ; j<pflen ; j++)
-		 	 *     toret->mask[15] |= 1<<(31-j);
-		 	 * if(pflen>16)
-		 	 *   for(j=16 ; j<pflen ; j++)
-		 	 *     toret->mask[14] |= 1<<(23-j);
-		 	 * if(pflen>8)
-		 	 *   for(j=8 ; j<pflen ; j++)
-		 	 *     toret->mask[13] |= 1<<(15-j);
-		 	 * if(pflen>0)
-		 	 *   for(j=0 ; j<pflen ; j++)
-		 	 *     toret->mask[12] |= 1<<(7-j);
-		 	 */
+			 * Now pflen is in the 0...32 range and thus good.  Set it in
+			 * the structure.  Note that memset zero'd the whole thing to
+			 * start.  We ignore mask[<12] with v4 addresses normally,
+			 * but they're already set to all-1 anyway, since if we ever
+			 * DO care about them, that's the most appropriate thing for
+			 * them to be.
+			 *
+			 * This is a horribly grody set of macros.  I'm only using
+			 * them here to test them out before using them in the v6
+			 * section, where I'll need them more due to the sheer number
+			 * of clauses I'll have to get written.  Here's the straight
+			 * code I had written that the macro should be writing for me
+			 * now:
+			 *
+			 * if(pflen>24)
+			 *   for(j=24 ; j<pflen ; j++)
+			 *     toret->mask[15] |= 1<<(31-j);
+			 * if(pflen>16)
+			 *   for(j=16 ; j<pflen ; j++)
+			 *     toret->mask[14] |= 1<<(23-j);
+			 * if(pflen>8)
+			 *   for(j=8 ; j<pflen ; j++)
+			 *     toret->mask[13] |= 1<<(15-j);
+			 * if(pflen>0)
+			 *   for(j=0 ; j<pflen ; j++)
+			 *     toret->mask[12] |= 1<<(7-j);
+			 */
 #define UMIN(x,y) ((x)<(y)?(x):(y))
 #define MASKNUM(x) (24-((15-x)*8))
 #define WRMASKSET(x) \
@@ -755,9 +755,9 @@ cidr_from_str(const char *addr)
 			}
 
 			/*
-		 	 * Now save the pflen.  See comments on the similar code up in
-		 	 * the v4 section about the macros.
-		 	 */
+			 * Now save the pflen.  See comments on the similar code up in
+			 * the v4 section about the macros.
+			 */
 #define UMIN(x,y) ((x)<(y)?(x):(y))
 #define MASKNUM(x) (120-((15-x)*8))
 #define WRMASKSET(x) \
