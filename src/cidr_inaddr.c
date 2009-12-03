@@ -5,7 +5,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-/* netinet/in.h is pulled in by libcidr.h */
+#include <arpa/inet.h>
 
 #include <libcidr.h>
 
