@@ -1,16 +1,15 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl5
 # Do regression tests.
 
 use strict;
+use warnings;
 use Cwd;
 use Getopt::Std;
 
 our $opt_v;
 getopts('v');
 
-my $verbose=0;
-if(defined($opt_v))
-{ $verbose=1; }
+my $verbose = $opt_v ? 1 : 0;
 
 
 # Grab our lists of tests to run
@@ -21,10 +20,10 @@ my $stdir = getcwd();
 # Top level is test programs we work with
 foreach my $prog ( keys our %TESTS )
 {
-	print("-> $prog\n");
+	print "-> $prog\n";
 	if(!chdir("../$prog"))
 	{
-		print("***> cd failed!\n");
+		print "***> cd failed!\n";
 		next;
 	}
 
@@ -32,8 +31,7 @@ foreach my $prog ( keys our %TESTS )
 	my ($p,$f) = (0,0);
 	foreach my $inp ( keys %{$TESTS{$prog}} )
 	{
-		if($verbose==1)
-		{ print("   -> $inp\n"); }
+		print "   -> $inp\n" if $verbose;
 
 		# Value is an array of attempts with that input
 		foreach my $att_t ( @{$TESTS{$prog}->{$inp}} )
@@ -44,7 +42,7 @@ foreach my $prog ( keys our %TESTS )
 
 			# Run it
 			my $ret = `../run.sh ./cidr_$prog -_ $args $inp`;
-			chomp($ret);
+			chomp $ret;
 
 			# See what we got
 			$ret =~ /^'(.*)' -> '(.*)'$/;
@@ -53,26 +51,25 @@ foreach my $prog ( keys our %TESTS )
 
 			if($outp ne $res)
 			{
-				if($verbose==1)
+				if($verbose == 1)
 				{
-					print("      -> *FAILED* ($args) "
-				    	. "(Got '$outp', wanted '$res')\n"),
+					print "      -> *FAILED* ($args) "
+					    . "(Got '$outp', wanted '$res')\n";
 				}
 				else
 				{
-					print("   => FAIL $inp ($args) \n"
-					    . "      Got '$outp', expecting '$res'.\n");
+					print "   => FAIL $inp ($args) \n"
+					    . "      Got '$outp', expecting '$res'.\n";
 				}
 				$f++;
 			}
 			else
 			{
-				if($verbose==1)
-				{ print("      -> ok ($args) \n", ); }
+				print "      -> ok ($args) \n" if $verbose;
 				$p++;
 			}
 		}
 	}
 
-	print("<- $p pass, $f fail\n");
+	print "<- $p pass, $f fail\n";
 }
