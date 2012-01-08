@@ -32,18 +32,18 @@ _CFLAGS += -O0
 _CFLAGS += -std=c99 -D_XOPEN_SOURCE=600
 
 # Roll 'em all up in a place easy to override
-CFLAGS = ${_CFLAGS}
+CFLAGS += ${_CFLAGS}
 
 O_FILES = ${C_FILES:%.c=%.o}
 SO_FILES = ${C_FILES:%.c=%.So}
 
-CC = cc
-LD = ld
-MV = mv
-LN = ln
-RM = rm
+CC ?= cc
+LD ?= ld
+MV ?= mv
+LN ?= ln
+RM ?= rm
 LORDER = ../tools/lorder
-TSORT = tsort
+TSORT ?= tsort
 
 def: all
 
