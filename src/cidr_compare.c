@@ -28,14 +28,14 @@ cidr_contains(const CIDR *big, const CIDR *little)
 		errno = EPROTO;
 		return(-1);
 	}
-	
+
 	/* We better understand the protocol, too */
 	if(big->proto!=CIDR_IPV4 && big->proto!=CIDR_IPV6)
 	{
 		errno = EINVAL;
 		return(-1);
 	}
-	
+
 	/*
 	 * little better be SMALL enough to fit in big.  Note: The prefix
 	 * lengths CAN be the same, and little could still 'fit' in big if
@@ -48,7 +48,7 @@ cidr_contains(const CIDR *big, const CIDR *little)
 		errno = 0;
 		return(-1);
 	}
-	
+
 	/*
 	 * Now let's compare.  Note that for IPv4 addresses, the first 12
 	 * octets are irrelevant.  We take care throughout to keep them
@@ -72,7 +72,7 @@ cidr_contains(const CIDR *big, const CIDR *little)
 		errno = ENOENT; /* This is a really bad choice of errno */
 		return(-1);
 	}
-	
+
 	/* Start comparing */
 	for( /* i */ ; i < pflen ; i++ )
 	{
@@ -101,7 +101,7 @@ cidr_equals(const CIDR *one, const CIDR *two)
 	/* Check protocols */
 	if(one->proto != two->proto)
 		return(-1);
-	
+
 	/* Check addresses/masks */
 	if(one->proto==CIDR_IPV4)
 		i = 12;

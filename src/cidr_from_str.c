@@ -583,7 +583,7 @@ cidr_from_str(const char *addr)
 		/* Here, i should be before the /, but we may have multiple */
 		while(i>0 && addr[i]=='/')
 			i--;
-		
+
 		for( /* i */ ; i>=0 ; i--)
 		{
 			/*
@@ -844,7 +844,7 @@ cidr_from_str(const char *addr)
 
 					/* And find the next octet */
 				}
-				
+
 				/*
 				 * At this point, 4 dotted-decimal octets should be
 				 * consumed.  i has gone back one step past the : before

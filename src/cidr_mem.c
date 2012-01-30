@@ -37,7 +37,7 @@ cidr_dup(const CIDR *src)
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
 	memcpy(toret, src, sizeof(CIDR));
-	
+
 	return(toret);
 }
 

@@ -21,15 +21,15 @@ int
 cidr_is_v4mapped(const CIDR *addr)
 {
 	int i;
-	
+
 	if(addr->proto != CIDR_IPV6)
 		return(-1);
-	
+
 	/* First 10 octets should be 0 */
 	for(i=0 ; i<=9 ; i++)
 		if(addr->addr[i] != 0)
 			return(-1);
-	
+
 	/* Next 2 should be 0xff */
 	for(i=10 ; i<=11 ; i++)
 		if(addr->addr[i] != 0xff)

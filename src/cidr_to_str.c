@@ -31,7 +31,7 @@ cidr_to_str(const CIDR *block, int flags)
 		errno = EINVAL;
 		return(NULL);
 	}
-	
+
 	/*
 	 * Sanity: If we have both ONLYADDR and ONLYPFLEN, we really don't
 	 * have anything to *DO*...
@@ -41,7 +41,7 @@ cidr_to_str(const CIDR *block, int flags)
 		errno = EINVAL;
 		return(NULL);
 	}
-	
+
 	/*
 	 * Now, in any case, there's a maximum length for any address, which
 	 * is the completely expanded form of a v6-{mapped,compat} address
@@ -179,7 +179,7 @@ cidr_to_str(const CIDR *block, int flags)
 				strcat(toret, tmpbuf);
 			}
 		} /* ! ONLYADDR */
-		
+
 		/* That's it for a v4 address, in any of our forms */
 	}
 	else if( (block->proto==CIDR_IPV6 && !(flags & CIDR_FORCEV4))

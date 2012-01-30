@@ -21,12 +21,12 @@ cidr_addr_network(const CIDR *addr)
 		errno = EFAULT;
 		return(NULL);
 	}
-	
+
 	toret = cidr_alloc();
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
 	toret->proto = addr->proto;
-	
+
 	/* The netmask is the same */
 	memcpy(toret->mask, addr->mask, (16 * sizeof(toret->mask[0])) );
 
@@ -66,12 +66,12 @@ cidr_addr_broadcast(const CIDR *addr)
 		errno = EFAULT;
 		return(NULL);
 	}
-	
+
 	toret = cidr_alloc();
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
 	toret->proto = addr->proto;
-	
+
 	/* The netmask is the same */
 	memcpy(toret->mask, addr->mask, (16 * sizeof(toret->mask[0])) );
 

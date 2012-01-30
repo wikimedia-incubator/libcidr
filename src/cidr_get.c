@@ -33,7 +33,7 @@ cidr_get_pflen(const CIDR *block)
 		errno = ENOENT; /* Bad errno */
 		return(-1); /* Unknown */
 	}
-	
+
 	/*
 	 * We're intentionally not supporting non-contiguous netmasks.  So,
 	 * if we find one, bomb out.
@@ -62,7 +62,7 @@ cidr_get_pflen(const CIDR *block)
 				foundnmh=1; /* A host bit */
 		}
 	}
-	
+
 	/* If we get here, return the length */
 	return(pflen);
 }

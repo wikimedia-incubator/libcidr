@@ -23,7 +23,7 @@ cidr_net_supernet(const CIDR *addr)
 		errno = EFAULT;
 		return(NULL);
 	}
-	
+
 	/* If it's already a /0 in its protocol, return nothing */
 	pflen = cidr_get_pflen(addr);
 	if(pflen==0)
@@ -31,11 +31,11 @@ cidr_net_supernet(const CIDR *addr)
 		errno = 0;
 		return(NULL);
 	}
-	
+
 	toret = cidr_dup(addr);
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
-	
+
 	/* Chop a bit off the netmask */
 	/* This gets the last network bit */
 	if(toret->proto==CIDR_IPV4)
@@ -77,7 +77,7 @@ cidr_net_subnets(const CIDR *addr)
 		errno = EFAULT;
 		return(NULL);
 	}
-	
+
 	/* You can't split a host address! */
 	pflen = cidr_get_pflen(addr);
 	if(  (addr->proto==CIDR_IPV4 && pflen==32)
@@ -93,7 +93,7 @@ cidr_net_subnets(const CIDR *addr)
 		errno = ENOMEM;
 		return(NULL);
 	}
-	
+
 	/* Get a blank-ish slate for the first kid */
 	toret[0] = cidr_addr_network(addr);
 	if(toret[0]==NULL)

@@ -80,7 +80,7 @@ cidr_from_inaddr(const struct in_addr *uaddr)
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
 	toret->proto = CIDR_IPV4;
-	
+
 	/*
 	 * For IPv4, pretty straightforward, except that we need to jump
 	 * through a temp variable to convert into host byte order.
@@ -96,7 +96,7 @@ cidr_from_inaddr(const struct in_addr *uaddr)
 	/* Give it a single-host mask */
 	toret->mask[15] = toret->mask[14] =
 		toret->mask[13] = toret->mask[12] = 0xff;
-	
+
 	/* Standard v4 overrides of addr and mask for mapped form */
 	for(i=0 ; i<=9 ; i++)
 		toret->addr[i] = 0;
@@ -104,7 +104,7 @@ cidr_from_inaddr(const struct in_addr *uaddr)
 		toret->addr[i] = 0xff;
 	for(i=0 ; i<=11 ; i++)
 		toret->mask[i] = 0xff;
-	
+
 	/* That's it */
 	return(toret);
 }
@@ -183,7 +183,7 @@ cidr_from_in6addr(const struct in6_addr *uaddr)
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
 	toret->proto = CIDR_IPV6;
-	
+
 	/*
 	 * For v6, just iterate over the arrays and return.  Set all 1's in
 	 * the mask while we're at it, since this is a single host.
