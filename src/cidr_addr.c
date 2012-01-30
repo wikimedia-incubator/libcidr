@@ -115,6 +115,11 @@ cidr_addr_hostmin(const CIDR *addr)
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
 
+	/* If it's a single host, the network addr is the [only] host */
+	if(toret->mask[15] == 0xff)
+		return(toret);
+
+	/* Else we bump up one from the network */
 	toret->addr[15] |= 1;
 
 	return(toret);
@@ -131,6 +136,11 @@ cidr_addr_hostmax(const CIDR *addr)
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
 
+	/* If it's a single host, the broadcast addr is the [only] host */
+	if(toret->mask[15] == 0xff)
+		return(toret);
+
+	/* Else we step down one */
 	toret->addr[15] &= 0xfe;
 
 	return(toret);
