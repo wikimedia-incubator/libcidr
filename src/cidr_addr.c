@@ -114,7 +114,7 @@ cidr_addr_hostmin(const CIDR *addr)
 	toret = cidr_addr_network(addr);
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
-	
+
 	toret->addr[15] |= 1;
 
 	return(toret);
@@ -130,7 +130,7 @@ cidr_addr_hostmax(const CIDR *addr)
 	toret = cidr_addr_broadcast(addr);
 	if(toret==NULL)
 		return(NULL); /* Preserve errno */
-	
+
 	toret->addr[15] &= 0xfe;
 
 	return(toret);
