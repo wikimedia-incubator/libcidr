@@ -32,6 +32,17 @@ cidr_from_str(const char *addr)
 		return(NULL);
 	}
 
+	/*
+	 * But not too much.  The longest possible is a fully spelled out
+	 * IPv6 addr with a fully spelled out netmask (~80 char).  Let's
+	 * round way the heck up to 64k.
+	 */
+	if(alen > 1<<16)
+	{
+		errno = EFAULT;
+		return(NULL);
+	}
+
 	/* And we know it can only contain a given set of chars */
 	buf = addr + strspn(addr, "0123456789abcdefABCDEFxX.:/in-rpt");
 	if(*buf!='\0')
