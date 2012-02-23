@@ -119,6 +119,16 @@ cidr_addr_hostmin(const CIDR *addr)
 	if(toret->mask[15] == 0xff)
 		return(toret);
 
+	/*
+	 * If it's a single host bit (/31 or /127), in a sense there are no
+	 * hosts at all.  But we presume that in the case of somebody
+	 * actually giving it, they're meaning it in a use like a PtP link
+	 * where they use both host addresses, so we'll go ahead and give
+	 * that 'network' address.
+	 */
+	if(toret->mask[15] == 0xfe)
+		return(toret);
+
 	/* Else we bump up one from the network */
 	toret->addr[15] |= 1;
 
@@ -138,6 +148,14 @@ cidr_addr_hostmax(const CIDR *addr)
 
 	/* If it's a single host, the broadcast addr is the [only] host */
 	if(toret->mask[15] == 0xff)
+		return(toret);
+
+	/*
+	 * See comment in cidr_addr_hostmin().  For /31 and /127, assume the
+	 * user really does want both addresses as hosts, so give 'em the
+	 * broadcast as the high 'host'.
+	 */
+	if(toret->mask[15] == 0xfe)
 		return(toret);
 
 	/* Else we step down one */
