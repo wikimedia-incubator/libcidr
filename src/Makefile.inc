@@ -15,7 +15,7 @@ C_WARNS = -Wall -Wstrict-prototypes -Wredundant-decls \
 		-Wsign-compare \
 		-pedantic \
 		-Werror
-_CFLAGS := -g -O -pipe ${C_WARNS} -I../include -Iinclude ${C_FLAGS}
+_CFLAGS := -g -O2 -pipe ${C_WARNS} -I../include -Iinclude ${C_FLAGS}
 .ifdef NO_OPTIMIZE
 _CFLAGS += -O0
 .endif
