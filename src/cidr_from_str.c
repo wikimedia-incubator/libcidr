@@ -15,7 +15,8 @@
 CIDR *
 cidr_from_str(const char *addr)
 {
-	size_t alen;
+	size_t _alen;
+	int alen;
 	CIDR *toret, *ctmp;
 	const char *pfx, *buf;
 	char *buf2; /* strtoul() can't use a (const char *) */
@@ -26,7 +27,7 @@ cidr_from_str(const char *addr)
 	short foundpf, foundmask, nsect;
 
 	/* There has to be *SOMETHING* to work with */
-	if(addr==NULL || (alen=strlen(addr))<1)
+	if(addr==NULL || (_alen=strlen(addr))<1)
 	{
 		errno = EFAULT;
 		return(NULL);
@@ -37,11 +38,12 @@ cidr_from_str(const char *addr)
 	 * IPv6 addr with a fully spelled out netmask (~80 char).  Let's
 	 * round way the heck up to 64k.
 	 */
-	if(alen > 1<<16)
+	if(_alen > 1<<16)
 	{
 		errno = EFAULT;
 		return(NULL);
 	}
+	alen = (int)_alen;
 
 	/* And we know it can only contain a given set of chars */
 	buf = addr + strspn(addr, "0123456789abcdefABCDEFxX.:/in-rpt");
