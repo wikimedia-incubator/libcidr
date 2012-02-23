@@ -475,7 +475,7 @@ cidr_from_str(const char *addr)
 		else if(foundpf==1 && *(pfx+1)=='\0')
 		{
 			pflen=32;
-			i=pfx-addr-1;
+			i=(int)(pfx-addr-1);
 		}
 
 		/*
@@ -510,7 +510,7 @@ cidr_from_str(const char *addr)
 			}
 
 			/* And set us to before the '/' like below */
-			i = pfx-addr-1;
+			i = (int)(pfx-addr-1);
 		}
 
 		/*
@@ -521,7 +521,7 @@ cidr_from_str(const char *addr)
 		if(foundpf==1 && foundmask==0 && pflen==-1)
 		{
 			pflen = (int)strtol(pfx+1, NULL, 10);
-			i = pfx-addr-1;
+			i = (int)(pfx-addr-1);
 		}
 
 
@@ -709,7 +709,7 @@ cidr_from_str(const char *addr)
 		else if(foundpf==1 && *(pfx+1)=='\0')
 		{
 			pflen = 128;
-			i=pfx-addr-1;
+			i=(int)(pfx-addr-1);
 		}
 
 		/*
@@ -740,14 +740,14 @@ cidr_from_str(const char *addr)
 			}
 
 			/* And set us to before the '/' like below */
-			i = pfx-addr-1;
+			i = (int)(pfx-addr-1);
 		}
 
 		/* Finally, the normal prefix case */
 		if(foundpf==1 && foundmask==0 && pflen==-1)
 		{
 			pflen = (int)strtol(pfx+1, NULL, 10);
-			i = pfx-addr-1;
+			i = (int)(pfx-addr-1);
 		}
 
 
