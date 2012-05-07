@@ -59,13 +59,13 @@
    <para>
     For the current version or any extra information, see the libcidr
     project homepage, at
-    &lt;http://www.over-yonder.net/~fullermd/projects/libcidr/&gt;.
+    &lt;http://www.over-yonder.net/~fullermd/projects/libcidr&gt;.
    </para>
    <para>
     This reference manual is build using the codelibrary SGML DTD, which
     is specifically designed for documenting libraries.
     See the codelibrary homepage at
-    &lt;http://www.over-yonder.net/~fullermd/projects/sgml/codelibrary/&gt;
+    &lt;http://www.over-yonder.net/~fullermd/projects/sgml/codelibrary&gt;
     for more details on it.
    </para>
   </longdesc>
