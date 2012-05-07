@@ -202,6 +202,12 @@
      The returned structure should be cleaned up using
      <fref target="cidr-free">.
     </para>
+    <para>
+     Note that you should probably never need to call this function
+     yourself; you'll generally get your <dref target="cidr-addr">
+     structures as a return from a function like
+     <fref target="cidr-from-str"> or <fref target="cidr-from-inaddr">.
+    </para>
    </longdesc>
    <args></args>
    <returns>
