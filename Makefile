@@ -57,7 +57,8 @@ install:
 	-@${MKDIR} ${CIDR_INCDIR}
 	${INSTALL} -m 444 include/libcidr.h ${CIDR_INCDIR}/
 	@${ECHO} "-> Installing manpage..."
-	@${GZIP} -c docs/libcidr.3 > docs/libcidr.3.gz
+	@${SED} -e 's|%%DOCDIR%%|${CIDR_DOCDIR}|' docs/libcidr.3 | \
+			${GZIP} > docs/libcidr.3.gz
 	-@${MKDIR} ${CIDR_MANDIR}/man3
 	${INSTALL} -m 444 docs/libcidr.3.gz ${CIDR_MANDIR}/man3
 	@${RM} docs/libcidr.3.gz
