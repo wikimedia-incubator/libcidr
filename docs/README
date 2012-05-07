@@ -8,12 +8,12 @@ libcidr docs
     functions, their calling convention, and a short description of what
     they do.  It's not meant to be more than a handy reference if you
     need a function name or prototype quickly.
-  
+
   - reference/ contains the libcidr reference manual, which fully
     documents each of the functions, along with suggestions for use and
     any surprises or gotchas in their use.  It's in a variety of formats,
     all generated from the SGML source.  This uses the codelibrary DTD
-    <http://www.over-yonder.net/~fullermd/projects/sgml/codelibrary/>
+    <http://www.over-yonder.net/~fullermd/projects/sgml/codelibrary>
     which I originally developed for libpostal <http://libpostal.sf.net/>
     and which is designed specifically for documenting libraries.
 
