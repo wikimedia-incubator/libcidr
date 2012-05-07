@@ -4,12 +4,12 @@
 
 # Define some destination directories
 PREFIX?=/usr/local
-LIBDIR?=${PREFIX}/lib
-BINDIR?=${PREFIX}/bin
-INCDIR?=${PREFIX}/include
-MANDIR?=${PREFIX}/man
-DOCDIR?=${PREFIX}/share/libcidr/docs
-EXDIR?=${PREFIX}/share/libcidr/examples
+CIDR_LIBDIR?=${PREFIX}/lib
+CIDR_BINDIR?=${PREFIX}/bin
+CIDR_INCDIR?=${PREFIX}/include
+CIDR_MANDIR?=${PREFIX}/man
+CIDR_DOCDIR?=${PREFIX}/share/libcidr/docs
+CIDR_EXDIR?=${PREFIX}/share/libcidr/examples
 
 # A few programs
 ECHO?=echo
@@ -35,46 +35,46 @@ all build clean:
 # Provide a quick&dirty 'uninstall' target
 uninstall:
 	@${ECHO} "-> Trying to delete everything libcidr-related..."
-	${RM} ${LIBDIR}/${SHLIB_NAME} ${LIBDIR}/${SHLIB_LINK}
-	${RM} ${BINDIR}/cidrcalc
-	${RM} ${INCDIR}/libcidr.h
-	${RM} ${MANDIR}/man3/libcidr.3.gz
-	${RM} -r ${DOCDIR}
-	${RM} -r ${EXDIR}
+	${RM} ${CIDR_LIBDIR}/${SHLIB_NAME} ${CIDR_LIBDIR}/${SHLIB_LINK}
+	${RM} ${CIDR_BINDIR}/cidrcalc
+	${RM} ${CIDR_INCDIR}/libcidr.h
+	${RM} ${CIDR_MANDIR}/man3/libcidr.3.gz
+	${RM} -r ${CIDR_DOCDIR}
+	${RM} -r ${CIDR_EXDIR}
 	@${ECHO} "-> Uninstallation complete"
 
 
 # Now the bits of installing
 install:
 	@${ECHO} "-> Installing ${SHLIB_NAME}..."
-	-@${MKDIR} ${LIBDIR}
-	${INSTALL} -m 444 src/${SHLIB_NAME} ${LIBDIR}/
-	(cd ${LIBDIR} && ${LN} -fs ${SHLIB_NAME} ${SHLIB_LINK})
+	-@${MKDIR} ${CIDR_LIBDIR}
+	${INSTALL} -m 444 src/${SHLIB_NAME} ${CIDR_LIBDIR}/
+	(cd ${CIDR_LIBDIR} && ${LN} -fs ${SHLIB_NAME} ${SHLIB_LINK})
 	@${ECHO} "-> Installing cidrcalc..."
-	-@${MKDIR} ${BINDIR}
-	${INSTALL} -m 555 src/examples/cidrcalc/cidrcalc ${BINDIR}/
+	-@${MKDIR} ${CIDR_BINDIR}
+	${INSTALL} -m 555 src/examples/cidrcalc/cidrcalc ${CIDR_BINDIR}/
 	@${ECHO} "-> Installing header file..."
-	-@${MKDIR} ${INCDIR}
-	${INSTALL} -m 444 include/libcidr.h ${INCDIR}/
+	-@${MKDIR} ${CIDR_INCDIR}
+	${INSTALL} -m 444 include/libcidr.h ${CIDR_INCDIR}/
 	@${ECHO} "-> Installing manpage..."
 	@${GZIP} -c docs/libcidr.3 > docs/libcidr.3.gz
-	-@${MKDIR} ${MANDIR}/man3
-	${INSTALL} -m 444 docs/libcidr.3.gz ${MANDIR}/man3
+	-@${MKDIR} ${CIDR_MANDIR}/man3
+	${INSTALL} -m 444 docs/libcidr.3.gz ${CIDR_MANDIR}/man3
 	@${RM} docs/libcidr.3.gz
 .ifndef NO_DOCS
 	@${ECHO} "-> Installing docs..."
-	-@${MKDIR} ${DOCDIR}
+	-@${MKDIR} ${CIDR_DOCDIR}
 	${INSTALL} -m 444 docs/reference/libcidr* \
-			docs/reference/codelibrary-html.css ${DOCDIR}/
+			docs/reference/codelibrary-html.css ${CIDR_DOCDIR}/
 .endif
 .ifndef NO_EXAMPLES
 	@${ECHO} "-> Installing examples..."
-	-@${MKDIR} ${EXDIR}
-	@${SED} -e "s,\.\./include,${INCDIR}," \
+	-@${MKDIR} ${CIDR_EXDIR}
+	@${SED} -e "s,\.\./include,${CIDR_INCDIR}," \
 			-e "s,\.\./Makefile\.inc,/dev/null," \
 			< src/Makefile.inc \
-			> ${EXDIR}/Makefile.inc
-	${INSTALL} -m 444 src/examples/README ${EXDIR}/
+			> ${CIDR_EXDIR}/Makefile.inc
+	${INSTALL} -m 444 src/examples/README ${CIDR_EXDIR}/
 	@${MAKE} EX=cidrcalc install-example
 	@${MAKE} EX=acl EXFILE=acl.example install-example
 .endif
@@ -84,15 +84,15 @@ install:
 
 install-example:
 	@${ECHO} "-> Installing examples/${EX}..."
-	-@${MKDIR} ${EXDIR}/${EX}
-	${INSTALL} -m 444 src/examples/${EX}/${EX}.c ${EXDIR}/${EX}/
+	-@${MKDIR} ${CIDR_EXDIR}/${EX}
+	${INSTALL} -m 444 src/examples/${EX}/${EX}.c ${CIDR_EXDIR}/${EX}/
 .ifdef EXFILE
-	${INSTALL} -m 444 src/examples/${EX}/${EXFILE} ${EXDIR}/${EX}/
+	${INSTALL} -m 444 src/examples/${EX}/${EXFILE} ${CIDR_EXDIR}/${EX}/
 .endif
-	@${SED} -e "s,\.\./\.\./\.\./include,${INCDIR}," \
-			-e "s,-L\.\./\.\.,-L${LIBDIR}," \
-			-e "s,\.\./\.\./libcidr.so,${LIBDIR}/libcidr.so," \
+	@${SED} -e "s,\.\./\.\./\.\./include,${CIDR_INCDIR}," \
+			-e "s,-L\.\./\.\.,-L${CIDR_LIBDIR}," \
+			-e "s,\.\./\.\./libcidr.so,${CIDR_LIBDIR}/libcidr.so," \
 			-e "s,cd\ \.\./\.\.\ &&\ make,cd," \
 			-e "s,\.\./\.\./Makefile\.inc,\.\./Makefile.inc," \
 			< src/examples/${EX}/Makefile \
-			> ${EXDIR}/${EX}/Makefile
+			> ${CIDR_EXDIR}/${EX}/Makefile
