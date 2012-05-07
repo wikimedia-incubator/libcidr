@@ -3,13 +3,13 @@
 # and handles the bits&pieces of installing manually.
 
 # Define some destination directories
-DESTDIR?=/usr/local
-LIBDIR?=${DESTDIR}/lib
-BINDIR?=${DESTDIR}/bin
-INCDIR?=${DESTDIR}/include
-MANDIR?=${DESTDIR}/man
-DOCDIR?=${DESTDIR}/share/libcidr/docs
-EXDIR?=${DESTDIR}/share/libcidr/examples
+PREFIX?=/usr/local
+LIBDIR?=${PREFIX}/lib
+BINDIR?=${PREFIX}/bin
+INCDIR?=${PREFIX}/include
+MANDIR?=${PREFIX}/man
+DOCDIR?=${PREFIX}/share/libcidr/docs
+EXDIR?=${PREFIX}/share/libcidr/examples
 
 # A few programs
 ECHO?=echo
