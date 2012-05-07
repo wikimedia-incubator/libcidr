@@ -400,7 +400,7 @@ static int _client_isallowed(const CIDR *clcidr, int clsock)
 			if(verbose>0)
 			{
 				sprintf(tmpbuf, "\tDefault deny.\n");
-				printf(tmpbuf);
+				printf("%s", tmpbuf);
 				if(verbose>1)
 					write(clsock, tmpbuf, strlen(tmpbuf));
 			}
@@ -420,7 +420,7 @@ static int _client_isallowed(const CIDR *clcidr, int clsock)
 			if(verbose>0)
 			{
 				strcat(tmpbuf, "matched!\n");
-				printf(tmpbuf);
+				printf("%s", tmpbuf);
 				if(verbose>1)
 					write(clsock, tmpbuf, strlen(tmpbuf));
 			}
@@ -436,7 +436,7 @@ static int _client_isallowed(const CIDR *clcidr, int clsock)
 		if(verbose>0)
 		{
 			strcat(tmpbuf, "not matched!\n");
-			printf(tmpbuf);
+			printf("%s", tmpbuf);
 			if(verbose>1)
 				write(clsock, tmpbuf, strlen(tmpbuf));
 		}
