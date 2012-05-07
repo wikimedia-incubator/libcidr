@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <ctype.h>
 #include <errno.h>
