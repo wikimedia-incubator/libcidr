@@ -1,16 +1,16 @@
-# OVERVIEW
+# Overview
 
 This is libcidr, a library to handle manipulating CIDR netblocks in
 IPv4 and IPv6 in a host of ways.  It's useful for parsing textual
 representations of addresses and blocks, comparing blocks in various
 ways, and outputting them in different formats.
 
-# HISTORY
+# History
 - This library was written by [Matthew Fuller](mailto:fullermd@over-yonder.net).
 - Debian packaging was added by [Andrew Otto](mailto:otto@wikimedia.org)
   for the [Wikimedia Foundation](http://wikimediafoundation.org).
 
-# INSTALLATION
+# Installation
 
 To install from a release tarball, all you should need to do is a
 standard "make ; make install" procedure.
@@ -36,10 +36,10 @@ this, and neither should be necessary on a reasonably modern system.
 
 In both cases, there are a few variables you can tweak to determine
 where things get installed.  Generally, you should only need to set
-DESTDIR, and the other variables will be set based on that.  See the
+PREFIX, and the other variables will be set based on that.  See the
 beginning of the Makefile for more details if you need them.
 
-DESTDIR defaults to `/usr/local`, which is probably the right choice for
+PREFIX defaults to `/usr/local`, which is probably the right choice for
 most sites.  Installation will install several things:
 
 - The shared library itself, in `${PREFIX}/lib`,
@@ -52,7 +52,7 @@ most sites.  Installation will install several things:
     programs, under `examples/`
 
 
-# ROADMAP
+# Roadmap
 
 Here's a quick overview of the pieces of this dist.  See README files
 in the various subdirs for more information about them.
@@ -71,7 +71,7 @@ in the various subdirs for more information about them.
                user-serviceable parts inside.
 
 
-# SUPPORT
+# Support
 
 libcidr is intended to be pretty self-explanatory, particularly with
 the aid of the example programs.  And don't neglect the programs in
@@ -92,4 +92,5 @@ to email me.  See the project homepage at
 -- 
 Matthew Fuller
 <fullermd@over-yonder.net>
+
 <http://www.over-yonder.net/~fullermd/>
