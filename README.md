@@ -10,6 +10,26 @@ ways, and outputting them in different formats.
 - Debian packaging was added by [Andrew Otto](mailto:otto@wikimedia.org)
   for the [Wikimedia Foundation](http://wikimediafoundation.org).
 
+This repository was cloned from Matthew Fullers main bazaar repository
+using [git-bzr-ng](https://github.com/termie/git-bzr-ng).  The upstream
+branch is how the upstream repository looked at bzr revno 243 as of
+July 13 2012.
+
+To bring in upstream changes:
+
+    # create a local bzr/libcidr branch from the upstream bazaar repository.
+    git-bzr import http://bzr.over-yonder.net/~fullermd/libcidr
+    
+    # checkout master and merge the local branch into it.  There might be conflicts.
+    git checkout master
+    git merge bzr/libcidr
+    
+    # resolve any conflicts.
+    git push
+  
+_NOTE: I have not actually tried this, but I think it should work :)_
+  
+
 # Installation
 
 To install from a release tarball, all you should need to do is a
