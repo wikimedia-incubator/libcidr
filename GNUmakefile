@@ -46,19 +46,6 @@ uninstall:
 	${RM} -r ${CIDR_EXDIR}
 	@${ECHO} "-> Uninstallation complete"
 
-
-# Now the bits of installing
-install:
-	@${ECHO} "-> Installing ${SHLIB_NAME}..."
-	-@${MKDIR} ${CIDR_LIBDIR}
-	${INSTALL} -m 444 src/${SHLIB_NAME} ${CIDR_LIBDIR}/
-	(cd ${CIDR_LIBDIR} && ${LN} -fs ${SHLIB_NAME} ${SHLIB_LINK})
-	@${ECHO} "-> Installing cidrcalc..."
-	-@${MKDIR} ${CIDR_BINDIR}
-	${INSTALL} -m 555 src/examples/cidrcalc/cidrcalc ${CIDR_BINDIR}/
-	@${ECHO} "-> Installing header file..."
-	-@${MKDIR} ${CIDR_INCDIR}
-	${INSTALL} -m 444 include/libcidr.h ${CIDR_INCDIR}/
 	@${ECHO} "-> Installing manpage..."
 	@${SED} -e 's|%%DOCDIR%%|${CIDR_DOCDIR}|' docs/libcidr.3 | \
 			${GZIP} > docs/libcidr.3.gz
@@ -84,6 +71,25 @@ ifndef NO_EXAMPLES
 	@${MAKE} EX=acl EXFILE=acl.example install-example
 endif
 
+
+install-libcidr:
+	@${ECHO} "-> Installing ${SHLIB_NAME}..."
+	-@${MKDIR} ${CIDR_LIBDIR}
+	${INSTALL} -m 444 src/${SHLIB_NAME} ${CIDR_LIBDIR}/
+	(cd ${CIDR_LIBDIR} && ${LN} -fs ${SHLIB_NAME} ${SHLIB_LINK})
+
+install-libcidr-dev:
+	@${ECHO} "-> Installing header file..."
+	-@${MKDIR} ${CIDR_INCDIR}
+	${INSTALL} -m 444 include/libcidr.h ${CIDR_INCDIR}/
+
+install-cidrcalc:
+	@${ECHO} "-> Installing cidrcalc..."
+	-@${MKDIR} ${CIDR_BINDIR}
+	${INSTALL} -m 555 src/examples/cidrcalc/cidrcalc ${CIDR_BINDIR}/
+
+# Now the bits of installing
+install: install-libcidr install-libcidr-dev install-cidrcalc
 	@${ECHO} ""
 	@${ECHO} "libcidr install complete"
 
