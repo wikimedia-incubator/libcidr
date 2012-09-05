@@ -16,7 +16,9 @@ all build: cidrcalc
 LCIDR = ../../libcidr.so
 
 cidrcalc: ${O_FILES} ${LCIDR}
-	${CC} ${L_FLAGS} -o ${@} ${O_FILES}
+	# this doesn't work on Ubuntu Precise???
+	# ${CC} ${L_FLAGS} -o ${@} ${O_FILES}
+	${CC} -o cidrcalc cidrcalc.c ${C_FLAGS} ${L_FLAGS}
 
 ${LCIDR}:
 	(cd ../.. && make)
