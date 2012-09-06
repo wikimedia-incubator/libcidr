@@ -30,7 +30,7 @@ BUILDDIR = ${RTPATH}/.build
 
 # Args
 TIDYARGS = -i -raw -quiet -wrap 75
-JADECAT= -c /usr/local/share/sgml/openjade/catalog
+JADECAT= -c /usr/local/sgml/OpenJade/catalog
 CODELIBCAT = -c ${RTPATH}/codelibrary/catalog
 JADESTD = ${JADECAT} ${CODELIBCAT}
 

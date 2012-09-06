@@ -16,6 +16,8 @@ libcidr docs
     <http://www.over-yonder.net/~fullermd/projects/sgml/codelibrary>
     which I originally developed for libpostal <http://libpostal.sf.net/>
     and which is designed specifically for documenting libraries.
+	NOTE: To build the docs, openjade, docbook and docbook-dsssl, and
+	lynx must be installed.
 
 
   Although they're not technically documentation, the example/ and test/
