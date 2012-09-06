@@ -46,6 +46,11 @@ uninstall:
 	${RM} -r ${CIDR_EXDIR}
 	@${ECHO} "-> Uninstallation complete"
 
+install-libcidr:
+	@${ECHO} "-> Installing ${SHLIB_NAME}..."
+	-@${MKDIR} ${CIDR_LIBDIR}
+	${INSTALL} -m 444 src/${SHLIB_NAME} ${CIDR_LIBDIR}/
+	(cd ${CIDR_LIBDIR} && ${LN} -fs ${SHLIB_NAME} ${SHLIB_LINK})
 	@${ECHO} "-> Installing manpage..."
 	@${SED} -e 's|%%DOCDIR%%|${CIDR_DOCDIR}|' docs/libcidr.3 | \
 			${GZIP} > docs/libcidr.3.gz
@@ -71,12 +76,6 @@ ifndef NO_EXAMPLES
 	@${MAKE} EX=acl EXFILE=acl.example install-example
 endif
 
-
-install-libcidr:
-	@${ECHO} "-> Installing ${SHLIB_NAME}..."
-	-@${MKDIR} ${CIDR_LIBDIR}
-	${INSTALL} -m 444 src/${SHLIB_NAME} ${CIDR_LIBDIR}/
-	(cd ${CIDR_LIBDIR} && ${LN} -fs ${SHLIB_NAME} ${SHLIB_LINK})
 
 install-libcidr-dev:
 	@${ECHO} "-> Installing header file..."
