@@ -1,4 +1,4 @@
-libcidr (1.2-1) unstable; urgency=low
+libcidr (1.2.0-0) unstable; urgency=low
 
   * Added debian packaging.
 
