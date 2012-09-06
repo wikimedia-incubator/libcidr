@@ -18,11 +18,11 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# libcidr1
-	$(MAKE) NO_EXAMPLES=1 PREFIX=$(CURDIR)/debian/libcidr1/usr install-libcidr
+	# libcidr0
+	$(MAKE) NO_EXAMPLES=1 PREFIX=$(CURDIR)/debian/libcidr0/usr install-libcidr
 
-	# libcidr1-dev
-	$(MAKE) PREFIX=$(CURDIR)/debian/libcidr1-dev/usr install-libcidr-dev
+	# libcidr0-dev
+	$(MAKE) PREFIX=$(CURDIR)/debian/libcidr0-dev/usr install-libcidr-dev
 
 	# cidrcalc
 	$(MAKE) PREFIX=$(CURDIR)/debian/cidrcalc/usr install-cidrcalc

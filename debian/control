@@ -6,7 +6,7 @@ Standards-Version: 3.8.3
 Section: libs
 Homepage: http://www.over-yonder.net/~fullermd/projects/libcidr
 
-Package: libcidr1
+Package: libcidr0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -15,10 +15,10 @@ Description: A library to handle manipulating CIDR netblocks in IPv4 and IPv6.
  output, manipulate, compare, multilate, and otherwise play with,
  IP addresses and netblocks.
 
-Package: libcidr1-dev
+Package: libcidr0-dev
 Section: libdevel
 Architecture: any
-Depends: libcidr1 (= ${binary:Version})
+Depends: libcidr0 (= ${binary:Version})
 Description: A library to handle manipulating CIDR netblocks in IPv4 and IPv6.
  libcidr is a library that provides a number of functions to input,
  output, manipulate, compare, multilate, and otherwise play with,
@@ -27,7 +27,7 @@ Description: A library to handle manipulating CIDR netblocks in IPv4 and IPv6.
 Package: cidrcalc
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libcidr1
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcidr0
 Description: Takes in a CIDR block, and gives you a quick set of stats about it.
  cidrcalc is a program similar to ipcalc in that it takes in a CIDR block, and
  gives you a quick set of stats about it; number of hosts in the given subnet,
