@@ -108,9 +108,14 @@ However, if you have further questions or suggestions, please feel free
 to email me.  See the project homepage at
 <http://www.over-yonder.net/~fullermd/projects/libcidr> for updates.
 
-
 -- 
 Matthew Fuller
 <fullermd@over-yonder.net>
 
 <http://www.over-yonder.net/~fullermd/>
+
+
+# To Do
+Update to 1.2.1.  Matthew recently updated his upstream libcidr to 1.2.1.  
+This includes changes in the build process that should make building
+packages easier.
