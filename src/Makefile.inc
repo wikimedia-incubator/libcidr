@@ -7,6 +7,10 @@ LIB_VERS = 0
 SHLIB_NAME = libcidr.so.${LIB_VERS}
 SHLIB_LINK = libcidr.so
 
+STATICLIB_NAME = libcidr.a.${LIB_VERS}
+STATICLIB_LINK = libcidr.a
+
+
 # Basic cc flags (turn on lots of seatbelts)
 C_WARNS = -Wall -Wstrict-prototypes -Wredundant-decls \
 		-Wmissing-prototypes -Wpointer-arith -Winline \
@@ -53,6 +57,13 @@ ${SHLIB_NAME}: ${SO_FILES}
 			`${LORDER} ${SO_FILES} | ${TSORT}`
 	${LN} -sf ${SHLIB_NAME} ${SHLIB_LINK}
 
+
+${STATICLIB_NAME}: ${O_FILES}
+	@echo Building ${STATICLIB_NAME}...
+	ar rcs ${STATICLIB_NAME} `${LORDER} ${O_FILES} | ${TSORT}`
+	${LN} -sf ${STATICLIB_NAME} ${STATICLIB_LINK}
+
+
 clean:
 	${RM} -f ${CLEAN_FILES}
 
@@ -62,6 +73,7 @@ clean:
 
 .c.o:
 	${CC} -c ${CFLAGS} -o ${@} ${<}
+
 
 .c.So:
 	${CC} -fpic -DPIC -c ${CFLAGS} -o ${@} ${<}

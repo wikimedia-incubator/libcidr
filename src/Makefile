@@ -10,10 +10,10 @@ C_FILES = \
 		cidr_net.c \
 		cidr_num.c \
 		cidr_to_str.c
-CLEAN_FILES = ${SO_FILES} ${SHLIB_NAME} ${SHLIB_LINK} *core .depend
+CLEAN_FILES = ${SO_FILES} ${SHLIB_NAME} ${SHLIB_LINK} ${STATICLIB_NAME} ${STATICLIB_LINK} *core .depend *.o *.So
 
 .include "Makefile.inc"
 
 # This need to be after the include
-all build: ${SHLIB_NAME}
+all build: ${SHLIB_NAME} ${STATICLIB_NAME}
 
