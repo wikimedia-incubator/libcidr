@@ -6,3 +6,8 @@
 LIB_VERS = 0
 SHLIB_NAME = libcidr.so.${LIB_VERS}
 SHLIB_LINK = libcidr.so
+
+
+STATICLIB_NAME = libcidr.a.${LIB_VERS}
+STATICLIB_LINK = libcidr.a
+

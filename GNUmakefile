@@ -38,7 +38,10 @@ all build clean:
 # Provide a quick&dirty 'uninstall' target
 uninstall:
 	@${ECHO} "-> Trying to delete everything libcidr-related..."
-	${RM} ${CIDR_LIBDIR}/${SHLIB_NAME} ${CIDR_LIBDIR}/${SHLIB_LINK}
+	${RM} ${CIDR_LIBDIR}/${SHLIB_NAME} \
+	      ${CIDR_LIBDIR}/${SHLIB_LINK}
+	${RM} ${CIDR_LIBDIR}/${STATICLIB_NAME} \
+	      ${CIDR_LIBDIR}/${STATICLIB_LINK}
 	${RM} ${CIDR_BINDIR}/cidrcalc
 	${RM} ${CIDR_INCDIR}/libcidr.h
 	${RM} ${CIDR_MANDIR}/man3/libcidr.3.gz
@@ -49,8 +52,9 @@ uninstall:
 install-libcidr:
 	@${ECHO} "-> Installing ${SHLIB_NAME}..."
 	-@${MKDIR} ${CIDR_LIBDIR}
-	${INSTALL} -m 444 src/${SHLIB_NAME} ${CIDR_LIBDIR}/
-	(cd ${CIDR_LIBDIR} && ${LN} -fs ${SHLIB_NAME} ${SHLIB_LINK})
+	${INSTALL} -m 444 src/${SHLIB_NAME} 	${CIDR_LIBDIR}/
+	${INSTALL} -m 444 src/${STATICLIB_NAME} ${CIDR_LIBDIR}/
+	( cd ${CIDR_LIBDIR}  && ${LN} -fs ${SHLIB_NAME} 	${SHLIB_LINK}  && ${LN} -fs ${STATICLIB_NAME}	${STATICLIB_LINK} )
 	@${ECHO} "-> Installing manpage..."
 	@${SED} -e 's|%%DOCDIR%%|${CIDR_DOCDIR}|' docs/libcidr.3 | \
 			${GZIP} > docs/libcidr.3.gz
