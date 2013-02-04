@@ -1,3 +1,9 @@
+NOTE!  This repository has moved to:
+
+https://github.com/wikimedia/analytics-libcidr
+
+
+
 # Overview
 
 This is libcidr, a library to handle manipulating CIDR netblocks in
